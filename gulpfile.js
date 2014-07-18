@@ -9,6 +9,8 @@ var hbsfy = require('hbsfy');
 var browserify = require('browserify');
 var app = require('./server');
 var urlSrc = require('./url-src');
+var merge = require('merge-stream');
+var path = require('path');
 
 function sassTask(dev) {
   return gulp.src('www/static/css/*.scss')
@@ -27,24 +29,37 @@ gulp.task('sass-build', function() {
   return sassTask(false);
 });
 
-function jsTask(bundler, dev) {
+function jsTask(bundler, out, dev) {
   var stream = bundler.bundle({
     debug: dev
-  }).pipe(source('all.js'));
+  }).pipe(
+    source(path.basename(out))
+  );
 
   if (!dev) {
     stream = stream.pipe(buffer()).pipe(uglify());
   }
 
-  return stream.pipe(gulp.dest('www/static/js/'));
+  return stream.pipe(
+    gulp.dest(path.dirname(out))
+  );
 }
 
-function makeBundler(func) {
-  return func('./www/static/js/index.js').transform(hbsfy);
+function makeBundler(inSrc, func) {
+  return func(inSrc).transform(hbsfy);
 }
+
+var jsMap = {
+  "./www/static/js/index.js": "www/static/js/all.js"
+};
 
 gulp.task('js-build', function() {
-  return jsTask(makeBundler(browserify), false);
+  return merge(
+    Object.keys(jsMap).map(function(inSrc) {
+      var bundler = makeBundler(inSrc, browserify);
+      return jsTask(bundler, jsMap[inSrc], false);
+    })
+  );
 });
 
 gulp.task('watch', ['sass'], function() {
@@ -52,14 +67,14 @@ gulp.task('watch', ['sass'], function() {
   gulp.watch('www/static/css/**/*.scss', ['sass']);
 
   // js
-  var bundler = makeBundler(watchify);
-  bundler.on('update', rebundle);
-
-  function rebundle() {
-    return jsTask(bundler, true);
-  }
-
-  return rebundle();
+  Object.keys(jsMap).forEach(function(inSrc) {
+    var bundler = makeBundler(inSrc, watchify);
+    bundler.on('update', rebundle);
+    function rebundle() {
+      return jsTask(bundler, jsMap[inSrc], true);
+    }
+    rebundle();
+  });
 });
 
 gulp.task('server', function() {
