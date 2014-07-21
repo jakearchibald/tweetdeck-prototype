@@ -1,7 +1,7 @@
 {
-  "name": "project-start",
+  "name": "tweetdeck-offline-prototype",
   "version": "0.0.0",
-  "description": "Bootstrapping projects",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -22,6 +22,8 @@
     "vinyl": "~0.2.3",
     "gulp-buffer": "0.0.2",
     "handlebars": "~1.3.0",
-    "gulp-clean": "~0.3.1"
+    "gulp-clean": "~0.3.1",
+    "hbsfy": "~1.3.2",
+    "gulp-rename": "~1.2.0"
   }
 }

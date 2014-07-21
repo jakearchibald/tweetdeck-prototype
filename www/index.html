@@ -1,4 +1,25 @@
-{% extends 'base.html' %}
-{% block body %}
-  <h1>Hello world</h1>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tweetdeck Prototype</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0">
+    <script>{% include "static/js/head-all.js" %}</script>
+    <style>{% include "static/css/head.css" %}</style>
+    <script src="/app-name/static/js/all.js" async></script>
+  </head>
+  <body>
+    <header>
+      Tweetdeck
+      <nav>
+        <!-- column headings for the mobile view go here - like twitter app -->
+      </nav>
+    </header>
+    <article>
+      <h1><!--Column heading for the desktop view--></h1>
+      <div class="tweets">
+        <article><!-- tweet --></article>
+      </div>
+    </article>
+    <link rel="stylesheet" href="/app-name/static/css/all.css">
+  </body>
+</html>

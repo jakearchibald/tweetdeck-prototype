@@ -7,10 +7,12 @@ var source = require('vinyl-source-stream');
 var watchify = require('watchify');
 var hbsfy = require('hbsfy');
 var browserify = require('browserify');
-var app = require('./server');
 var urlSrc = require('./url-src');
 var merge = require('merge-stream');
 var path = require('path');
+var app = require('./server');
+var rename = require('gulp-rename');
+var tweetdeckProxy = require('./server/tweetdeck-proxy');
 
 function sassTask(dev) {
   return gulp.src('www/static/css/*.scss')
@@ -49,36 +51,56 @@ function makeBundler(inSrc, func) {
   return func(inSrc).transform(hbsfy);
 }
 
-var jsMap = {
+var browserifyJsMap = {
   "./www/static/js/index.js": "www/static/js/all.js"
 };
 
 gulp.task('js-build', function() {
-  return merge(
-    Object.keys(jsMap).map(function(inSrc) {
-      var bundler = makeBundler(inSrc, browserify);
-      return jsTask(bundler, jsMap[inSrc], false);
-    })
+  var streams = Object.keys(browserifyJsMap).map(function(inSrc) {
+    var bundler = makeBundler(inSrc, browserify);
+    return jsTask(bundler, browserifyJsMap[inSrc], false);
+  });
+
+  streams.push(
+    gulp.src('www/static/js/head.js').pipe(
+      rename('head-all.js')
+    ).pipe(buffer()).pipe(uglify()).pipe(
+      "www/static/js/"
+    )
+  );
+
+  return merge(streams);
+});
+
+gulp.task('js-head', function() {
+  return gulp.src('www/static/js/head.js').pipe(
+    rename('head-all.js')
+  ).pipe(
+    gulp.dest("www/static/js/")
   );
 });
 
-gulp.task('watch', ['sass'], function() {
+gulp.task('watch', ['sass', 'js-head'], function() {
   // sass
   gulp.watch('www/static/css/**/*.scss', ['sass']);
 
   // js
-  Object.keys(jsMap).forEach(function(inSrc) {
+  Object.keys(browserifyJsMap).forEach(function(inSrc) {
     var bundler = makeBundler(inSrc, watchify);
     bundler.on('update', rebundle);
     function rebundle() {
-      return jsTask(bundler, jsMap[inSrc], true);
+      return jsTask(bundler, browserifyJsMap[inSrc], true);
     }
     rebundle();
   });
+
+  // js-head
+  gulp.watch('www/static/js/head.js', ['js-head']);
 });
 
 gulp.task('server', function() {
   app.listen(3000);
+  tweetdeckProxy.listen(3001);
 });
 
 gulp.task('clean', function() {
@@ -87,6 +109,7 @@ gulp.task('clean', function() {
 });
 
 gulp.task('build', ['clean', 'sass-build', 'js-build'], function() {
+  throw Error("Not set up yet");
   var server = app.listen(3000);
   var writeStream = gulp.dest('build/');
 
