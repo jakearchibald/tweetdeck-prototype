@@ -1,0 +1,12 @@
+// header
+  .title {
+    position: relative;
+    background: #55acee;
+    padding: 20px 25px;
+
+    & .logo {
+      display: block;
+      height: 35px;
+      width: 35px;
+    }
+  }
