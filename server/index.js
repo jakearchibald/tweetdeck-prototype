@@ -7,6 +7,12 @@ app.engine('html', swig.renderFile);
 app.set('view cache', false);
 swig.setDefaults({ cache: false });
 
+// simple logger
+app.use(function(req, res, next){
+  console.log('%s %s', req.method, req.url);
+  next();
+});
+
 app.use('/app-name/static', express.static(__dirname + '/../www/static'));
 
 app.get(RegExp('^/(app-name)?$'), function(req, res) {
