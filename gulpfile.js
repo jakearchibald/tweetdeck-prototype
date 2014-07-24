@@ -15,11 +15,9 @@ var rename = require('gulp-rename');
 var tweetdeckProxy = require('./server/tweetdeck-proxy');
 
 function sassTask(dev) {
-  return gulp.src('www/static/css/*.scss')
-    .pipe(sass({
-      sourcemap: dev,
-      style: 'compressed'
-    }))
+  return gulp
+    .src('www/static/css/*.scss')
+    .pipe(sass({ sourcemap: dev, style: 'compressed' }))
     .pipe(gulp.dest('www/static/css/'));
 }
 
@@ -62,25 +60,25 @@ gulp.task('js-build', function() {
   });
 
   streams.push(
-    gulp.src('www/static/js/head.js').pipe(
-      rename('head-all.js')
-    ).pipe(buffer()).pipe(uglify()).pipe(
-      "www/static/js/"
-    )
+    gulp
+      .src('www/static/js/head.js')
+      .pipe(rename('head-all.js'))
+      .pipe(buffer())
+      .pipe(uglify())
+      .pipe('www/static/js/')
   );
 
   return merge(streams);
 });
 
 gulp.task('js-head', function() {
-  return gulp.src('www/static/js/head.js').pipe(
-    rename('head-all.js')
-  ).pipe(
-    gulp.dest("www/static/js/")
-  );
+  return gulp
+    .src('www/static/js/head.js')
+    .pipe(rename('head-all.js'))
+    .pipe(gulp.dest('www/static/js/'));
 });
 
-gulp.task('watch', ['sass', 'js-head'], function() {
+gulp.task('watch', ['sass-build', 'js-head'], function() {
   // sass
   gulp.watch('www/static/css/**/*.scss', ['sass']);
 
@@ -104,7 +102,8 @@ gulp.task('server', function() {
 });
 
 gulp.task('clean', function() {
-  gulp.src('build/*', {read: false})
+  gulp
+    .src('build/*', { read: false })
     .pipe(clean());
 });
 
