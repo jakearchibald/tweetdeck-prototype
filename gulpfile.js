@@ -49,48 +49,19 @@ function makeBundler(inSrc, func) {
   return func(inSrc).transform(hbsfy);
 }
 
-var browserifyJsMap = {
-  "./www/static/js/index.js": "www/static/build/js/all.js"
-};
-
-gulp.task('js-build', function() {
-  var streams = Object.keys(browserifyJsMap).map(function(inSrc) {
-    var bundler = makeBundler(inSrc, browserify);
-    return jsTask(bundler, browserifyJsMap[inSrc], false);
-  });
-
-  streams.push(
-    gulp
-      .src('www/static/js/head.js')
-      .pipe(rename('head-all.js'))
-      .pipe(buffer())
-      .pipe(uglify())
-      .pipe('www/static/js/')
-  );
-
-  return merge(streams);
+gulp.task('js', function() {
+  return browserify('./www/static/js/index.js')
+    .bundle()
+    .pipe(source('all.js'))
+    .pipe(gulp.dest('www/static/build/js/'));
 });
 
-gulp.task('js-head', function() {
-  return gulp
-    .src('www/static/js/head.js')
-    .pipe(rename('head-all.js'))
-    .pipe(gulp.dest('www/static/js/'));
-});
-
-gulp.task('watch', ['sass'], function() {
+gulp.task('watch', ['sass', 'js'], function() {
   // sass
   gulp.watch('www/static/css/**/*.scss', ['sass']);
 
   // js
-  Object.keys(browserifyJsMap).forEach(function(inSrc) {
-    var bundler = makeBundler(inSrc, watchify);
-    bundler.on('update', rebundle);
-    function rebundle() {
-      return jsTask(bundler, browserifyJsMap[inSrc], true);
-    }
-    rebundle();
-  });
+  gulp.watch('www/static/js/**/*.js', ['js']);
 
   // js-head
   // gulp.watch('www/static/js/head.js', ['js-head']);
@@ -105,20 +76,6 @@ gulp.task('clean', function() {
   gulp
     .src('build/*', { read: false })
     .pipe(clean());
-});
-
-gulp.task('build', ['clean', 'sass-build', 'js-build'], function() {
-  throw Error("Not set up yet");
-  var server = app.listen(3000);
-  var writeStream = gulp.dest('build/');
-
-  writeStream.on('end', server.close.bind(server));
-
-  return urlSrc('http://localhost:3000/app-name/', [
-    '',
-    'static/css/all.css',
-    'static/js/all.js'
-  ]).pipe(writeStream);
 });
 
 gulp.task('default', ['clean', 'watch', 'server']);

@@ -1,98 +1,167 @@
-/**
- * TweetDeck API
- */
+'use strict';
+
 var Promise = require('rsvp').Promise;
 var fetch = require('./fetch');
-var IndexedDouchebag = require('./indexeddouchebag');
+var utils = require('./utils');
 
-function basicAuthHeader(user, password) {
-  return 'x-td-basic ' + btoa(user + ':' + password);
+/**
+ * Private utils
+ */
+
+function basicAuthHeader(user, passhash) {
+  return 'x-td-basic ' + btoa(user + ':' + passhash);
 }
 
 function sessionHeader(token) {
   return 'X-TD-Session ' + token;
 }
 
-function Tweetdeck(origin) {
-  this.proxy = origin;
-  this.initialData = null;
-  if (IndexedDouchebag.supported) {
-    this.idb = new IndexedDouchebag('tweetdeck', 1, function(db, oldVersion) {
-      if (oldVersion < 1) {
-        db.createObjectStore('keyval');
-      }
-    });
-    this.authToken = this.idb.get('keyval', 'session').catch(function(){});
-  }
-  else {
-    this.authToken = Promise.resolve(localStorage.getItem('session') || "");
-  }
+/**
+ * TweetDeck API
+ */
+module.exports = TweetDeck;
+function TweetDeck(opts) {
+  utils.defaults(opts, {
+    proxy: '//localhost:1234'
+  });
+
+  this.proxy = opts.proxy;
 }
 
-var TweetdeckProto = Tweetdeck.prototype;
+var TD = TweetDeck.prototype;
 
-TweetdeckProto.authorizedRequest = function(path, opts) {
-  var tweetdeck = this;
+TD.authorizedRequest = function (user, path, opts) {
   opts = opts || {};
   opts.headers = opts.headers || {};
-
-  return this.authToken.then(function(authToken) {
-    if (!authToken) {
-      throw Error("NoSession");
-    }
-    opts.headers['Authorization'] = sessionHeader(authToken);
-    return fetch(tweetdeck.proxy + path, opts).then(function(data) {
-      if (data.error) {
-        throw Error(data.error);
-      }
-      return data;
-    });
-  });
+  opts.headers['Authorization'] = sessionHeader(user.session);
+  return fetch(this.proxy + path, opts);
 };
 
-TweetdeckProto.login = function(username, password) {
-  var thisTweetdeck = this;
+TD.proxiedRequest = function (account, url, opts) {
+  utils.defaults(opts, {
+    headers: {}
+  });
+  opts.headers['x-td-oauth-key'] = account.oauth.token;
+  opts.headers['x-td-oauth-secret'] = account.oauth.secret;
+  return fetch(this.proxy + '/oauth/proxy/twitter/' + encodeURIComponent(url), opts);
+};
 
+/**
+ * Login
+ */
+
+TD.login = function (username, password) {
   return fetch(this.proxy + '/login', {
     headers: {
       'Authorization': basicAuthHeader(username, password),
       'X-TD-Authtype': 'twitter'
-    },
-    type: 'json'
-  }).then(function(result) {
-    if (!result.session) {
-      throw Error("Login Failure");
-    }
-    thisTweetdeck.authToken = Promise.resolve(result.session);
-    if (thisTweetdeck.idb) {
-      thisTweetdeck.idb.put('keyval', 'session', result.session);
-    }
-    else {
-      localStorage.setItem('session', result.session);
     }
   });
 };
 
-TweetdeckProto.fetchInitialData = function(user) {
-  var thisTweetdeck = this;
-  // window.initialPrefetch is set in the head of the document
-  var initialPrefetch = window.initialPrefetch || Promise.reject();
+/**
+ * Data
+ */
 
-  return initialPrefetch.then(function(response) {
-    if (response.error) {
-      throw Error(response.error);
-    }
-    window.initialPrefetch = null;
-    return response;
-  }).catch(function() {
-    console.log('failed prefetch');
-    return thisTweetdeck.authorizedRequest('/clients/blackbird/all', {
-      type: 'json'
-    }).then(function(data) {
-      thisTweetdeck.initialData = data;
-      return data;
+TD.getRawEverything = function (user) {
+  return tweetdeck.authorizedRequest(user, '/clients/blackbird/all');
+};
+
+/**
+ * Accounts
+ */
+
+TD.getRawAccounts = function (user) {
+  return _tweetdeck.getRawEverything(user)
+    .then(function (tdData) {
+      return tdData.accounts;
     });
-  });
 };
 
-module.exports = Tweetdeck;
+TD.transformRawAccount = function (rawAccount) {
+  return {
+    name: rawAccount.name,
+    screenName: rawAccount.screen_name,
+    id: rawAccount.uid,
+    avatar: rawAccount.avatar,
+    default: rawAccount.default,
+    oauth: {
+      token: rawAccount.key,
+      secret: rawAccount.secret
+    }
+  };
+};
+
+TD.getAccounts = function (user) {
+  return _tweetdeck.getRawAccounts(user)
+    .then(function (accounts) {
+      return accounts.map(_tweetdeck.transformRawAccount);
+    });
+};
+
+/**
+ * Columns
+ */
+
+TD.getRawColumns = function (user) {
+  return _tweetdeck.getRawEverything(user)
+    .then(function (tdData) {
+      return tdData.columns;
+    });
+};
+
+TD.transformRawColumn = function (columnKey, rawColumn, feeds) {
+  return {
+    key: columnKey,
+    feeds: feeds,
+    settings: rawColumn.settings,
+    type: rawColumn.type
+  };
+};
+
+TD.getColumns = function (user) {
+  return Promise.all([_tweetdeck.getRawColumns(user), tweetdeck.getFeeds(user)])
+    .then(function (res) {
+      var columns = res[0];
+      var feeds = res[1];
+      return Object.keys(columns).map(function (columnKey) {
+        var rawColumn = columns[columnKey];
+        return _tweetdeck.transformRawColumn(
+          columnKey,
+          rawColumn,
+          feeds.filter(function (feed) {
+            return (rawColumn.feeds.indexOf(feed.key) > -1);
+          })
+        );
+      });
+    });
+};
+
+/**
+ * Feeds
+ */
+
+TD.getRawFeeds = function (user) {
+  return _tweetdeck.getRawEverything(user)
+    .then(function (tdData) {
+      return tdData.feeds;
+    });
+};
+
+TD.transformRawFeed = function (feedKey, rawFeed) {
+  return {
+    key: feedKey,
+    user: rawFeed.account.userid,
+    metadata: JSON.parse(rawFeed.metadata || '{}'),
+    type: rawFeed.type
+  };
+};
+
+TD.getFeeds = function (user) {
+  return _tweetdeck.getRawFeeds(user)
+    .then(function (feeds) {
+      return Object.keys(feeds).map(function (feedKey) {
+        return _tweetdeck.transformRawFeed(feedKey, feeds[feedKey]);
+      });
+    });
+};
