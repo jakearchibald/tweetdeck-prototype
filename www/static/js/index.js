@@ -43,12 +43,12 @@ tweetdeck.fetchInitialData().catch(function(err) {
     return tweetdeck.fetchInitialData();
   });
 }).then(function(initialData) {
-  var columns = initialData.columns;
-  var columnNames = Object.keys(columns).map(function(key) {
-    return columns[key].title;
+  var columnNames = initialData.client.columns.map(function(key) {
+    return initialData.columns[key].title;
   });
   var pre = document.createElement('pre');
   pre.appendChild(document.createTextNode("Your columns are:\n" + columnNames.join('\n')));
   document.body.appendChild(pre);
   console.log("Initial data", initialData);
 }).catch(utils.promiseDoneErr);
+
