@@ -13,13 +13,13 @@ app.use(function(req, res, next){
   next();
 });
 
-app.use('/app-name/static', express.static(__dirname + '/../www/static'));
+app.use('/tweetdeck-prototype/static', express.static(__dirname + '/../www/static'));
 
-app.get(RegExp('^/(app-name)?$'), function(req, res) {
-  res.redirect('/app-name/');
+app.get(RegExp('^/(tweetdeck-prototype)?$'), function(req, res) {
+  res.redirect('/tweetdeck-prototype/');
 });
 
-app.get('/app-name/', function(req, res) {
+app.get('/tweetdeck-prototype/', function(req, res) {
   res.render('../www/index.html');
 });
 

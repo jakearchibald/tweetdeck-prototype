@@ -1,8 +1,8 @@
 node_modules
-www/static/js/all.js
-www/static/js/head-all.js
 .sass-cache
-www/static/css/all.css
-www/static/css/all.css.map
-www/static/css/head.css
-www/static/css/head.css.map
+www/static/build/js/all.js
+www/static/build/js/head-all.js
+www/static/build/css/all.css
+www/static/build/css/all.css.map
+www/static/build/css/head.css
+www/static/build/css/head.css.map

@@ -18,7 +18,7 @@ function sassTask(dev) {
   return gulp
     .src('www/static/css/*.scss')
     .pipe(sass({ sourcemap: dev, style: 'compressed' }))
-    .pipe(gulp.dest('www/static/css/'));
+    .pipe(gulp.dest('www/static/build/css/'));
 }
 
 gulp.task('sass', function() {
@@ -50,7 +50,7 @@ function makeBundler(inSrc, func) {
 }
 
 var browserifyJsMap = {
-  "./www/static/js/index.js": "www/static/js/all.js"
+  "./www/static/js/index.js": "www/static/build/js/all.js"
 };
 
 gulp.task('js-build', function() {
@@ -78,7 +78,7 @@ gulp.task('js-head', function() {
     .pipe(gulp.dest('www/static/js/'));
 });
 
-gulp.task('watch', ['sass-build', 'js-head'], function() {
+gulp.task('watch', ['sass'], function() {
   // sass
   gulp.watch('www/static/css/**/*.scss', ['sass']);
 
@@ -93,7 +93,7 @@ gulp.task('watch', ['sass-build', 'js-head'], function() {
   });
 
   // js-head
-  gulp.watch('www/static/js/head.js', ['js-head']);
+  // gulp.watch('www/static/js/head.js', ['js-head']);
 });
 
 gulp.task('server', function() {
@@ -121,4 +121,4 @@ gulp.task('build', ['clean', 'sass-build', 'js-build'], function() {
   ]).pipe(writeStream);
 });
 
-gulp.task('default', ['watch', 'server']);
+gulp.task('default', ['clean', 'watch', 'server']);
