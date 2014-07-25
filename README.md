@@ -10,11 +10,11 @@ If you're taking a ticket on, make sure you announce it in the comments so other
 
 ## Getting set up
 
-Install [nodejs](http://nodejs.org/), [gulp](https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md#getting-started), then clone this repo & run:
+Install [Node](http://nodejs.org/), then clone this repo & run:
 
 ```sh
 $ npm install
 $ npm start
 ```
 
-You should be able to access the site at `localhost:3000`.
+You should be able to access the site at [localhost:3000](http://localhost:3000).
