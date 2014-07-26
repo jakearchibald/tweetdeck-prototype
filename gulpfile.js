@@ -14,6 +14,12 @@ var app = require('./server');
 var rename = require('gulp-rename');
 var tweetdeckProxy = require('./server/tweetdeck-proxy');
 
+function streamError(why) {
+  console.error(why);
+  // End the stream so that the task finished
+  this.end();
+}
+
 function sassTask(dev) {
   return gulp
     .src('www/static/css/*.scss')
@@ -52,6 +58,7 @@ function makeBundler(inSrc, func) {
 gulp.task('js', function() {
   return browserify('./www/static/js/index.js')
     .bundle()
+    .on('error', streamError)
     .pipe(source('all.js'))
     .pipe(gulp.dest('www/static/build/js/'));
 });

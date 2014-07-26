@@ -16,13 +16,21 @@ function sessionHeader(token) {
   return 'X-TD-Session ' + token;
 }
 
+function tryParseJSON(res) {
+  var data = res;
+  try {
+    data = JSON.parse(res);
+  } catch (e) {}
+  return data;
+}
+
 /**
  * TweetDeck API
  */
-module.exports = TweetDeck;
+module.exports = new TweetDeck();
 function TweetDeck(opts) {
-  utils.defaults(opts, {
-    proxy: '//localhost:1234'
+  opts = utils.defaults(opts, {
+    proxy: '//localhost:3001'
   });
 
   this.proxy = opts.proxy;
@@ -38,7 +46,7 @@ TD.authorizedRequest = function (user, path, opts) {
 };
 
 TD.proxiedRequest = function (account, url, opts) {
-  utils.defaults(opts, {
+  opts = utils.defaults(opts, {
     headers: {}
   });
   opts.headers['x-td-oauth-key'] = account.oauth.token;
@@ -56,7 +64,7 @@ TD.login = function (username, password) {
       'Authorization': basicAuthHeader(username, password),
       'X-TD-Authtype': 'twitter'
     }
-  });
+  }).then(tryParseJSON)
 };
 
 /**
@@ -64,7 +72,8 @@ TD.login = function (username, password) {
  */
 
 TD.getRawEverything = function (user) {
-  return tweetdeck.authorizedRequest(user, '/clients/blackbird/all');
+  return this.authorizedRequest(user, '/clients/blackbird/all')
+    .then(tryParseJSON);
 };
 
 /**
@@ -72,7 +81,7 @@ TD.getRawEverything = function (user) {
  */
 
 TD.getRawAccounts = function (user) {
-  return _tweetdeck.getRawEverything(user)
+  return this.getRawEverything(user)
     .then(function (tdData) {
       return tdData.accounts;
     });
@@ -93,10 +102,10 @@ TD.transformRawAccount = function (rawAccount) {
 };
 
 TD.getAccounts = function (user) {
-  return _tweetdeck.getRawAccounts(user)
+  return this.getRawAccounts(user)
     .then(function (accounts) {
-      return accounts.map(_tweetdeck.transformRawAccount);
-    });
+      return accounts.map(this.transformRawAccount);
+    }.bind(this));
 };
 
 /**
@@ -104,7 +113,7 @@ TD.getAccounts = function (user) {
  */
 
 TD.getRawColumns = function (user) {
-  return _tweetdeck.getRawEverything(user)
+  return this.getRawEverything(user)
     .then(function (tdData) {
       return tdData.columns;
     });
@@ -120,20 +129,20 @@ TD.transformRawColumn = function (columnKey, rawColumn, feeds) {
 };
 
 TD.getColumns = function (user) {
-  return Promise.all([_tweetdeck.getRawColumns(user), tweetdeck.getFeeds(user)])
+  return Promise.all([this.getRawColumns(user), tweetdeck.getFeeds(user)])
     .then(function (res) {
       var columns = res[0];
       var feeds = res[1];
       return Object.keys(columns).map(function (columnKey) {
         var rawColumn = columns[columnKey];
-        return _tweetdeck.transformRawColumn(
+        return this.transformRawColumn(
           columnKey,
           rawColumn,
           feeds.filter(function (feed) {
             return (rawColumn.feeds.indexOf(feed.key) > -1);
           })
         );
-      });
+      }, this);
     });
 };
 
@@ -142,7 +151,7 @@ TD.getColumns = function (user) {
  */
 
 TD.getRawFeeds = function (user) {
-  return _tweetdeck.getRawEverything(user)
+  return this.getRawEverything(user)
     .then(function (tdData) {
       return tdData.feeds;
     });
@@ -158,10 +167,10 @@ TD.transformRawFeed = function (feedKey, rawFeed) {
 };
 
 TD.getFeeds = function (user) {
-  return _tweetdeck.getRawFeeds(user)
+  return this.getRawFeeds(user)
     .then(function (feeds) {
       return Object.keys(feeds).map(function (feedKey) {
-        return _tweetdeck.transformRawFeed(feedKey, feeds[feedKey]);
-      });
+        return this.transformRawFeed(feedKey, feeds[feedKey]);
+      }, this);
     });
 };

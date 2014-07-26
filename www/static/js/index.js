@@ -1,18 +1,9 @@
-var Tweetdeck = require('./lib/tweetdeck');
-var Promise = require('rsvp').Promise;
-var mediator = require('./mediator');
+var RSVP = require('rsvp');
+var Promise = RSVP.Promise;
 var utils = require('./lib/utils');
 
-/**
- * Data
- */
-
-var tweetdeck = new Tweetdeck({
-  proxy: '//localhost:3001'
-});
-
-mediator.subscribe('ui:login:attempt', function (data) {
-  console.log('ui:login:attempt', data);
+RSVP.on('error', function (why) {
+  console.error(why.stack)
 });
 
 /**
@@ -22,17 +13,36 @@ mediator.subscribe('ui:login:attempt', function (data) {
 var React = require('react');
 var DOM = React.DOM;
 var LoginView = require('./component/login');
+var AppView = require('./component/app');
+
 
 // UI setup
 React.initializeTouchEvents(true);
 
 // Root View
-var AppView = React.createClass({
+var RootView = React.createClass({
+  getInitialState: function () {
+    return {
+      session: {}
+    };
+  },
+
+  loginDidSucceed: function (user) {
+    this.setState({
+      session: {
+        user: user
+      }
+    });
+  },
+
   render: function () {
     return (
-      LoginView({})
+      (this.state.session.user ?
+        AppView({ user: this.state.session.user }) :
+        LoginView({ onLoginSuccess: this.loginDidSucceed })
+      )
     );
   }
 });
 
-React.renderComponent(AppView({}), document.querySelector('#app'));
+React.renderComponent(RootView({}), document.querySelector('#app'));
