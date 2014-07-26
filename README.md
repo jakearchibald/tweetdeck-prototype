@@ -17,4 +17,4 @@ $ npm install
 $ npm start
 ```
 
-You should be able to access the site at [localhost:3000](http://localhost:3000).
+You should be able to access the site at [localhost:3000](http://localhost:3000). API requests to TweetDeck are handled via proxy which runs on [localhost:3001](http://localhost:3001).
