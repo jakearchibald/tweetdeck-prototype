@@ -34,6 +34,13 @@ function TweetDeck(opts) {
   });
 
   this.proxy = opts.proxy;
+  this._doneInitialFetch;
+  this._resolveInitialFetch;
+  this._rejectInitialFetch;
+  this.pIntialFetch = new Promise(function (resolve, reject) {
+    this._resolveInitialFetch = resolve;
+    this._rejectInitialFetch = reject;
+  }.bind(this));
 }
 
 var TD = TweetDeck.prototype;
@@ -71,6 +78,18 @@ TD.login = function (username, password) {
  * Data
  */
 
+TD.initialFetch = function (user /*, force? */) {
+  if (!this._doneInitialFetch) {
+    this._doneInitialFetch = true;
+    this.getRawEverything(user)
+      .then(
+        this._resolveInitialFetch.bind(this),
+        this._rejectInitialFetch.bind(this)
+      );
+  }
+  return this.pIntialFetch;
+};
+
 TD.getRawEverything = function (user) {
   return this.authorizedRequest(user, '/clients/blackbird/all')
     .then(tryParseJSON);
@@ -81,7 +100,7 @@ TD.getRawEverything = function (user) {
  */
 
 TD.getRawAccounts = function (user) {
-  return this.getRawEverything(user)
+  return this.initialFetch(user)
     .then(function (tdData) {
       return tdData.accounts;
     });
@@ -113,7 +132,7 @@ TD.getAccounts = function (user) {
  */
 
 TD.getRawColumns = function (user) {
-  return this.getRawEverything(user)
+  return this.initialFetch(user)
     .then(function (tdData) {
       return tdData.columns;
     });
@@ -129,7 +148,7 @@ TD.transformRawColumn = function (columnKey, rawColumn, feeds) {
 };
 
 TD.getColumns = function (user) {
-  return Promise.all([this.getRawColumns(user), tweetdeck.getFeeds(user)])
+  return Promise.all([this.getRawColumns(user), this.getFeeds(user)])
     .then(function (res) {
       var columns = res[0];
       var feeds = res[1];
@@ -143,7 +162,7 @@ TD.getColumns = function (user) {
           })
         );
       }, this);
-    });
+    }.bind(this));
 };
 
 /**
@@ -151,7 +170,7 @@ TD.getColumns = function (user) {
  */
 
 TD.getRawFeeds = function (user) {
-  return this.getRawEverything(user)
+  return this.initialFetch(user)
     .then(function (tdData) {
       return tdData.feeds;
     });
@@ -172,5 +191,5 @@ TD.getFeeds = function (user) {
       return Object.keys(feeds).map(function (feedKey) {
         return this.transformRawFeed(feedKey, feeds[feedKey]);
       }, this);
-    });
+    }.bind(this));
 };

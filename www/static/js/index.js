@@ -23,11 +23,12 @@ React.initializeTouchEvents(true);
 var RootView = React.createClass({
   getInitialState: function () {
     return {
-      session: {}
+      session: JSON.parse(localStorage['tweetdeck:session'] || '{}')
     };
   },
 
   loginDidSucceed: function (user) {
+    localStorage['tweetdeck:session'] = JSON.stringify({ user: user });
     this.setState({
       session: {
         user: user

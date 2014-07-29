@@ -45,7 +45,7 @@ module.exports = React.createClass({
         this.props.onLoginSuccess(res);
       }.bind(this))
       .catch(function (why) {
-        console.err(why.stack);
+        console.error(why.stack);
       });
   },
 

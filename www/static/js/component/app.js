@@ -10,7 +10,8 @@ module.exports = React.createClass({
 
   getInitialState: function () {
     return {
-      accounts: []
+      accounts: [],
+      columns: []
     };
   },
 
@@ -21,15 +22,24 @@ module.exports = React.createClass({
           accounts: accounts
         });
       }.bind(this));
+    tweetdeck.getColumns(this.props.user)
+      .then(function (columns) {
+        console.log('columns', columns);
+        this.setState({
+          columns: columns
+        });
+      }.bind(this));
   },
 
   render: function () {
     return (
       DOM.ul({},
-        this.state.accounts.map(function (account) {
-          return DOM.li({
-            key: account.id
-          }, account.screenName);
+        this.state.columns.map(function (column) {
+          return DOM.li({ key: column.key },
+            column.feeds.map(function (feed) {
+              return feed.type;
+            }).join(', ')
+          );
         })
       )
     );
