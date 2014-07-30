@@ -1,0 +1,20 @@
+.media {
+  overflow: hidden;
+}
+.media__img {
+  float:left;
+  margin-right: 0.667em;
+}
+.media__img--rev {
+  float: right;
+  margin-left: 0.667em;
+}
+.media__body {
+  overflow: hidden;
+}
+
+.fake-img {
+  width: 30px;
+  height: 30px;
+  background: #e1e8ed;
+}

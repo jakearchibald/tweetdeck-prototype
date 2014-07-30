@@ -27,20 +27,13 @@ function tryParseJSON(res) {
 /**
  * TweetDeck API
  */
-module.exports = new TweetDeck();
 function TweetDeck(opts) {
   opts = utils.defaults(opts, {
     proxy: '//localhost:3001'
   });
 
   this.proxy = opts.proxy;
-  this._doneInitialFetch;
-  this._resolveInitialFetch;
-  this._rejectInitialFetch;
-  this.pIntialFetch = new Promise(function (resolve, reject) {
-    this._resolveInitialFetch = resolve;
-    this._rejectInitialFetch = reject;
-  }.bind(this));
+  this._pIntialFetch = this.resetInitialFetch();
 }
 
 var TD = TweetDeck.prototype;
@@ -79,20 +72,58 @@ TD.login = function (username, password) {
  */
 
 TD.initialFetch = function (user /*, force? */) {
-  if (!this._doneInitialFetch) {
-    this._doneInitialFetch = true;
+  return this.getInitialFetchForUser(user);
+};
+
+TD.getRawEverything = function (user) {
+  return this.authorizedRequest(user, '/clients/blackbird/all')
+    .then(tryParseJSON);
+};
+
+TD.getInitialFetchForUser = function (user) {
+  if (this._initialFetchUser !== user) {
+    this._pIntialFetch = this.resetInitialFetch();
+    this._initialFetchUser = user;
     this.getRawEverything(user)
       .then(
         this._resolveInitialFetch.bind(this),
         this._rejectInitialFetch.bind(this)
       );
   }
-  return this.pIntialFetch;
+  return this._pIntialFetch;
 };
 
-TD.getRawEverything = function (user) {
-  return this.authorizedRequest(user, '/clients/blackbird/all')
-    .then(tryParseJSON);
+TD.resetInitialFetch = function () {
+  delete this._resolveInitialFetch;
+  delete this._rejectInitialFetch;
+  return new Promise(function (resolve, reject) {
+    this._resolveInitialFetch = resolve;
+    this._rejectInitialFetch = reject;
+  }.bind(this));
+};
+
+/**
+ * Metadata
+ */
+
+TD.getRawMetadata = function (user) {
+  return this.initialFetch(user)
+    .then(function (tdData) {
+      return tdData.client;
+    });
+};
+
+TD.transformRawMetadata = function (rawMetadata) {
+  return {
+    columnOrder: rawMetadata.columns,
+    defaultAccount: rawMetadata.default_account.replace('twitter:', ''),
+    recentSearches: rawMetadata.recent_searches,
+  }
+};
+
+TD.getMetadata = function (user) {
+  return this.getRawMetadata(user)
+    .then(this.transformRawMetadata.bind(this));
 };
 
 /**
@@ -193,3 +224,5 @@ TD.getFeeds = function (user) {
       }, this);
     }.bind(this));
 };
+
+module.exports = new TweetDeck();

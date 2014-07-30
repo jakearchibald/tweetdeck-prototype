@@ -1,5 +1,15 @@
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
+}
+
+body {
+  font: 14px/1.4 sans-serif;
+  color: #292f33;
 }

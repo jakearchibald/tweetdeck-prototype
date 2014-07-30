@@ -1,12 +1,23 @@
-// header
-  .title {
-    position: relative;
-    background: #55acee;
-    padding: 14px 17px;
+/**
+ * Header
+ */
 
-    & .logo {
-      display: block;
-      height: 24px;
-      width: 24px;
-    }
+.title {
+  position: relative;
+  background: #55acee;
+  padding: 14px 17px;
+
+  & .logo {
+    display: block;
+    height: 24px;
+    width: 24px;
   }
+}
+
+/**
+ * Tweet
+ */
+
+.tweet {
+  padding: 0.667em 1em;
+}
