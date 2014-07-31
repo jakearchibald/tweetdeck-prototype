@@ -1,7 +1,6 @@
 var gulp = require('gulp');
 var sass = require('gulp-ruby-sass');
 var uglify = require('gulp-uglify');
-var clean = require('gulp-clean');
 var buffer = require('gulp-buffer');
 var source = require('vinyl-source-stream');
 var watchify = require('watchify');
@@ -13,6 +12,7 @@ var path = require('path');
 var app = require('./server');
 var rename = require('gulp-rename');
 var tweetdeckProxy = require('./server/tweetdeck-proxy');
+var rimraf = require('gulp-rimraf');
 
 function streamError(why) {
   console.error(why);
@@ -82,7 +82,7 @@ gulp.task('server', function() {
 gulp.task('clean', function() {
   gulp
     .src('build/*', { read: false })
-    .pipe(clean());
+    .pipe(rimraf());
 });
 
 gulp.task('default', ['clean', 'watch', 'server']);
