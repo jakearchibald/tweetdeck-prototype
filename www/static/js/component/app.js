@@ -1,14 +1,47 @@
 var tweetdeck = require('../lib/tweetdeck');
 var utils = require('../lib/utils');
+var Swiper = require('../lib/swiper');
 
 var React = require('react');
 var DOM = React.DOM;
 
 var Columns = React.createClass({
+  getInitialState: function () {
+    return {
+      columnSwiping: false
+    };
+  },
+  componentDidMount: function () {
+    var swiper = new Swiper(this.refs.columns.getDOMNode());
+
+    var largeWidth = window.matchMedia("(min-width: 500px)");
+    var handleWidthChange = function () {
+      this.setState({
+        columnSwiping: !largeWidth.matches
+      });
+
+      if (largeWidth.matches) {
+        swiper.stop();
+      }
+      else {
+        swiper.start();
+      }
+    }.bind(this);
+
+    largeWidth.addListener(handleWidthChange);
+    handleWidthChange();
+  },
   render: function () {
+    var swipingClass = '';
+    if (this.state.columnSwiping) {
+      swipingClass = 'swiping';
+    }
+
     return (
-      DOM.div({ className: 'columns' },
-        this.props.columns.map(Column)
+      DOM.div({ className: 'columns ' + swipingClass, ref: 'columns' },
+        DOM.div({ className: 'column-panner' },
+          this.props.columns.map(Column)
+        )
       )
     );
   }

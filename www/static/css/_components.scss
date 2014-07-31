@@ -38,8 +38,10 @@
 .columns {
   height: 100%;
   @include flex(1);
+  @include flex-flow(column);
   @include display-flex;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
   background: #ddd;
 
   @media (min-width: 500px) {
@@ -51,10 +53,15 @@
   }
 }
 
+.column-panner {
+  @include display-flex;
+}
+
 .column {
   background: #fff;
   min-width: 100%;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   @media (min-width: 500px) {
     min-width: 300px;
