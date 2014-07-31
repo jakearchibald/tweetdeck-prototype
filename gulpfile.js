@@ -1,16 +1,9 @@
 var gulp = require('gulp');
 var sass = require('gulp-ruby-sass');
-var uglify = require('gulp-uglify');
-var buffer = require('gulp-buffer');
 var source = require('vinyl-source-stream');
 var watchify = require('watchify');
-var hbsfy = require('hbsfy');
 var browserify = require('browserify');
-var urlSrc = require('./url-src');
-var merge = require('merge-stream');
-var path = require('path');
 var app = require('./server');
-var rename = require('gulp-rename');
 var tweetdeckProxy = require('./server/tweetdeck-proxy');
 var rimraf = require('gulp-rimraf');
 
@@ -34,26 +27,6 @@ gulp.task('sass', function() {
 gulp.task('sass-build', function() {
   return sassTask(false);
 });
-
-function jsTask(bundler, out, dev) {
-  var stream = bundler.bundle({
-    debug: dev
-  }).pipe(
-    source(path.basename(out))
-  );
-
-  if (!dev) {
-    stream = stream.pipe(buffer()).pipe(uglify());
-  }
-
-  return stream.pipe(
-    gulp.dest(path.dirname(out))
-  );
-}
-
-function makeBundler(inSrc, func) {
-  return func(inSrc).transform(hbsfy);
-}
 
 gulp.task('js', function() {
   return browserify('./www/static/js/index.js')
