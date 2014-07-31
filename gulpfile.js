@@ -28,20 +28,23 @@ gulp.task('sass-build', function() {
   return sassTask(false);
 });
 
-gulp.task('js', function() {
-  return browserify('./www/static/js/index.js')
-    .bundle()
-    .on('error', streamError)
-    .pipe(source('all.js'))
-    .pipe(gulp.dest('www/static/build/js/'));
-});
-
-gulp.task('watch', ['sass', 'js'], function() {
+gulp.task('watch', ['sass'], function() {
   // sass
   gulp.watch('www/static/css/**/*.scss', ['sass']);
 
   // js
-  gulp.watch('www/static/js/**/*.js', ['js']);
+  var bundler = watchify(browserify('./www/static/js/index.js', watchify.args));
+  bundler.on('update', rebundle);
+
+  function rebundle () {
+    return bundler.bundle()
+      // log errors if they happen
+      .on('error', streamError)
+      .pipe(source('all.js'))
+      .pipe(gulp.dest('www/static/build/js/'));
+  }
+
+  rebundle();
 
   // js-head
   // gulp.watch('www/static/js/head.js', ['js-head']);
