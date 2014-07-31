@@ -1,9 +1,10 @@
 var RSVP = require('rsvp');
 var Promise = RSVP.Promise;
 var utils = require('./lib/utils');
+var tweetdeckDb = require('./lib/tweetdeckdb');
 
 RSVP.on('error', function (why) {
-  console.error(why.stack)
+  console.error(why.stack);
 });
 
 /**
@@ -15,7 +16,6 @@ var DOM = React.DOM;
 var LoginView = require('./component/login');
 var AppView = require('./component/app');
 
-
 // UI setup
 React.initializeTouchEvents(true);
 
@@ -23,26 +23,37 @@ React.initializeTouchEvents(true);
 var RootView = React.createClass({
   getInitialState: function () {
     return {
-      session: JSON.parse(localStorage['tweetdeck:session'] || '{}')
+      initialDataFetched: false,
+      user: ""
     };
   },
 
-  loginDidSucceed: function (user) {
-    localStorage['tweetdeck:session'] = JSON.stringify({ user: user });
-    this.setState({
-      session: {
+  componentDidMount: function () {
+    tweetdeckDb.getUser().then(function(user) {
+      this.setState({
+        initialDataFetched: true,
         user: user
-      }
+      });
+    }.bind(this));
+  },
+
+  loginDidSucceed: function (user) {
+    tweetdeckDb.setUser(user);
+    this.setState({
+      user: user
     });
   },
 
   render: function () {
-    return (
-      (this.state.session.user ?
-        AppView({ user: this.state.session.user }) :
-        LoginView({ onLoginSuccess: this.loginDidSucceed })
-      )
-    );
+    if (!this.state.initialDataFetched) {
+      return null;
+    }
+    if (this.state.user) {
+      return AppView({ user: this.state.user });
+    }
+    else {
+      return LoginView({ onLoginSuccess: this.loginDidSucceed });
+    }
   }
 });
 

@@ -17,7 +17,7 @@ module.exports = React.createClass({
   getDefaultProps: function () {
     return {
       onLoginSuccess: function () {}
-    }
+    };
   },
 
   getInitialState: function () {
@@ -50,31 +50,31 @@ module.exports = React.createClass({
   },
 
   render: function () {
-    return (
-      (this.state.inProgress ?
-        DOM.img({ src: 'static/imgs/spinner.gif' }) :
-        DOM.form({ className: 'login-form', method: 'POST', onSubmit: this.onSubmit },
-          FieldGroup({},
-            DOM.input({
-              type: 'text',
-              name: 'username',
-              ref: 'username',
-              required: true,
-              placeholder: 'Username or email'
-            })
-          ),
-          FieldGroup({},
-            DOM.input({
-              type: 'password',
-              name: 'password',
-              ref: 'password',
-              required: true,
-              placeholder: 'Password'
-            }),
-            DOM.button({ type: 'submit' }, 'Sign in')
-          )
+    if (this.state.inProgress) {
+      return DOM.img({ src: 'static/imgs/spinner.gif' });
+    }
+    else {
+      return DOM.form({ className: 'login-form', method: 'POST', onSubmit: this.onSubmit },
+        FieldGroup({},
+          DOM.input({
+            type: 'text',
+            name: 'username',
+            ref: 'username',
+            required: true,
+            placeholder: 'Username or email'
+          })
+        ),
+        FieldGroup({},
+          DOM.input({
+            type: 'password',
+            name: 'password',
+            ref: 'password',
+            required: true,
+            placeholder: 'Password'
+          }),
+          DOM.button({ type: 'submit' }, 'Sign in')
         )
-      )
-    );
+      );
+    }
   }
 });
