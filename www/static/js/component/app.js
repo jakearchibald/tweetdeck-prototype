@@ -4,6 +4,16 @@ var utils = require('../lib/utils');
 var React = require('react');
 var DOM = React.DOM;
 
+var Columns = React.createClass({
+  render: function () {
+    return (
+      DOM.div({ className: 'columns' },
+        this.props.columns.map(Column)
+      )
+    );
+  }
+});
+
 var Column = React.createClass({
   render: function () {
     return (
@@ -60,9 +70,7 @@ module.exports = React.createClass({
 
   render: function () {
     return (
-      DOM.div({},
-        this.state.columns.map(Column)
-      )
+      Columns({ columns: this.state.columns })
     );
   }
 });

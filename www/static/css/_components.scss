@@ -1,4 +1,21 @@
 /**
+ * Page layout
+ */
+
+.page {
+  @include display-flex;
+  @include flex-flow(column);
+  height: 100%;
+  overflow: hidden;
+}
+
+.app {
+  @include display-flex;
+  @include flex-flow(column);
+  @include flex(1);
+}
+
+/**
  * Header
  */
 
@@ -15,9 +32,69 @@
 }
 
 /**
+ * Columns
+ */
+
+.columns {
+  height: 100%;
+  @include flex(1);
+  @include display-flex;
+  overflow: auto;
+  background: #ddd;
+
+  @media (min-width: 500px) {
+    // triggering gap at the end of scroll - there must be a better way than this
+    &::after {
+      content: '';
+      min-width: 1px;
+    }
+  }
+}
+
+.column {
+  background: #fff;
+  min-width: 100%;
+  overflow: auto;
+
+  @media (min-width: 500px) {
+    min-width: 300px;
+    margin: 20px 20px 20px 0;
+    &:first-child {
+      margin-left: 20px;
+    }
+  }
+}
+
+
+/** 
+ * Media
+ */
+
+.media {
+  overflow: hidden;
+}
+.media__img {
+  float: left;
+  margin-right: 0.667em;
+}
+.media__img--rev {
+  float: right;
+  margin-left: 0.667em;
+}
+.media__body {
+  overflow: hidden;
+}
+
+/**
  * Tweet
  */
 
 .tweet {
   padding: 0.667em 1em;
+}
+
+.fake-img {
+  width: 30px;
+  height: 30px;
+  background: #e1e8ed;
 }

@@ -57,4 +57,4 @@ var RootView = React.createClass({
   }
 });
 
-React.renderComponent(RootView({}), document.querySelector('#app'));
+React.renderComponent(RootView({}), document.querySelector('.app'));
