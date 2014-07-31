@@ -16,14 +16,6 @@ function sessionHeader(token) {
   return 'X-TD-Session ' + token;
 }
 
-function tryParseJSON(res) {
-  var data = res;
-  try {
-    data = JSON.parse(res);
-  } catch (e) {}
-  return data;
-}
-
 /**
  * TweetDeck API
  */
@@ -63,8 +55,9 @@ TD.login = function (username, password) {
     headers: {
       'Authorization': basicAuthHeader(username, password),
       'X-TD-Authtype': 'twitter'
-    }
-  }).then(tryParseJSON)
+    },
+    type: 'json'
+  });
 };
 
 /**
@@ -76,8 +69,9 @@ TD.initialFetch = function (user /*, force? */) {
 };
 
 TD.getRawEverything = function (user) {
-  return this.authorizedRequest(user, '/clients/blackbird/all')
-    .then(tryParseJSON);
+  return this.authorizedRequest(user, '/clients/blackbird/all', {
+    type: 'json'
+  });
 };
 
 TD.getInitialFetchForUser = function (user) {
