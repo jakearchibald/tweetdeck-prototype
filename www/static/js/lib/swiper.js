@@ -10,8 +10,7 @@ function Swiper(containerEl) {
   this._pannerX = 0;
   this._pannerStartX = 0;
   this._activeColumn = 0;
-  this._touchXLog = null;
-
+  this._touchEventLog = null;
 
   var firstTouchMove = true;
 
@@ -24,7 +23,7 @@ function Swiper(containerEl) {
     this._columnWidth = this._el.offsetWidth;
     this._scrollWidth = this._pannerEl.scrollWidth;
 
-    this._touchXLog = [];
+    this._touchEventLog = [];
     firstTouchMove = true;
     this._touchStartX = event.touches[0].clientX;
     this._touchStartY = event.touches[0].clientY;
@@ -38,17 +37,15 @@ function Swiper(containerEl) {
       return;
     }
 
-    var differenceTotal = this._touchXLog.slice(1).reduce(function(total, x, i, arr) {
-      return total + x - this._touchXLog[i];
-    }.bind(this), 0);
-
-    var averageDifference = differenceTotal / this._touchXLog.length;
+    var previousX = this._touchEventLog[0].touches[0].clientX;
+    var finalX = this._touchEventLog.slice(-1)[0].touches[0].clientX;
+    var vel = (finalX - previousX) / (event.timeStamp - this._touchEventLog[0].timeStamp);
     var columnCount = this._scrollWidth / this._columnWidth;
-    console.log(averageDifference);
-    if (averageDifference < -25 && this._activeColumn != columnCount - 1) { // 25 appears to be the magic number
+
+    if (vel < -1.5 && this._activeColumn != columnCount - 1) { // 1.5 appears to be the magic number
       this.goToColumn(this._activeColumn + 1);
     }
-    else if (averageDifference > 25 && this._activeColumn !== 0) {
+    else if (vel > 1.5 && this._activeColumn !== 0) {
       this.goToColumn(this._activeColumn - 1);
     }
     else {
@@ -64,10 +61,10 @@ function Swiper(containerEl) {
       return;
     }
 
-    if (this._touchXLog.length == 10) {
-      this._touchXLog.shift();
+    if (this._touchEventLog.length == 10) {
+      this._touchEventLog.shift();
     }
-    this._touchXLog.push(event.touches[0].clientX);
+    this._touchEventLog.push(event);
 
     if (firstTouchMove) {
       firstTouchMove = false;
