@@ -51,8 +51,8 @@ gulp.task('watch', ['sass'], function() {
 });
 
 gulp.task('server', function() {
-  app.listen(3000);
-  tweetdeckProxy.listen(3001);
+  app.listen(8000);
+  tweetdeckProxy.listen(8001);
 });
 
 gulp.task('clean', function() {

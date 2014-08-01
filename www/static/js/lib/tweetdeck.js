@@ -21,7 +21,7 @@ function sessionHeader(token) {
  */
 function TweetDeck(opts) {
   opts = utils.defaults(opts, {
-    proxy: '//localhost:3001'
+    proxy: '//localhost:8001'
   });
 
   this.proxy = opts.proxy;
