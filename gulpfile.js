@@ -6,6 +6,8 @@ var browserify = require('browserify');
 var app = require('./server');
 var tweetdeckProxy = require('./server/tweetdeck-proxy');
 var rimraf = require('gulp-rimraf');
+var uglify = require('gulp-uglify');
+var buffer = require('gulp-buffer');
 
 function streamError(why) {
   console.error(why);
@@ -41,6 +43,8 @@ gulp.task('watch', ['sass'], function() {
       // log errors if they happen
       .on('error', streamError)
       .pipe(source('all.js'))
+      .pipe(buffer())
+      .pipe(uglify())
       .pipe(gulp.dest('www/static/build/js/'));
   }
 
