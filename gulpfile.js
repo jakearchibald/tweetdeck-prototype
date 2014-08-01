@@ -3,6 +3,7 @@ var sass = require('gulp-ruby-sass');
 var source = require('vinyl-source-stream');
 var watchify = require('watchify');
 var browserify = require('browserify');
+var hbsfy = require("hbsfy")
 var app = require('./server');
 var tweetdeckProxy = require('./server/tweetdeck-proxy');
 var rimraf = require('gulp-rimraf');
@@ -36,6 +37,8 @@ gulp.task('watch', ['sass'], function() {
 
   // js
   var bundler = watchify(browserify('./www/static/js/index.js', watchify.args));
+
+  bundler.transform(hbsfy);
   bundler.on('update', rebundle);
 
   function rebundle () {

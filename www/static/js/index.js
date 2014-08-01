@@ -2,6 +2,7 @@ var RSVP = require('rsvp');
 var Promise = RSVP.Promise;
 var utils = require('./lib/utils');
 var tweetdeckDb = require('./lib/tweetdeckdb');
+var Component = require('./lib/component');
 
 RSVP.on('error', function (why) {
   console.error(why.stack);
@@ -11,50 +12,68 @@ RSVP.on('error', function (why) {
  * UI
  */
 
-var React = require('react');
-var DOM = React.DOM;
 var LoginView = require('./component/login');
 var AppView = require('./component/app');
 
-// UI setup
-React.initializeTouchEvents(true);
+function RootView(container) {
+  Component.call(this);
+  this.state = {
+    initialDataFetched: false,
+    user: null
+  };
 
-// Root View
-var RootView = React.createClass({
-  getInitialState: function () {
-    return {
-      initialDataFetched: false,
-      user: ""
-    };
-  },
+  this._container = container;
+  this._loginView = null;
+  this._appView = null;
 
-  componentDidMount: function () {
-    tweetdeckDb.getUser().then(function(user) {
-      this.setState({
-        initialDataFetched: true,
-        user: user
-      });
-    }.bind(this));
-  },
-
-  loginDidSucceed: function (user) {
-    tweetdeckDb.setUser(user);
+  tweetdeckDb.getUser().then(function(user) {
     this.setState({
+      initialDataFetched: true,
       user: user
     });
-  },
+  }.bind(this));
+}
 
-  render: function () {
-    if (!this.state.initialDataFetched) {
-      return null;
-    }
-    if (this.state.user) {
-      return AppView({ user: this.state.user });
-    }
-    else {
-      return LoginView({ onLoginSuccess: this.loginDidSucceed });
-    }
+var RootViewProto = RootView.prototype = Object.create(Component.prototype);
+
+RootViewProto._loginDidSucceed = function(user) {
+  tweetdeckDb.setUser(user);
+  this.setState({
+    user: user
+  });
+};
+
+RootViewProto._render = function(changed) {
+  if (!this.state.initialDataFetched) {
+    return;
   }
-});
 
-React.renderComponent(RootView({}), document.querySelector('.app'));
+  changed.forEach(function(changedState) {
+    switch (changedState) {
+      case "initialDataFetched":
+      case "user":
+        if (this.state.user) {
+          if (this._loginView) {
+            this._loginView.hide();
+          }
+          if (!this._appView) {
+            this._appView = new AppView(this._container, this.state.user);
+          }
+        }
+        else {
+          if (!this._loginView) {
+            this._loginView = new LoginView();
+            this._loginView.on('loginSuccess', function(user) {
+              this.loginDidSucceed(user);
+            }.bind(this));
+            document.body.appendChild(this._loginView.el);
+          }
+        }
+        break;
+    }
+  }.bind(this));
+};
+
+utils.domReady.then(function() {
+  var rootView = new RootView(document.querySelector('.app'));
+});
