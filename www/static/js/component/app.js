@@ -97,7 +97,6 @@ ColumnProto._render = function(changed) {
           var tweet = new Tweet(tweetData.key, tweetData);
           this.el.appendChild(tweet.el);
         }.bind(this));
-        console.timeEnd('toTweets');
         break;
     }
   }.bind(this));
