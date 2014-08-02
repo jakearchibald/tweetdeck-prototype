@@ -30,7 +30,6 @@ function Swiper(containerEl) {
     this._scrollWidth = this._pannerEl.scrollWidth;
     this._minX = -(this._scrollWidth - this._columnWidth);
 
-    this._touchEventLog = [];
     firstTouchMove = true;
     this._touchStartX = event.touches[0].clientX;
     this._touchStartY = event.touches[0].clientY;
@@ -43,18 +42,31 @@ function Swiper(containerEl) {
       return;
     }
 
+    // get the x position from (up to) 10 moves ago
     var previousX = this._touchEventLog[0].touches[0].clientX;
     var finalX = this._touchEventLog.slice(-1)[0].touches[0].clientX;
+    // calculate the velocity
     var vel = (finalX - previousX) / (event.timeStamp - this._touchEventLog[0].timeStamp);
     var columnCount = this._scrollWidth / this._columnWidth;
     var velocityRequired = 1.0; // appears to be the magic number
 
-    if (vel < -velocityRequired && this._activeColumn != columnCount - 1) {
+    // past the half way point to next column?
+    if (finalX < previousX && this._pannerX < -(this._columnWidth * this._activeColumn) - this._columnWidth / 2) {
       this.goToColumn(this._activeColumn + 1);
     }
+    // past the half way point to previous column?
+    else if (finalX > previousX && this._pannerX > -(this._columnWidth * this._activeColumn) + this._columnWidth / 2) {
+      this.goToColumn(this._activeColumn - 1);
+    }
+    // enough velocity to go to next column?
+    else if (vel < -velocityRequired && this._activeColumn != columnCount - 1) {
+      this.goToColumn(this._activeColumn + 1);
+    }
+    // enough velocity to go to previous column?
     else if (vel > velocityRequired && this._activeColumn !== 0) {
       this.goToColumn(this._activeColumn - 1);
     }
+    // return to this column position
     else {
       this.goToColumn(this._activeColumn);
     }
@@ -67,11 +79,6 @@ function Swiper(containerEl) {
     if (event.touches.length > 1) {
       return;
     }
-
-    if (this._touchEventLog.length == 10) {
-      this._touchEventLog.shift();
-    }
-    this._touchEventLog.push(event);
 
     if (firstTouchMove) {
       firstTouchMove = false;
@@ -96,7 +103,9 @@ SwiperProto.start = function() {
 
 SwiperProto.stop = function() {
   this._el.style.overflowX = 'auto';
-  setTransform(this._pannerEl, '');
+  this.goToColumn(0, {
+    duration: 0
+  });
   this._el.removeEventListener('touchstart', this._onTouchStart);
   this._el.removeEventListener('touchend', this._onTouchEnd);
 };
@@ -104,9 +113,14 @@ SwiperProto.stop = function() {
 SwiperProto._onFirstTouchMove = function(event) {
   var deltaX = event.touches[0].clientX - this._touchStartX;
   var deltaY = event.touches[0].clientY - this._touchStartY;
+
+  // decide whether this is enough of a horizontal move to justify takeover
+  // 3 seems to be the magic number
   var takeOver = (deltaY === 0) || (Math.abs(deltaX / deltaY) > 3);
 
   if (takeOver) {
+    // we're going to keep a log of the last 10 move events
+    this._touchEventLog = [];
     this._killCurrentAnim();
     this._capturing = true;
     this._pannerStartX = this._pannerX;
@@ -118,7 +132,15 @@ SwiperProto._onFirstTouchMove = function(event) {
 };
 
 SwiperProto._onCapturedTouchMove = function(event) {
+  // keep a log of 10
+  if (this._touchEventLog.length == 10) {
+    this._touchEventLog.shift();
+  }
+  this._touchEventLog.push(event);
+
   var deltaX = event.touches[0].clientX - this._touchStartX;
+
+  // keep within start & end bounds
   this._pannerX = Math.max(
     Math.min(this._pannerStartX + deltaX, 0),
     this._minX
@@ -153,15 +175,15 @@ SwiperProto._updatePosition = function() {
 
 SwiperProto.goToColumn = function(num, opts) {
   opts = utils.defaults(opts, {
-    animate: true
+    duration: 0.2
   });
   this._killCurrentAnim();
   this._activeColumn = num;
   var from = this._pannerX;
   var to = -(num * this._columnWidth);
 
-  if (opts.animate) {
-    this._currentAnim = new TweenLite(this._pannerEl, 0.2, {
+  if (opts.duration) {
+    this._currentAnim = new TweenLite(this._pannerEl, opts.duration, {
       onComplete: function() {
         this._killCurrentAnim();
       }.bind(this),
