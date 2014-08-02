@@ -13,7 +13,7 @@ function Swiper(containerEl) {
   this._pannerX = 0;
   this._pannerStartX = 0;
   this._activeColumn = 0;
-  this._touchEventLog = null;
+  this._touchLog = null;
   this._currentAnim = null;
   this._updatingOnNextFrame = false;
 
@@ -43,10 +43,10 @@ function Swiper(containerEl) {
     }
 
     // get the x position from (up to) 10 moves ago
-    var previousX = this._touchEventLog[0].touches[0].clientX;
-    var finalX = this._touchEventLog.slice(-1)[0].touches[0].clientX;
+    var previousX = this._touchLog[0].x;
+    var finalX = this._touchLog.slice(-1)[0].x;
     // calculate the velocity
-    var vel = (finalX - previousX) / (event.timeStamp - this._touchEventLog[0].timeStamp);
+    var vel = (finalX - previousX) / (event.timeStamp - this._touchLog[0].timeStamp);
     var columnCount = this._scrollWidth / this._columnWidth;
     var velocityRequired = 1.0; // appears to be the magic number
 
@@ -120,7 +120,7 @@ SwiperProto._onFirstTouchMove = function(event) {
 
   if (takeOver) {
     // we're going to keep a log of the last 10 move events
-    this._touchEventLog = [];
+    this._touchLog = [];
     this._killCurrentAnim();
     this._capturing = true;
     this._pannerStartX = this._pannerX;
@@ -133,12 +133,21 @@ SwiperProto._onFirstTouchMove = function(event) {
 
 SwiperProto._onCapturedTouchMove = function(event) {
   // keep a log of 10
-  if (this._touchEventLog.length == 10) {
-    this._touchEventLog.shift();
+  var logObj;
+  if (this._touchLog.length == 10) {
+    // reuse the shifted object to avoid lots of GC during touch
+    logObj = this._touchLog.shift();
   }
-  this._touchEventLog.push(event);
+  else {
+    logObj = {};
+  }
 
-  var deltaX = event.touches[0].clientX - this._touchStartX;
+  logObj.x = event.touches[0].clientX;
+  logObj.timeStamp = event.timeStamp;
+
+  this._touchLog.push(logObj);
+
+  var deltaX = logObj.x - this._touchStartX;
 
   // keep within start & end bounds
   this._pannerX = Math.max(
