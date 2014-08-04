@@ -1,114 +1,4 @@
-var tweetdeck = require('../lib/tweetdeck');
-var utils = require('../lib/utils');
-var Swiper = require('../lib/swiper');
-
-var React = require('react');
-var DOM = React.DOM;
-
-var Columns = React.createClass({
-  getInitialState: function () {
-    return {
-      columnSwiping: false
-    };
-  },
-  componentDidMount: function () {
-    var swiper = new Swiper(this.refs.columns.getDOMNode());
-
-    var largeWidth = window.matchMedia("(min-width: 500px)");
-    var handleWidthChange = function () {
-      this.setState({
-        columnSwiping: !largeWidth.matches
-      });
-
-      if (largeWidth.matches) {
-        swiper.stop();
-      }
-      else {
-        swiper.start();
-      }
-    }.bind(this);
-
-    largeWidth.addListener(handleWidthChange);
-    handleWidthChange();
-  },
-  render: function () {
-    var swipingClass = '';
-    if (this.state.columnSwiping) {
-      swipingClass = 'swiping';
-    }
-
-    return (
-      DOM.div({ className: 'columns ' + swipingClass, ref: 'columns' },
-        DOM.div({ className: 'column-panner' },
-          this.props.columns.map(Column)
-        )
-      )
-    );
-  }
-});
-
-var Column = React.createClass({
-  render: function () {
-    return (
-      DOM.div({ className: 'column', key: this.props.key },
-        this.props.tweets.map(Tweet)
-      )
-    );
-  }
-});
-
-var Tweet = React.createClass({
-  render: function () {
-    return (
-      DOM.div({ className: 'tweet media', key: this.props.id },
-        DOM.div({ className: 'fake-img media__img' }),
-        DOM.div({ className: 'media__body' }, this.props.text)
-      )
-    );
-  }
-});
-
-module.exports = React.createClass({
-  propTypes: {
-    user: React.PropTypes.object.isRequired
-  },
-
-  getInitialState: function () {
-    return {
-      accounts: [],
-      columns: []
-    };
-  },
-
-  componentDidMount: function () {
-    tweetdeck.getAccounts(this.props.user)
-      .then(function (accounts) {
-        this.setState({
-          accounts: accounts
-        });
-      }.bind(this));
-    tweetdeck.getColumns(this.props.user)
-      .then(function (columns) {
-        this.setState({
-          columns: columns.map(function (column) {
-            column.tweets = makeTweets(100, {
-              oldest: Date.now() - (1000 * 60 * 60),
-              newest: Date.now()
-            });
-            return column;
-          })
-        });
-      }.bind(this));
-  },
-
-  render: function () {
-    return (
-      Columns({ columns: this.state.columns })
-    );
-  }
-});
-
-
+var utils = require('./utils');
 /**
  * Sketchy utils
  */
@@ -169,10 +59,16 @@ function makeTweet(opts) {
     };
 }
 
+function sortBy(key, tweets) {
+    return tweets.sort(function (a, b) {
+        return a[key] < b[key];
+    });
+}
+
 /**
  * Returns a list of tweets with sequential ids between two specified dates.
  */
-function makeTweets(count, opts) {
+module.exports = function makeTweets(count, opts) {
     opts = utils.defaults(opts || {}, {
         oldest: 0,
         newest: Date.now(),
@@ -197,10 +93,4 @@ function makeTweets(count, opts) {
         }
         return tweet;
     });
-}
-
-function sortBy(key, tweets) {
-    return tweets.sort(function (a, b) {
-        return a[key] < b[key];
-    });
-}
+};

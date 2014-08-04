@@ -2,17 +2,16 @@
  * Page layout
  */
 
+.content, .app {
+  height: 100%;
+  overflow: hidden;
+}
+
 .page {
   @include display-flex;
   @include flex-flow(column);
   height: 100%;
   overflow: hidden;
-}
-
-.app {
-  @include display-flex;
-  @include flex-flow(column);
-  @include flex(1);
 }
 
 /**
@@ -44,6 +43,10 @@
   overflow-y: hidden;
   background: #ddd;
 
+}
+
+.column-panner {
+  @include display-flex;
   @media (min-width: 500px) {
     // triggering gap at the end of scroll - there must be a better way than this
     &::after {
@@ -51,10 +54,6 @@
       min-width: 1px;
     }
   }
-}
-
-.column-panner {
-  @include display-flex;
 }
 
 .column {
