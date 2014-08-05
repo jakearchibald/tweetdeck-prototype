@@ -6,11 +6,17 @@ var Swiper = require('../lib/swiper');
 module.exports = React.createClass({
   getInitialState: function () {
     return {
-      columnSwiping: false
+      columnSwiping: false,
+      pannerX: 0
     };
   },
   componentDidMount: function () {
-    var swiper = new Swiper(this.refs.columns.getDOMNode());
+    var swiper = new Swiper(this.refs.columns.getDOMNode(), function(val) {
+      this.setState({
+        pannerX: val
+      });
+    }.bind(this));
+
     var largeWidth = window.matchMedia("(min-width: 500px)");
     var handleWidthChange = function () {
       this.setState({
@@ -31,7 +37,7 @@ module.exports = React.createClass({
   render: function () {
     return (
       DOM.div({ className: 'columns', ref: 'columns' },
-        DOM.div({ className: 'column-panner' },
+        DOM.div({ className: 'column-panner', style: {transform: 'translate3d(' + this.state.pannerX + 'px, 0, 0)'} },
           this.props.columns.map(Column)
         )
       )

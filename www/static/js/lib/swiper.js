@@ -5,9 +5,9 @@ function setTransform(el, val) {
   el.style.WebkitTransform = el.style.transform = val;
 }
 
-function Swiper(containerEl) {
+function Swiper(containerEl, callback) {
   this._el = containerEl;
-  this._pannerEl = containerEl.querySelector('.column-panner');
+  this._pannerEl = containerEl.children[0];
   this._touchStartX = 0;
   this._touchStartY = 0;
   this._pannerX = 0;
@@ -16,6 +16,7 @@ function Swiper(containerEl) {
   this._touchLog = null;
   this._currentAnim = null;
   this._updatingOnNextFrame = false;
+  this._callback = callback;
 
   var firstTouchMove = true;
 
@@ -179,7 +180,8 @@ SwiperProto._updatePositionOnFrame = function() {
 };
 
 SwiperProto._updatePosition = function() {
-  setTransform(this._pannerEl, 'translate3d(' + this._pannerX + 'px, 0, 0)');
+  this._callback(this._pannerX);
+  //setTransform(this._pannerEl, 'translate3d(' + this._pannerX + 'px, 0, 0)');
 };
 
 SwiperProto.goToColumn = function(num, opts) {
