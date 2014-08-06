@@ -42,6 +42,10 @@
   color: #fff;
   margin-right: 58px;
   overflow: hidden;
+
+  @media (min-width: 500px) {
+    display: none;
+  }
 }
 
 .column-headings-nav-panner {
