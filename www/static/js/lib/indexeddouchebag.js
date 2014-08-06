@@ -37,12 +37,12 @@ var IndexedDouchebagProto = IndexedDouchebag.prototype;
 
 IndexedDouchebagProto.transaction = function(stores, modeOrCallback, callback) {
   return this.ready.then(function(db) {
-    var mode;
+    var mode = 'readonly';
 
     if (modeOrCallback.apply) {
       callback = modeOrCallback;
     }
-    else {
+    else if (modeOrCallback) {
       mode = modeOrCallback;
     }
 
