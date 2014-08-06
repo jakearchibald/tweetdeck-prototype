@@ -111,8 +111,8 @@ TD.transformRawMetadata = function (rawMetadata) {
   return {
     columnOrder: rawMetadata.columns,
     defaultAccount: rawMetadata.default_account.replace('twitter:', ''),
-    recentSearches: rawMetadata.recent_searches,
-  }
+    recentSearches: rawMetadata.recent_searches
+  };
 };
 
 TD.getMetadata = function (user) {
@@ -168,7 +168,8 @@ TD.transformRawColumn = function (columnKey, rawColumn, feeds) {
     key: columnKey,
     feeds: feeds,
     settings: rawColumn.settings,
-    type: rawColumn.type
+    type: rawColumn.type,
+    title: rawColumn.title || "Unknown column title"
   };
 };
 

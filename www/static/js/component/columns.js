@@ -21,8 +21,13 @@ module.exports = React.createClass({
 var Column = React.createClass({
   render: function () {
     return (
-      DOM.div({ className: 'column', key: this.props.key },
-        this.props.tweets.map(Tweet)
+      DOM.article({ className: 'column', key: this.props.key },
+        DOM.header({ className: 'column-header' },
+          this.props.title
+        ),
+        DOM.div({ className: 'column-scroller' },
+          this.props.tweets.map(Tweet)
+        )
       )
     );
   }
@@ -31,7 +36,7 @@ var Column = React.createClass({
 var Tweet = React.createClass({
   render: function () {
     return (
-      DOM.div({ className: 'tweet media', key: this.props.id },
+      DOM.article({ className: 'tweet media', key: this.props.id },
         DOM.div({ className: 'fake-img media__img' }),
         DOM.div({ className: 'media__body' }, this.props.text)
       )

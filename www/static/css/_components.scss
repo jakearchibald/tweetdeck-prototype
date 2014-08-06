@@ -59,9 +59,8 @@
 .column {
   background: #fff;
   min-width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
+  @include display-flex;
+  @include flex-flow(column);
 
   @media (min-width: 500px) {
     min-width: 300px;
@@ -70,6 +69,29 @@
       margin-left: 20px;
     }
   }
+}
+
+.column-header {
+  background: #eee;
+  color: #111;
+  border-bottom: 2px solid #ddd;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: none;
+  font-size: 1.4rem;
+  padding: 9px 15px;
+
+  @media (min-width: 500px) {
+    display: block;
+  }
+}
+
+.column-scroller {
+  @include flex(1);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 
