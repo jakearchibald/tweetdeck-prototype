@@ -49,6 +49,11 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  // triggering gap at the end of scroll - there must be a better way than this
+  &::after {
+    content: '';
+    min-width: 1px;
+  }
 }
 
 .column-headings-nav-item {
@@ -75,6 +80,7 @@
     margin: 1px 3px;
     border: 1px solid #fff;
     border-radius: 5px;
+    z-index: 2;
   }
 
   & .pip-fill {

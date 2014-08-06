@@ -31,7 +31,7 @@ var RootView = React.createClass({
     return {
       initialDataFetched: false,
       user: "",
-      columns: [],
+      columns: null,
       accounts: [],
       swiper: this.createSwiper()
     };
@@ -111,15 +111,7 @@ var RootView = React.createClass({
     // TODO: it's possible the user will be logged out during a session, 
     // it'd be great if the login were a modal dialog rather than a 
     // switch between the columns view
-    if (this.state.user) {
-      return DOM.div({ className: "app" },
-        DOM.div({ className: "page" },
-          HeaderView({ columns: this.state.columns, swiper: this.state.swiper }),
-          ColumnsView({ columns: this.state.columns, swiper: this.state.swiper })
-        )
-      );
-    }
-    else {
+    if (!this.state.user) {
       return DOM.div({ className: "app" },
         DOM.div({ className: "page" },
           HeaderView({}),
@@ -127,6 +119,13 @@ var RootView = React.createClass({
         )
       );
     }
+
+    return DOM.div({ className: "app" },
+      DOM.div({ className: "page" },
+        HeaderView({ columns: this.state.columns, swiper: this.state.swiper }),
+        (this.state.columns ? ColumnsView({ columns: this.state.columns, swiper: this.state.swiper }) : undefined)
+      )
+    );
   }
 });
 

@@ -1,11 +1,14 @@
 var TweenLite = require('./greensock/TweenLite');
 var utils = require('./utils');
+var EventEmitter = require('events').EventEmitter;
 
 function setTransform(el, val) {
   el.style.WebkitTransform = el.style.transform = val;
 }
 
 function Swiper() {
+  EventEmitter.call(this);
+
   this._touchStartX = 0;
   this._touchStartY = 0;
   this._pannerX = 0;
@@ -15,6 +18,9 @@ function Swiper() {
   this._currentAnim = null;
   this._updatingOnNextFrame = false;
   this._active = false;
+  this._columnWidth = 0;
+  this._scrollWidth = 0;
+  this._minX = 0;
 
   var firstTouchMove = true;
 
@@ -89,7 +95,7 @@ function Swiper() {
   }.bind(this);
 }
 
-var SwiperProto = Swiper.prototype;
+var SwiperProto = Swiper.prototype = Object.create(EventEmitter.prototype);
 
 SwiperProto.setColumnsEl = function(el) {
   this._pannerContainer = el;
@@ -211,6 +217,7 @@ SwiperProto._updatePositionOnFrame = function() {
 };
 
 SwiperProto._updatePosition = function() {
+  this.emit('change', this._pannerX / this._minX || 0);
   setTransform(this._pannerEl, 'translate3d(' + this._pannerX + 'px, 0, 0)');
 };
 
