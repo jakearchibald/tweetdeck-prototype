@@ -2,10 +2,6 @@ var TweenLite = require('./greensock/TweenLite');
 var utils = require('./utils');
 var EventEmitter = require('events').EventEmitter;
 
-function setTransform(el, val) {
-  el.style.WebkitTransform = el.style.transform = val;
-}
-
 function Swiper() {
   EventEmitter.call(this);
 
@@ -217,8 +213,8 @@ SwiperProto._updatePositionOnFrame = function() {
 };
 
 SwiperProto._updatePosition = function() {
-  this.emit('change', this._pannerX / this._minX || 0);
-  setTransform(this._pannerEl, 'translate3d(' + this._pannerX + 'px, 0, 0)');
+  this.emit('render', this._pannerX / this._minX || 0);
+  utils.setTransform(this._pannerEl, 'translate3d(' + this._pannerX + 'px, 0, 0)');
 };
 
 SwiperProto.goToColumn = function(num, opts) {

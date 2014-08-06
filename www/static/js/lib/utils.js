@@ -38,3 +38,7 @@ exports.strToEl = (function () {
     return r;
   };
 }());
+
+exports.setTransform = function setTransform(el, val) {
+  el.style.WebkitTransform = el.style.transform = val;
+};

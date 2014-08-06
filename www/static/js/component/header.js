@@ -1,5 +1,6 @@
 var utils = require('../lib/utils');
 var domToReact = require('../lib/domtoreact');
+var MobileColumnHeadings = require('../lib/mobilecolumnheadings');
 
 var React = require('react');
 var DOM = React.DOM;
@@ -34,31 +35,15 @@ var ColumnHeadingsNav = React.createClass({
     };
   },
   componentDidMount: function() {
-    // this is hacky and horrible and should be broken out into another object
-    var headingsNav = this.refs.headingsNav.getDOMNode();
-    var panner = this.refs.panner.getDOMNode();
-    var pips = Array.prototype.slice.call(headingsNav.querySelectorAll('.pip-fill'));
+    var mobileColumnHeadings = new MobileColumnHeadings(this.refs.headingsNav.getDOMNode());
 
-    this.props.swiper.on('change', function(pos) {
-      var width = headingsNav.offsetWidth;
-      var minOffset = -panner.scrollWidth + width;
-      panner.style.transform = 'translate3d(' + (minOffset * pos) + 'px, 0, 0)';
-
-      pips.forEach(function(pip, i, arr) {
-        var phase = pos * (arr.length - 1) - i;
-
-        if (phase < 1 && phase > -1) {
-          pip.style.opacity = 1 - Math.abs(phase);
-        }
-        else {
-          pip.style.opacity = 0;
-        }
-      });
+    this.props.swiper.on('render', function(pos) {
+      mobileColumnHeadings.render(pos);
     });
   },
   render: function () {
     return DOM.div({ className: 'column-headings-nav', ref: 'headingsNav' },
-      DOM.ol({ className: 'column-headings-nav-panner', ref: 'panner' },
+      DOM.ol({ className: 'column-headings-nav-panner' },
         this.props.columns.map(ColumnHeading)
       ),
       DOM.div({ className: 'column-headings-nav-pips' },
