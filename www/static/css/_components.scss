@@ -18,15 +18,75 @@
  * Header
  */
 
-.title {
-  position: relative;
+.app-header {
   background: #55acee;
+  @include display-flex;
+}
+
+.app-title {
+  position: relative;
   padding: 14px 17px;
 
   & .logo {
     display: block;
     height: 24px;
     width: 24px;
+  }
+}
+
+.column-headings-nav {
+  @include flex(1);
+  @include flex-flow(column);
+  @include justify-content(center);
+  @include display-flex;
+  color: #fff;
+  margin-right: 58px;
+  overflow: hidden;
+}
+
+.column-headings-nav-panner {
+  @include display-flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.column-headings-nav-item {
+  @include flex(1);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 80%;
+  margin: 0 10%;
+  padding: 0;
+  display: block;
+}
+
+.column-headings-nav-pips {
+  @include display-flex;
+  @include flex-flow(row wrap);
+  @include justify-content(center);
+
+  & .pip {
+    position: relative;
+    width: 5px;
+    height: 5px;
+    margin: 1px 3px;
+    border: 1px solid #fff;
+    border-radius: 5px;
+  }
+
+  & .pip-fill {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 7px;
+    height: 7px;
+    background: #fff;
+    opacity: 0;
+    will-change: opacity;
+    border-radius: 7px;
   }
 }
 

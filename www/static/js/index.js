@@ -114,7 +114,7 @@ var RootView = React.createClass({
     if (this.state.user) {
       return DOM.div({ className: "app" },
         DOM.div({ className: "page" },
-          HeaderView({}),
+          HeaderView({ columns: this.state.columns, swiper: this.state.swiper }),
           ColumnsView({ columns: this.state.columns, swiper: this.state.swiper })
         )
       );
