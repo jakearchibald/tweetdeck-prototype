@@ -12,9 +12,9 @@ module.exports = function fetch(url, opts) {
     });
 
     var xhr = new XMLHttpRequest();
+    xhr.open(opts.method, url, true);
     xhr.responseType = opts.type;
     xhr.withCredentials = (opts.credentials == 'include');
-    xhr.open(opts.method, url, true);
 
     Object.keys(opts.headers).forEach(function (k) {
       xhr.setRequestHeader(k, opts.headers[k]);
