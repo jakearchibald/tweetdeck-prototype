@@ -42,9 +42,28 @@
   color: #fff;
   margin-right: 58px;
   overflow: hidden;
+  position: relative;
 
   @media (min-width: 500px) {
     display: none;
+  }
+
+  &::before,
+  &::after {
+    content: '';
+    width: 10%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background: linear-gradient(to right, #55acee, rgba(#55acee, 0));
+    z-index: 1;
+  }
+
+  &::after {
+    left: auto;
+    right: 0;
+    background: linear-gradient(to left, #55acee, rgba(#55acee, 0));
   }
 }
 
@@ -81,7 +100,7 @@
     position: relative;
     width: 5px;
     height: 5px;
-    margin: 1px 3px;
+    margin: 1px 2px;
     border: 1px solid #fff;
     border-radius: 5px;
     z-index: 2;
