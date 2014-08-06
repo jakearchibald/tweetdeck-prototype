@@ -18,6 +18,7 @@ var DOM = React.DOM;
 var LoginView = require('./component/login');
 var ColumnsView = require('./component/columns');
 var HeaderView = require('./component/header');
+var Swiper = require('./lib/swiper.js');
 
 window.DOM = DOM;
 
@@ -31,7 +32,8 @@ var RootView = React.createClass({
       initialDataFetched: false,
       user: "",
       columns: [],
-      accounts: []
+      accounts: [],
+      swiper: this.createSwiper()
     };
   },
 
@@ -56,6 +58,23 @@ var RootView = React.createClass({
           })
         });
       }.bind(this));
+  },
+
+  createSwiper: function () {
+    var swiper = new Swiper();
+    var largeWidth = window.matchMedia("(min-width: 500px)");
+    var handleWidthChange = function () {
+      if (largeWidth.matches) {
+        swiper.stop();
+      }
+      else {
+        swiper.start();
+      }
+    }.bind(this);
+
+    largeWidth.addListener(handleWidthChange);
+    handleWidthChange();
+    return swiper;
   },
 
   componentDidMount: function () {
@@ -96,7 +115,7 @@ var RootView = React.createClass({
       return DOM.div({ className: "app" },
         DOM.div({ className: "page" },
           HeaderView({}),
-          ColumnsView({ columns: this.state.columns })
+          ColumnsView({ columns: this.state.columns, swiper: this.state.swiper })
         )
       );
     }

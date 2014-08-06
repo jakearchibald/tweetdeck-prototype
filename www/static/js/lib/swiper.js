@@ -5,9 +5,7 @@ function setTransform(el, val) {
   el.style.WebkitTransform = el.style.transform = val;
 }
 
-function Swiper(containerEl) {
-  this._el = containerEl;
-  this._pannerEl = containerEl.querySelector('.column-panner');
+function Swiper() {
   this._touchStartX = 0;
   this._touchStartY = 0;
   this._pannerX = 0;
@@ -16,6 +14,7 @@ function Swiper(containerEl) {
   this._touchLog = null;
   this._currentAnim = null;
   this._updatingOnNextFrame = false;
+  this._active = false;
 
   var firstTouchMove = true;
 
@@ -26,7 +25,7 @@ function Swiper(containerEl) {
     }
 
     // TODO: need to update these on resize and column add
-    this._columnWidth = this._el.offsetWidth;
+    this._columnWidth = this._pannerContainer.offsetWidth;
     this._scrollWidth = this._pannerEl.scrollWidth;
     this._minX = -(this._scrollWidth - this._columnWidth);
 
@@ -34,7 +33,7 @@ function Swiper(containerEl) {
     this._touchStartX = event.touches[0].clientX;
     this._touchStartY = event.touches[0].clientY;
     
-    this._el.addEventListener('touchmove', this._onTouchMove);
+    this._pannerContainer.addEventListener('touchmove', this._onTouchMove);
   }.bind(this);
 
   this._onTouchEnd = function(event) {
@@ -72,7 +71,7 @@ function Swiper(containerEl) {
     }
 
     this._capturing = false;
-    this._el.removeEventListener('touchmove', this._onTouchMove);
+    this._pannerContainer.removeEventListener('touchmove', this._onTouchMove);
   }.bind(this);
 
   this._onTouchMove = function(event) {
@@ -92,22 +91,55 @@ function Swiper(containerEl) {
 
 var SwiperProto = Swiper.prototype;
 
-SwiperProto.start = function() {
-  this._el.style.overflowX = 'hidden';
-  this._el.scrollLeft = 0;
-  this._pannerX = 0;
-  this._updatePositionOnFrame();
-  this._el.addEventListener('touchstart', this._onTouchStart);
-  this._el.addEventListener('touchend', this._onTouchEnd);
+SwiperProto.setColumnsEl = function(el) {
+  this._pannerContainer = el;
+  this._pannerEl = el.children[0];
+
+  if (this._active) {
+    this._activatePannerContainer();
+  }
 };
 
-SwiperProto.stop = function() {
-  this._el.style.overflowX = 'auto';
+SwiperProto.start = function() {
+  if (this._active) {
+    return;
+  }
+
+  this._pannerX = 0;
+  this._active = true;
+
+  if (this._pannerContainer) {
+    this._activatePannerContainer();
+  }
+};
+
+SwiperProto._activatePannerContainer = function() {
+  this._pannerContainer.style.overflowX = 'hidden';
+  this._pannerContainer.scrollLeft = 0;
+  this._updatePositionOnFrame();
+  this._pannerContainer.addEventListener('touchstart', this._onTouchStart);
+  this._pannerContainer.addEventListener('touchend', this._onTouchEnd);
+};
+
+SwiperProto._deactivatePannerContainer = function() {
+  this._pannerContainer.style.overflowX = 'auto';
   this.goToColumn(0, {
     duration: 0
   });
-  this._el.removeEventListener('touchstart', this._onTouchStart);
-  this._el.removeEventListener('touchend', this._onTouchEnd);
+  this._pannerContainer.removeEventListener('touchstart', this._onTouchStart);
+  this._pannerContainer.removeEventListener('touchend', this._onTouchEnd);
+};
+
+SwiperProto.stop = function() {
+  if (!this._active) {
+    return;
+  }
+
+  this._active = false;
+  
+  if (this._pannerContainer) {
+    this._deactivatePannerContainer();
+  }
 };
 
 SwiperProto._onFirstTouchMove = function(event) {
@@ -127,7 +159,7 @@ SwiperProto._onFirstTouchMove = function(event) {
     this._onCapturedTouchMove(event);
   }
   else {
-    this._el.removeEventListener('touchmove', this._onTouchMove);
+    this._pannerContainer.removeEventListener('touchmove', this._onTouchMove);
   }
 };
 

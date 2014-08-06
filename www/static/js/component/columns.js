@@ -4,29 +4,8 @@ var utils = require('../lib/utils');
 var Swiper = require('../lib/swiper');
 
 module.exports = React.createClass({
-  getInitialState: function () {
-    return {
-      columnSwiping: false
-    };
-  },
   componentDidMount: function () {
-    var swiper = new Swiper(this.refs.columns.getDOMNode());
-    var largeWidth = window.matchMedia("(min-width: 500px)");
-    var handleWidthChange = function () {
-      this.setState({
-        columnSwiping: !largeWidth.matches
-      });
-
-      if (largeWidth.matches) {
-        swiper.stop();
-      }
-      else {
-        swiper.start();
-      }
-    }.bind(this);
-
-    largeWidth.addListener(handleWidthChange);
-    handleWidthChange();
+    this.props.swiper.setColumnsEl(this.refs.columns.getDOMNode());
   },
   render: function () {
     return (
