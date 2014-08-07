@@ -5,10 +5,6 @@ var tweetdeck = require('./lib/tweetdeck');
 var tweetdeckDb = require('./lib/tweetdeckdb');
 var makeTweets = require('./lib/maketweets');
 
-RSVP.on('error', function (why) {
-  console.error(why.stack);
-});
-
 /**
  * UI
  */

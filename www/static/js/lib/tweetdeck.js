@@ -126,24 +126,14 @@ TD.getRawEverything = function (user) {
 
 TD.getInitialFetchForUser = function (user) {
   if (this._initialFetchUser !== user) {
-    this._pIntialFetch = this.resetInitialFetch();
     this._initialFetchUser = user;
-    this.getRawEverything(user)
-      .then(
-        this._resolveInitialFetch.bind(this),
-        this._rejectInitialFetch.bind(this)
-      );
+    this._pIntialFetch = this.getRawEverything(user);
   }
   return this._pIntialFetch;
 };
 
 TD.resetInitialFetch = function () {
-  delete this._resolveInitialFetch;
-  delete this._rejectInitialFetch;
-  return new Promise(function (resolve, reject) {
-    this._resolveInitialFetch = resolve;
-    this._rejectInitialFetch = reject;
-  }.bind(this));
+  return Promise.reject(Error("No data fetched"));
 };
 
 /**
