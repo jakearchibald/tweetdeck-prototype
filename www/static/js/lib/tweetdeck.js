@@ -57,8 +57,58 @@ TD.login = function (username, password) {
       'X-TD-Authtype': 'twitter'
     },
     type: 'json'
+  }).then(this.transformLoginResponse);
+};
+
+TD.verifyTwoFactor = function (opts) {
+  var body = {
+    login_verification_request_id: opts.requestId,
+    login_verification_user_id: '' + opts.userId,
+    login_verification_challenge_response: opts.code
+  };
+
+  return fetch(this.proxy + '/login', {
+    method: 'POST',
+    headers: {
+      'X-TD-Authtype': 'twitter'
+    },
+    body: JSON.stringify(body),
+    type: 'json'
   });
 };
+
+TD.transformLoginResponse = function (res) {
+  if (res.screen_name) {
+    return {
+      screenName: res.screen_name,
+      userId: res.user_id,
+      session: res.session
+    }
+  }
+
+  var response = {
+    raw: res,
+    error: res.error,
+    upstreamStatus: res.upstream_http_code
+  }
+
+  if (res.xauth_response.login_verification_request_cause) {
+    response.twoFactorChallenge = {
+      cause: res.xauth_response.login_verification_request_cause,
+      requestId: res.xauth_response.login_verification_request_id,
+      userId: res.xauth_response.login_verification_user_id
+    }
+  }
+
+  if (res.xauth_response.errors.length > 0) {
+    response.xAuthError = {
+      code: res.xauth_response.errors[0].code,
+      message: res.xauth_response.errors[0].message
+    }
+  }
+
+  return response;
+}
 
 /**
  * Data
