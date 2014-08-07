@@ -110,7 +110,6 @@ TD.getRawMetadata = function (user) {
 TD.transformRawMetadata = function (rawMetadata) {
   return {
     columnOrder: rawMetadata.columns,
-    defaultAccount: rawMetadata.default_account.replace('twitter:', ''),
     recentSearches: rawMetadata.recent_searches
   };
 };
@@ -174,11 +173,16 @@ TD.transformRawColumn = function (columnKey, rawColumn, feeds) {
 };
 
 TD.getColumns = function (user) {
-  return Promise.all([this.getRawColumns(user), this.getFeeds(user)])
+  return Promise.all([
+    this.getRawColumns(user),
+    this.getFeeds(user),
+    this.getMetadata(user)
+  ])
     .then(function (res) {
       var columns = res[0];
       var feeds = res[1];
-      return Object.keys(columns).map(function (columnKey) {
+      var metaData = res[2];
+      return metaData.columnOrder.map(function (columnKey) {
         var rawColumn = columns[columnKey];
         return this.transformRawColumn(
           columnKey,
