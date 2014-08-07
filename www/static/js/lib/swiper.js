@@ -177,6 +177,7 @@ SwiperProto._onFirstTouchMove = function(event) {
 };
 
 SwiperProto._onCapturedTouchMove = function(event) {
+  event.preventDefault();
   // keep a log of 10
   var logObj;
   if (this._touchLog.length == 10) {
@@ -201,7 +202,6 @@ SwiperProto._onCapturedTouchMove = function(event) {
   );
 
   this._updatePositionOnFrame();
-  event.preventDefault();
 };
 
 SwiperProto._killCurrentAnim = function() {
