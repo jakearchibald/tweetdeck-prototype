@@ -44,7 +44,7 @@
   overflow: hidden;
   position: relative;
 
-  @media (min-width: 500px) {
+  @media (min-width: 500px) and (min-height: 500px) {
     display: none;
   }
 
@@ -136,7 +136,7 @@
 
 .column-panner {
   @include display-flex;
-  @media (min-width: 500px) {
+  @media (min-width: 500px) and (min-height: 500px) {
     // triggering gap at the end of scroll - there must be a better way than this
     &::after {
       content: '';
@@ -151,7 +151,7 @@
   @include display-flex;
   @include flex-flow(column);
 
-  @media (min-width: 500px) {
+  @media (min-width: 500px) and (min-height: 500px) {
     min-width: 300px;
     margin: 20px 20px 20px 0;
     &:first-child {
@@ -171,7 +171,7 @@
   font-size: 1.4rem;
   padding: 9px 15px;
 
-  @media (min-width: 500px) {
+  @media (min-width: 500px) and (min-height: 500px) {
     display: block;
   }
 }

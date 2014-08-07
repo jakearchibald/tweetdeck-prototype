@@ -62,7 +62,7 @@ var RootView = React.createClass({
 
   createSwiper: function () {
     var swiper = new Swiper();
-    var largeWidth = window.matchMedia("(min-width: 500px)");
+    var largeWidth = window.matchMedia("(min-width: 500px) and (min-height: 500px)");
     var handleWidthChange = function () {
       if (largeWidth.matches) {
         swiper.stop();
