@@ -9,10 +9,13 @@ module.exports = React.createClass({
     this.props.swiper.setColumnsEl(this.refs.columns.getDOMNode());
 
     scroller.addEventListener('wheel', function(event) {
+      if (this.props.swiper.isActive()) {
+        return;
+      }
       event.preventDefault();
       event.stopPropagation();
       scroller.scrollLeft += event.deltaX;
-    });
+    }.bind(this));
   },
   render: function () {
     return (

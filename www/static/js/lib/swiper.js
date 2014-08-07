@@ -110,6 +110,10 @@ SwiperProto.start = function() {
   }
 };
 
+SwiperProto.isActive = function() {
+  return this._active;
+};
+
 SwiperProto.updateLayout = function() {
   if (!this._pannerContainer || !this._active) {
     return;
