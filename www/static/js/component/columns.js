@@ -5,7 +5,14 @@ var Swiper = require('../lib/swiper');
 
 module.exports = React.createClass({
   componentDidMount: function () {
+    var scroller = this.refs.columns.getDOMNode();
     this.props.swiper.setColumnsEl(this.refs.columns.getDOMNode());
+
+    scroller.addEventListener('wheel', function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      scroller.scrollLeft += event.deltaX;
+    });
   },
   render: function () {
     return (
@@ -19,13 +26,24 @@ module.exports = React.createClass({
 });
 
 var Column = React.createClass({
+  componentDidMount: function() {
+    var scroller = this.refs.scroller.getDOMNode();
+
+    scroller.addEventListener('wheel', function(event) {
+      if (Math.abs(event.deltaY) >= Math.abs(event.deltaX)) {
+        event.preventDefault();
+        event.stopPropagation();
+        scroller.scrollTop += event.deltaY;
+      }
+    });
+  },
   render: function () {
     return (
       DOM.article({ className: 'column', key: this.props.key },
         DOM.header({ className: 'column-header' },
           this.props.title
         ),
-        DOM.div({ className: 'column-scroller' },
+        DOM.div({ className: 'column-scroller', ref: 'scroller' },
           this.props.tweets.map(Tweet)
         )
       )
