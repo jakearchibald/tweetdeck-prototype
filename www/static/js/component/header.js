@@ -40,6 +40,10 @@ var ColumnHeadingsNav = React.createClass({
     this.props.swiper.on('render', function(pos) {
       mobileColumnHeadings.render(pos);
     });
+
+    this.props.swiper.on('layoutupdate', function(pos) {
+      mobileColumnHeadings.updateLayout();
+    });
   },
   render: function () {
     return DOM.div({ className: 'column-headings-nav', ref: 'headingsNav' },

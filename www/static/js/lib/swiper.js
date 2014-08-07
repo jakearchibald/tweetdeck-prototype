@@ -26,11 +26,6 @@ function Swiper() {
       return;
     }
 
-    // TODO: need to update these on resize and column add
-    this._columnWidth = this._pannerContainer.offsetWidth;
-    this._scrollWidth = this._pannerEl.scrollWidth;
-    this._minX = -(this._scrollWidth - this._columnWidth);
-
     firstTouchMove = true;
     this._touchStartX = event.touches[0].clientX;
     this._touchStartY = event.touches[0].clientY;
@@ -115,12 +110,28 @@ SwiperProto.start = function() {
   }
 };
 
+SwiperProto.updateLayout = function() {
+  if (!this._pannerContainer || !this._active) {
+    return;
+  }
+
+  this._columnWidth = this._pannerContainer.offsetWidth;
+  this._scrollWidth = this._pannerEl.scrollWidth;
+  this._minX = -(this._scrollWidth - this._columnWidth);
+  
+  this.emit('layoutupdate');
+  
+  this.goToColumn(this._activeColumn, {
+    duration: 0
+  });
+};
+
 SwiperProto._activatePannerContainer = function() {
   this._pannerContainer.style.overflowX = 'hidden';
   this._pannerContainer.scrollLeft = 0;
-  this._updatePositionOnFrame();
   this._pannerContainer.addEventListener('touchstart', this._onTouchStart);
   this._pannerContainer.addEventListener('touchend', this._onTouchEnd);
+  this.updateLayout();
 };
 
 SwiperProto._deactivatePannerContainer = function() {

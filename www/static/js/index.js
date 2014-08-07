@@ -72,6 +72,10 @@ var RootView = React.createClass({
       }
     }.bind(this);
 
+    window.addEventListener('resize', function() {
+      swiper.updateLayout();
+    });
+
     largeWidth.addListener(handleWidthChange);
     handleWidthChange();
     return swiper;
