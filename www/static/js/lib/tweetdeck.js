@@ -92,18 +92,20 @@ TD.transformLoginResponse = function (res) {
     upstreamStatus: res.upstream_http_code
   }
 
-  if (res.xauth_response.login_verification_request_cause) {
-    response.twoFactorChallenge = {
-      cause: res.xauth_response.login_verification_request_cause,
-      requestId: res.xauth_response.login_verification_request_id,
-      userId: res.xauth_response.login_verification_user_id
+  if (res.xauth_response) {
+    if(res.xauth_response.login_verification_request_cause) {
+      response.twoFactorChallenge = {
+        viaSMSCode: (res.xauth_response.login_verification_request_type === 1),
+        viaMobileApp: (res.xauth_response.login_verification_request_type === 2),
+        requestId: res.xauth_response.login_verification_request_id,
+        userId: res.xauth_response.login_verification_user_id
+      }
     }
-  }
-
-  if (res.xauth_response.errors.length > 0) {
-    response.xAuthError = {
-      code: res.xauth_response.errors[0].code,
-      message: res.xauth_response.errors[0].message
+    if (res.xauth_response.errors && res.xauth_response.errors.length > 0) {
+      response.xAuthError = {
+        code: res.xauth_response.errors[0].code,
+        message: res.xauth_response.errors[0].message
+      }
     }
   }
 
