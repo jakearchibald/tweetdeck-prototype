@@ -10,13 +10,13 @@ var MobileAppAuthChallengeView = require('./login/mobileappauthchallenge');
 var UserPassView = require('./login/userpass');
 
 module.exports = React.createClass({
+
   propTypes: {
-    onLoginSuccess: React.PropTypes.func
+    onLoginSuccess: React.PropTypes.func.isRequired
   },
 
   getDefaultProps: function () {
     return {
-      onLoginSuccess: function () {},
       mobileAuthRequestPollInterval: 5000,
       mobileAuthRequestLimit: 10,
       mobileAuthRequestCount: 0
@@ -30,10 +30,10 @@ module.exports = React.createClass({
     };
   },
 
-  showLoginError: function (message) {
+  showLoginError: function (err) {
     this.setState({
       inProgress: false,
-      loginMessage: message
+      loginMessage: err.message
     });
   },
 
@@ -72,11 +72,11 @@ module.exports = React.createClass({
       }
 
       if (response.xAuthError && response.xAuthError.code) {
-        return reject({ message: this.getXAuthErrorMessageForCode(response.xAuthError.code) });
+        return reject(Error(this.getXAuthErrorMessageForCode(response.xAuthError.code)));
       }
 
       else if (response.error) {
-        return reject({ message: 'Code should deal with this error: ' + response.error });
+        return reject(Error('Code should deal with this error: ' + response.error));
       }
 
       return resolve(response);
@@ -111,7 +111,7 @@ module.exports = React.createClass({
       var mobileAuthTimeout;
       if (this.props.mobileAuthRequestCount > this.props.mobileAuthRequestLimit) {
         clearTimeout(mobileAuthTimeout);
-        return reject({ message: 'You took too long to authenticate via the mobile app' });
+        return reject(Error('You took too long to authenticate via the mobile app'));
       }
 
       this.props.mobileAuthRequestCount += 1;

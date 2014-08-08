@@ -9,6 +9,10 @@ var FieldGroup = React.createClass({
 
 module.exports = React.createClass({
 
+  propTypes: {
+    onSubmit: React.PropTypes.func.isRequired
+  },
+
   onSubmit: function (e) {
     e.preventDefault();
     var code = this.refs.mobilecode.getDOMNode().value;
