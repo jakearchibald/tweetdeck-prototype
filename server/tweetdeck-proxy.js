@@ -18,7 +18,9 @@ module.exports = http.createServer(function (req, res) {
   delete data.headers.host;
 
   res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
-  res.setHeader('Access-Control-Allow-Headers', data.headers['access-control-request-headers']);
+  if (data.headers['access-control-request-headers']) {
+    res.setHeader('Access-Control-Allow-Headers', data.headers['access-control-request-headers']);
+  }
 
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Max-Age', '86400');
@@ -38,5 +40,5 @@ module.exports = http.createServer(function (req, res) {
     res.destroy();
   });
 
-  tweetdeckReq.end();
+  req.pipe(tweetdeckReq);
 });
