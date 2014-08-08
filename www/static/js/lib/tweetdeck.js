@@ -74,7 +74,7 @@ TD.verifyTwoFactor = function (opts) {
     },
     body: JSON.stringify(body),
     type: 'json'
-  });
+  }).then(this.transformLoginResponse);
 };
 
 TD.transformLoginResponse = function (res) {
@@ -102,9 +102,20 @@ TD.transformLoginResponse = function (res) {
       }
     }
     if (res.xauth_response.errors && res.xauth_response.errors.length > 0) {
-      response.xAuthError = {
-        code: res.xauth_response.errors[0].code,
-        message: res.xauth_response.errors[0].message
+      response.xAuthError = res.xauth_response.errors[0];
+
+      // Add 2FA errors into 2FA data
+      if (response.xAuthError.code === 236) { // Incorrect SMS Code
+        response.twoFactorChallenge = {
+          viaSMSCode: true,
+          error: response.xAuthError
+        }
+      }
+      if (response.xAuthError.code === 253) { // Waiting for mobile app auth
+        response.twoFactorChallenge = {
+          viaMobileApp: true,
+          error: response.xAuthError
+        }
       }
     }
   }

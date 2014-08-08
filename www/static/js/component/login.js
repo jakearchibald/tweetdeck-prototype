@@ -64,10 +64,10 @@ module.exports = React.createClass({
 
       if (response.twoFactorChallenge) {
         if (response.twoFactorChallenge.viaSMSCode) {
-          return this.authenticateViaSMSCode(response.twoFactorChallenge);
+          return this.authenticateViaSMSCode(response.twoFactorChallenge).then(resolve);
         }
         if (response.twoFactorChallenge.viaMobileApp) {
-          return this.authenticateViaMobileApp(response.twoFactorChallenge);
+          return this.authenticateViaMobileApp(response.twoFactorChallenge).then(resolve);
         }
       }
 
@@ -75,7 +75,7 @@ module.exports = React.createClass({
         return reject(Error(this.getXAuthErrorMessageForCode(response.xAuthError.code)));
       }
 
-      else if (response.error) {
+      if (response.error) {
         return reject(Error('Code should deal with this error: ' + response.error));
       }
 
@@ -102,14 +102,13 @@ module.exports = React.createClass({
    */
   authenticateViaMobileApp: function (twoFactorChallenge) {
     return new Promise(function (resolve, reject) {
-
       this.setState({
         inProgress: false,
-        twoFactorChallenge: twoFactorChallenge
+        twoFactorChallenge: this.mergeTwoFactorChallengeState(twoFactorChallenge)
       });
 
       var mobileAuthTimeout;
-      if (this.props.mobileAuthRequestCount > this.props.mobileAuthRequestLimit) {
+      if (this.props.mobileAuthRequestCount >= this.props.mobileAuthRequestLimit) {
         clearTimeout(mobileAuthTimeout);
         return reject(Error('You took too long to authenticate via the mobile app'));
       }
@@ -118,9 +117,7 @@ module.exports = React.createClass({
       mobileAuthTimeout = setTimeout(function () {
         this.attemptTwoFactor()
           .then(this.handleLoginResponse)
-          .then(function(res) {
-            return resolve(res);
-          });
+          .then(resolve);
       }.bind(this), this.props.mobileAuthRequestPollInterval);
     }.bind(this));
   },
@@ -129,22 +126,31 @@ module.exports = React.createClass({
     return new Promise(function (resolve, reject) {
       this.setState({
         inProgress: false,
-        twoFactorChallenge: twoFactorChallenge,
-        loginMessage: 'SMS code required.',
-        onMobileCodeSubmit: function (code) {
-          resolve(code);
-        }
+        twoFactorChallenge: this.mergeTwoFactorChallengeState(twoFactorChallenge),
+        loginMessage: twoFactorChallenge.error && twoFactorChallenge.error.message ||
+          'SMS code required.',
+        onMobileCodeSubmit: resolve
       });
     }.bind(this));
   },
 
   attemptTwoFactor: function(opts) {
+    this.setState({
+      inProgress: true
+    });
     var opts = utils.defaults(opts, {
       requestId: this.state.twoFactorChallenge.requestId,
       userId: this.state.twoFactorChallenge.userId,
     });
 
     return tweetdeck.verifyTwoFactor(opts);
+  },
+
+  mergeTwoFactorChallengeState: function (twoFactorChallenge) {
+    return utils.defaults(twoFactorChallenge, {
+      requestId: this.state.twoFactorChallenge.requestId,
+      userId: this.state.twoFactorChallenge.userId
+    });
   },
 
   getXAuthErrorMessageForCode: function (code) {
