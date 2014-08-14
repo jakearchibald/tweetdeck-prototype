@@ -3,6 +3,10 @@
 var Promise = require('rsvp').Promise;
 var fetch = require('../fetch');
 var utils = require('../utils');
+var User = require('./User');
+var Account = require('./Account');
+var Column = require('./Column');
+var Feed = require('./Feed');
 
 /**
  * Private utils
@@ -25,30 +29,32 @@ function TweetDeck(opts) {
   });
 
   this.proxy = opts.proxy;
+  this.user = null;
+  this.columns = null;
+  this.accounts = null;
+  this.metadata = null;
   this.resetInitialFetch();
 }
 
 var TD = TweetDeck.prototype;
 
-TD.authorizedRequest = function (user, path, opts) {
+TD.authorizedRequest = function (path, opts) {
+  if (!this.user) {
+    return Promise.reject(Error("Not logged in"));
+  }
   opts = opts || {};
   opts.headers = opts.headers || {};
-  opts.headers['Authorization'] = sessionHeader(user.session);
+  opts.headers['Authorization'] = sessionHeader(this.user.session);
   return fetch(this.proxy + path, opts);
-};
-
-TD.proxiedRequest = function (account, url, opts) {
-  opts = utils.defaults(opts, {
-    headers: {}
-  });
-  opts.headers['x-td-oauth-key'] = account.oauth.token;
-  opts.headers['x-td-oauth-secret'] = account.oauth.secret;
-  return fetch(this.proxy + '/oauth/proxy/twitter/' + encodeURIComponent(url), opts);
 };
 
 /**
  * Login
  */
+
+TD.setUser = function(user) {
+  this.user = user;
+};
 
 TD.login = function (username, password) {
   return fetch(this.proxy + '/login', {
@@ -57,7 +63,7 @@ TD.login = function (username, password) {
       'X-TD-Authtype': 'twitter'
     },
     type: 'json'
-  }).then(this.transformLoginResponse);
+  }).then(this.transformLoginResponse.bind(this));
 };
 
 TD.verifyTwoFactor = function (opts) {
@@ -74,16 +80,17 @@ TD.verifyTwoFactor = function (opts) {
     },
     body: JSON.stringify(body),
     type: 'json'
-  }).then(this.transformLoginResponse);
+  }).then(this.transformLoginResponse.bind(this));
 };
 
 TD.transformLoginResponse = function (res) {
   if (res.screen_name) {
-    return {
+    this.user = new User({
       screenName: res.screen_name,
-      userId: res.user_id,
+      id: res.user_id,
       session: res.session
-    };
+    });
+    return this.user;
   }
 
   var response = {
@@ -127,150 +134,57 @@ TD.transformLoginResponse = function (res) {
  * Data
  */
 
-TD.initialFetch = function (user /*, force? */) {
-  if (this._initialFetchUser !== user) {
-    this._initialFetchUser = user;
-    this._pIntialFetch = this.fetchRawEverything(user);
+TD.initialFetch = function () {
+  if (this._initialFetchUser !== this.user) {
+    this._initialFetchUser = this.user;
+    this._pIntialFetch = this.fetchRawEverything();
   }
   return this._pIntialFetch;
 };
 
-TD.fetchRawEverything = function (user) {
-  return this.authorizedRequest(user, '/clients/blackbird/all', {
+TD.fetchRawEverything = function () {
+  return this.authorizedRequest('/clients/blackbird/all', {
     type: 'json'
-  });
+  }).then(this.processRawData.bind(this));
 };
 
 TD.resetInitialFetch = function () {
   this._pIntialFetch = Promise.reject(Error("No data fetched"));
 };
 
-/**
- * Metadata
- */
-
-TD.getRawMetadata = function (user) {
-  return this.initialFetch(user)
-    .then(function (tdData) {
-      return tdData.client;
-    });
-};
-
-TD.transformRawMetadata = function (rawMetadata) {
-  return {
-    columnOrder: rawMetadata.columns,
-    recentSearches: rawMetadata.recent_searches
+TD.processRawData = function(rawData) {
+  this.metadata = {
+    recentSearches: rawData.client.recent_searches
   };
-};
 
-TD.getMetadata = function (user) {
-  return this.getRawMetadata(user)
-    .then(this.transformRawMetadata.bind(this));
-};
+  var accountsByID = {};
+  this.accounts = [];
 
-/**
- * Accounts
- */
+  rawData.accounts.forEach(function(accountData) {
+    var account = new Account(accountData, this.proxy);
+    accountsByID[account.id] = account;
+    this.accounts.push(account);
+  }.bind(this));
 
-TD.getRawAccounts = function (user) {
-  return this.initialFetch(user)
-    .then(function (tdData) {
-      return tdData.accounts;
+  var feedsByID = {};
+
+  Object.keys(rawData.feeds).forEach(function(feedKey) {
+    var feedData = rawData.feeds[feedKey];
+    var account = accountsByID[feedData.account.userid];
+    var feed = new Feed(feedKey, feedData, account, this.proxy);
+
+    feedsByID[feed.key] = feed;
+  }.bind(this));
+
+  this.columns = rawData.client.columns.map(function(columnID) {
+    var columnData = rawData.columns[columnID];
+    var feeds = columnData.feeds.map(function(feedID) {
+      return feedsByID[feedID];
     });
+
+    return new Column(columnID, columnData, feeds);
+  }.bind(this));
 };
 
-TD.transformRawAccount = function (rawAccount) {
-  return {
-    name: rawAccount.name,
-    screenName: rawAccount.screen_name,
-    id: rawAccount.uid,
-    avatar: rawAccount.avatar,
-    default: rawAccount.default,
-    oauth: {
-      token: rawAccount.key,
-      secret: rawAccount.secret
-    }
-  };
-};
 
-TD.getAccounts = function (user) {
-  return this.getRawAccounts(user)
-    .then(function (accounts) {
-      return accounts.map(this.transformRawAccount);
-    }.bind(this));
-};
-
-/**
- * Columns
- */
-
-TD.getRawColumns = function (user) {
-  return this.initialFetch(user)
-    .then(function (tdData) {
-      return tdData.columns;
-    });
-};
-
-TD.transformRawColumn = function (columnKey, rawColumn, feeds) {
-  return {
-    key: columnKey,
-    feeds: feeds,
-    settings: rawColumn.settings,
-    type: rawColumn.type,
-    title: rawColumn.title || "Unknown column title"
-  };
-};
-
-TD.getColumns = function (user) {
-  return Promise.all([
-    this.getRawColumns(user),
-    this.getFeeds(user),
-    this.getMetadata(user)
-  ])
-    .then(function (res) {
-      var columns = res[0];
-      var feeds = res[1];
-      var metaData = res[2];
-      return metaData.columnOrder.map(function (columnKey) {
-        var rawColumn = columns[columnKey];
-        return this.transformRawColumn(
-          columnKey,
-          rawColumn,
-          feeds.filter(function (feed) {
-            return (rawColumn.feeds.indexOf(feed.key) > -1);
-          })
-        );
-      }, this);
-    }.bind(this));
-};
-
-/**
- * Feeds
- */
-
-TD.getRawFeeds = function (user) {
-  return this.initialFetch(user)
-    .then(function (tdData) {
-      return tdData.feeds;
-    });
-};
-
-TD.transformRawFeed = function (feedKey, rawFeed) {
-  return {
-    key: feedKey,
-    user: rawFeed.account.userid,
-    metadata: JSON.parse(rawFeed.metadata || '{}'),
-    type: rawFeed.type
-  };
-};
-
-TD.getFeeds = function (user) {
-  return this.getRawFeeds(user)
-    .then(function (feeds) {
-      return Object.keys(feeds).map(function (feedKey) {
-        return this.transformRawFeed(feedKey, feeds[feedKey]);
-      }, this);
-    }.bind(this));
-};
-
-module.exports = new TweetDeck();
+window.td = module.exports = new TweetDeck();

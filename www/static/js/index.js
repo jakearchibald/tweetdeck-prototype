@@ -25,7 +25,7 @@ React.initializeTouchEvents(true);
 var RootView = React.createClass({
   getInitialState: function () {
     return {
-      initialDataFetched: false,
+      localSessionDataFetched: false,
       user: "",
       columns: null,
       accounts: [],
@@ -34,17 +34,10 @@ var RootView = React.createClass({
   },
 
   fetchInitialData: function() {
-    tweetdeck.getAccounts(this.state.user)
-      .then(function (accounts) {
+    tweetdeck.initialFetch()
+      .then(function () {
         this.setState({
-          accounts: accounts
-        });
-      }.bind(this));
-
-    tweetdeck.getColumns(this.state.user)
-      .then(function (columns) {
-        this.setState({
-          columns: columns.map(function (column) {
+          columns: tweetdeck.columns.map(function (column) {
             // TODO: I imagine the Columns/Column component will handle the fetch of tweets
             column.tweets = makeTweets(100, {
               oldest: Date.now() - (1000 * 60 * 60),
@@ -80,11 +73,12 @@ var RootView = React.createClass({
   componentDidMount: function () {
     tweetdeckDb.getUser().then(function(user) {
       this.setState({
-        initialDataFetched: true,
+        localSessionDataFetched: true,
         user: user
       });
 
-      if (this.state.user) {
+      if (user) {
+        tweetdeck.setUser(user);
         this.fetchInitialData();
       }
     }.bind(this));
@@ -100,7 +94,7 @@ var RootView = React.createClass({
   },
 
   render: function () {
-    if (!this.state.initialDataFetched) {
+    if (!this.state.localSessionDataFetched) {
       return DOM.div({ className: "app" },
         DOM.div({ className: "page" },
           HeaderView({})

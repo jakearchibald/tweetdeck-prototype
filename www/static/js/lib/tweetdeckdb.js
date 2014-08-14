@@ -1,5 +1,6 @@
 var IndexedDouchebag = require('./indexeddouchebag');
 var Promise = require('rsvp').Promise;
+var User = require('./tweetdeck/user');
 
 function TweetdeckDb() {
   if (IndexedDouchebag.supported) {
@@ -14,20 +15,29 @@ function TweetdeckDb() {
 var TweetdeckDbProto = TweetdeckDb.prototype;
 
 TweetdeckDbProto.getUser = function() {
+  var p;
+
   if (IndexedDouchebag.supported) {
-    return this.idb.get('keyval', 'user');
+    p = this.idb.get('keyval', 'user');
   }
   else {
-    return Promise.resolve(localStorage['tweetdeck:user']);
+    p = Promise.resolve(localStorage['tweetdeck:user']);
   }
+
+  return p.then(function(data) {
+    if (!data) {
+      return null;
+    }
+    return new User(data);
+  });
 };
 
-TweetdeckDbProto.setUser = function(token) {
+TweetdeckDbProto.setUser = function(user) {
   if (IndexedDouchebag.supported) {
-    return this.idb.put('keyval', 'user', token);
+    return this.idb.put('keyval', 'user', user);
   }
   else {
-    localStorage['tweetdeck:user'] = token;
+    localStorage['tweetdeck:user'] = JSON.stringify(user);
     return Promise.resolve();
   }
 };
