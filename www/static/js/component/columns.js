@@ -6,7 +6,7 @@ var Swiper = require('../lib/swiper');
 module.exports = React.createClass({
   componentDidMount: function () {
     var scroller = this.refs.columns.getDOMNode();
-    this.props.swiper.setColumnsEl(this.refs.columns.getDOMNode());
+    this.props.swiper.setColumnsEl(scroller);
 
     scroller.addEventListener('wheel', function(event) {
       if (this.props.swiper.isActive()) {
