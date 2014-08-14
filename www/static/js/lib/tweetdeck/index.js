@@ -187,4 +187,4 @@ TD.processRawData = function(rawData) {
 };
 
 
-window.td = module.exports = new TweetDeck();
+module.exports = new TweetDeck();
