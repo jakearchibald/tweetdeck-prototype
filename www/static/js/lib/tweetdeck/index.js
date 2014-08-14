@@ -1,8 +1,8 @@
 'use strict';
 
 var Promise = require('rsvp').Promise;
-var fetch = require('./fetch');
-var utils = require('./utils');
+var fetch = require('../fetch');
+var utils = require('../utils');
 
 /**
  * Private utils
@@ -25,7 +25,7 @@ function TweetDeck(opts) {
   });
 
   this.proxy = opts.proxy;
-  this._pIntialFetch = this.resetInitialFetch();
+  this.resetInitialFetch();
 }
 
 var TD = TweetDeck.prototype;
@@ -128,25 +128,21 @@ TD.transformLoginResponse = function (res) {
  */
 
 TD.initialFetch = function (user /*, force? */) {
-  return this.getInitialFetchForUser(user);
+  if (this._initialFetchUser !== user) {
+    this._initialFetchUser = user;
+    this._pIntialFetch = this.fetchRawEverything(user);
+  }
+  return this._pIntialFetch;
 };
 
-TD.getRawEverything = function (user) {
+TD.fetchRawEverything = function (user) {
   return this.authorizedRequest(user, '/clients/blackbird/all', {
     type: 'json'
   });
 };
 
-TD.getInitialFetchForUser = function (user) {
-  if (this._initialFetchUser !== user) {
-    this._initialFetchUser = user;
-    this._pIntialFetch = this.getRawEverything(user);
-  }
-  return this._pIntialFetch;
-};
-
 TD.resetInitialFetch = function () {
-  return Promise.reject(Error("No data fetched"));
+  this._pIntialFetch = Promise.reject(Error("No data fetched"));
 };
 
 /**
