@@ -83,14 +83,14 @@ TD.transformLoginResponse = function (res) {
       screenName: res.screen_name,
       userId: res.user_id,
       session: res.session
-    }
+    };
   }
 
   var response = {
     raw: res,
     error: res.error,
     upstreamStatus: res.upstream_http_code
-  }
+  };
 
   if (res.xauth_response) {
     if(res.xauth_response.login_verification_request_cause) {
@@ -99,7 +99,7 @@ TD.transformLoginResponse = function (res) {
         viaMobileApp: (res.xauth_response.login_verification_request_type === 2),
         requestId: res.xauth_response.login_verification_request_id,
         userId: res.xauth_response.login_verification_user_id
-      }
+      };
     }
     if (res.xauth_response.errors && res.xauth_response.errors.length > 0) {
       response.xAuthError = res.xauth_response.errors[0];
@@ -109,19 +109,19 @@ TD.transformLoginResponse = function (res) {
         response.twoFactorChallenge = {
           viaSMSCode: true,
           error: response.xAuthError
-        }
+        };
       }
       if (response.xAuthError.code === 253) { // Waiting for mobile app auth
         response.twoFactorChallenge = {
           viaMobileApp: true,
           error: response.xAuthError
-        }
+        };
       }
     }
   }
 
   return response;
-}
+};
 
 /**
  * Data
