@@ -126,7 +126,6 @@
 .columns {
   height: 100%;
   @include flex(1);
-  @include flex-flow(column);
   @include display-flex;
   overflow-x: auto;
   overflow-y: hidden;
