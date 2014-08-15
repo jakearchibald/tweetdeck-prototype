@@ -13,7 +13,9 @@ module.exports = function fetch(url, opts) {
 
     var xhr = new XMLHttpRequest();
     xhr.open(opts.method, url, true);
+
     xhr.responseType = opts.type;
+
     xhr.withCredentials = (opts.credentials == 'include');
 
     Object.keys(opts.headers).forEach(function (k) {
@@ -21,7 +23,16 @@ module.exports = function fetch(url, opts) {
     });
 
     xhr.onload = function() {
-      resolve(xhr.response);
+      // IE11 doesn't support 'json' as a responseType
+      // https://connect.microsoft.com/IE/feedback/details/794808
+      if (opts.type == 'json' && typeof xhr.response == 'string') {
+        resolve(
+          Promise.resolve(xhr.response).then(JSON.parse)
+        );
+      }
+      else {
+        resolve(xhr.response);
+      }
     };
 
     xhr.onerror = function() {
