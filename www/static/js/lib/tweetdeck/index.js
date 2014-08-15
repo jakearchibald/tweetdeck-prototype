@@ -25,7 +25,7 @@ function sessionHeader(token) {
  */
 function TweetDeck(opts) {
   opts = utils.defaults(opts, {
-    proxy: '//localhost:8001'
+    proxy: '//' + window.location.hostname + ':8001'
   });
 
   this.proxy = opts.proxy;
@@ -38,7 +38,7 @@ function TweetDeck(opts) {
 
 var TD = TweetDeck.prototype;
 
-TD.authorizedRequest = function (path, opts) {
+TD._authorizedRequest = function (path, opts) {
   if (!this.user) {
     return Promise.reject(Error("Not logged in"));
   }
@@ -63,7 +63,7 @@ TD.login = function (username, password) {
       'X-TD-Authtype': 'twitter'
     },
     type: 'json'
-  }).then(this.transformLoginResponse.bind(this));
+  }).then(this._transformLoginResponse.bind(this));
 };
 
 TD.verifyTwoFactor = function (opts) {
@@ -80,10 +80,10 @@ TD.verifyTwoFactor = function (opts) {
     },
     body: JSON.stringify(body),
     type: 'json'
-  }).then(this.transformLoginResponse.bind(this));
+  }).then(this._transformLoginResponse.bind(this));
 };
 
-TD.transformLoginResponse = function (res) {
+TD._transformLoginResponse = function (res) {
   if (res.screen_name) {
     this.user = new User({
       screenName: res.screen_name,
@@ -137,22 +137,22 @@ TD.transformLoginResponse = function (res) {
 TD.initialFetch = function () {
   if (this._initialFetchUser !== this.user) {
     this._initialFetchUser = this.user;
-    this._pIntialFetch = this.fetchRawEverything();
+    this._pIntialFetch = this._fetchRawEverything();
   }
   return this._pIntialFetch;
 };
 
-TD.fetchRawEverything = function () {
-  return this.authorizedRequest('/clients/blackbird/all', {
+TD._fetchRawEverything = function () {
+  return this._authorizedRequest('/clients/blackbird/all', {
     type: 'json'
-  }).then(this.processRawData.bind(this));
+  }).then(this._processRawData.bind(this));
 };
 
 TD.resetInitialFetch = function () {
   this._pIntialFetch = Promise.reject(Error("No data fetched"));
 };
 
-TD.processRawData = function(rawData) {
+TD._processRawData = function(rawData) {
   this.metadata = {
     recentSearches: rawData.client.recent_searches
   };
@@ -185,6 +185,5 @@ TD.processRawData = function(rawData) {
     return new Column(columnID, columnData, feeds);
   }.bind(this));
 };
-
 
 module.exports = new TweetDeck();
