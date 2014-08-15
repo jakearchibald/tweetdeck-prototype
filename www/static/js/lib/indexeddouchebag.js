@@ -80,4 +80,10 @@ IndexedDouchebagProto.put = function(store, key, value) {
   });
 };
 
+IndexedDouchebagProto.delete = function(store, key) {
+  return this.transaction(store, 'readwrite', function(tx) {
+    tx.objectStore(store).delete(key);
+  });
+};
+
 module.exports = IndexedDouchebag;

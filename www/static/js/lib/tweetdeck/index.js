@@ -153,6 +153,10 @@ TD.resetInitialFetch = function () {
 };
 
 TD._processRawData = function(rawData) {
+  if (rawData.error) {
+    throw Error(rawData.error);
+  }
+  
   this.metadata = {
     recentSearches: rawData.client.recent_searches
   };

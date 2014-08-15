@@ -42,4 +42,14 @@ TweetdeckDbProto.setUser = function(user) {
   }
 };
 
+TweetdeckDbProto.deleteUser = function() {
+  if (IndexedDouchebag.supported) {
+    return this.idb.delete('keyval', 'user');
+  }
+  else {
+    delete localStorage['tweetdeck:user'];
+    return Promise.resolve();
+  }
+};
+
 module.exports = new TweetdeckDb();
