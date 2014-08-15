@@ -37,14 +37,7 @@ var RootView = React.createClass({
     tweetdeck.initialFetch()
       .then(function () {
         this.setState({
-          columns: tweetdeck.columns.map(function (column) {
-            // TODO: I imagine the Columns/Column component will handle the fetch of tweets
-            column.tweets = makeTweets(100, {
-              oldest: Date.now() - (1000 * 60 * 60),
-              newest: Date.now()
-            });
-            return column;
-          })
+          columns: tweetdeck.columns
         });
       }.bind(this))
       .catch(function(err) {

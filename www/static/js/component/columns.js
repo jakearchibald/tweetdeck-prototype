@@ -21,7 +21,9 @@ module.exports = React.createClass({
     return (
       DOM.div({ className: 'columns', ref: 'columns' },
         DOM.div({ className: 'column-panner' },
-          this.props.columns.map(Column)
+          this.props.columns.map(function(column) {
+            return Column({column: column});
+          })
         )
       )
     );
@@ -29,6 +31,11 @@ module.exports = React.createClass({
 });
 
 var Column = React.createClass({
+  getInitialState: function () {
+    return {
+      tweets: []
+    };
+  },
   componentDidMount: function() {
     var scroller = this.refs.scroller.getDOMNode();
 
@@ -39,15 +46,21 @@ var Column = React.createClass({
         scroller.scrollTop += event.deltaY;
       }
     });
+
+    this.props.column.update().then(function() {
+      this.setState({
+        tweets: this.props.column.tweets
+      });
+    }.bind(this));
   },
   render: function () {
     return (
-      DOM.article({ className: 'column', key: this.props.key },
+      DOM.article({ className: 'column', key: this.props.column.key },
         DOM.header({ className: 'column-header' },
-          this.props.title
+          this.props.column.title
         ),
         DOM.div({ className: 'column-scroller', ref: 'scroller' },
-          this.props.tweets.map(Tweet)
+          this.state.tweets.map(Tweet)
         )
       )
     );
@@ -59,7 +72,7 @@ var Tweet = React.createClass({
     return (
       DOM.article({ className: 'tweet media', key: this.props.id },
         DOM.div({ className: 'fake-img media__img' }),
-        DOM.div({ className: 'media__body' }, this.props.text)
+        DOM.div({ className: 'media__body',  dangerouslySetInnerHTML: {__html: this.props.html} })
       )
     );
   }

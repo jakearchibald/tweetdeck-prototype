@@ -1,14 +1,5 @@
-/*
-TD.proxiedRequest = function (account, url, opts) {
-  opts = utils.defaults(opts, {
-    headers: {}
-  });
-  opts.headers['x-td-oauth-key'] = account.oauth.token;
-  opts.headers['x-td-oauth-secret'] = account.oauth.secret;
-  return fetch(this.proxy + '/oauth/proxy/twitter/' + encodeURIComponent(url), opts);
-};
-*/
-
+var utils = require('../utils');
+var fetch = require('../fetch');
 
 function Account(rawData, proxy) {
   this.name = rawData.name;
@@ -20,8 +11,18 @@ function Account(rawData, proxy) {
     token: rawData.key,
     secret: rawData.secret
   };
+  this._proxy = proxy;
 }
 
 var AccountProto = Account.prototype;
+
+AccountProto.proxiedRequest = function(url, opts) {
+  opts = utils.defaults(opts, {
+    headers: {}
+  });
+  opts.headers['x-td-oauth-key'] = this.oauth.token;
+  opts.headers['x-td-oauth-secret'] = this.oauth.secret;
+  return fetch(this._proxy + '/oauth/proxy/twitter/' + encodeURIComponent(url), opts);
+};
 
 module.exports = Account;
