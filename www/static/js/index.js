@@ -46,6 +46,15 @@ var RootView = React.createClass({
             return column;
           })
         });
+      }.bind(this))
+      .catch(function(err) {
+        if (err.message == 'SessionExpired') {
+          this.setState({
+            user: null
+          });
+          tweetdeckDb.deleteUser();
+        }
+        console.error('Unexpected error', err);
       }.bind(this));
   },
 
