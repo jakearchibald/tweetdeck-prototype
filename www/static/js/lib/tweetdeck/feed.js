@@ -1,5 +1,5 @@
 var utils = require('../utils');
-var Tweet = require('./tweet');
+var ColumnItem = require('./columnitem');
 
 function Feed(key, feedData, account, proxy) {
   this.key = key;
@@ -13,17 +13,19 @@ var FeedProto = Feed.prototype;
 
 FeedProto.fetch = function(sinceId) {
   var endpoint = this._getEndpoint();
+
   endpoint.opts.since_id = sinceId || 1;
+  
   var url = endpoint.url + '?' + utils.objToUrlParams(endpoint.opts);
+  
   return this.account.proxiedRequest(url, {
     type: 'json'
   }).then(function(datas) {
-    // some feeds have tweets in .statuses
-    //if (data.statuses) debugger;
+    // search feeds have tweets in .statuses
     datas = datas.statuses || datas;
     
     return datas.map(function(data) {
-      return new Tweet(data.statuses || data);
+      return new ColumnItem(data);
     });
   });
 };

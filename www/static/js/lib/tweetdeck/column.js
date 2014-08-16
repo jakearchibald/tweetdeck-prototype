@@ -1,5 +1,4 @@
 var Promise = require('rsvp').Promise;
-var Tweet = require('./tweet');
 
 function Column(key, columnData, feeds) {
   this.key = key;
