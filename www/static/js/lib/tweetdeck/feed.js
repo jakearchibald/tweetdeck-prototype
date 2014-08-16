@@ -1,4 +1,5 @@
 var utils = require('../utils');
+var Tweet = require('./tweet');
 
 function Feed(key, feedData, account, proxy) {
   this.key = key;
@@ -16,6 +17,14 @@ FeedProto.fetch = function(sinceId) {
   var url = endpoint.url + '?' + utils.objToUrlParams(endpoint.opts);
   return this.account.proxiedRequest(url, {
     type: 'json'
+  }).then(function(datas) {
+    // some feeds have tweets in .statuses
+    //if (data.statuses) debugger;
+    datas = datas.statuses || datas;
+    
+    return datas.map(function(data) {
+      return new Tweet(data.statuses || data);
+    });
   });
 };
 

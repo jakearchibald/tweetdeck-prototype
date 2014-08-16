@@ -33,7 +33,7 @@ module.exports = React.createClass({
 var Column = React.createClass({
   getInitialState: function () {
     return {
-      tweets: []
+      items: []
     };
   },
   componentDidMount: function() {
@@ -49,7 +49,7 @@ var Column = React.createClass({
 
     this.props.column.update().then(function() {
       this.setState({
-        tweets: this.props.column.tweets
+        items: this.props.column.items
       });
     }.bind(this));
   },
@@ -60,14 +60,14 @@ var Column = React.createClass({
           this.props.column.title
         ),
         DOM.div({ className: 'column-scroller', ref: 'scroller' },
-          this.state.tweets.map(Tweet)
+          this.state.items.map(Item)
         )
       )
     );
   }
 });
 
-var Tweet = React.createClass({
+var Item = React.createClass({
   render: function () {
     return (
       DOM.article({ className: 'tweet media', key: this.props.id },
