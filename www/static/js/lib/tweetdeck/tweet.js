@@ -1,16 +1,9 @@
-var utils = require('../utils');
+var ColumnItem = require('./columnitem');
 
 function Tweet(tweetData) {
-  this.id = tweetData.id;
-  this.text = tweetData.text;
-  this._buildTweetHTML();
+  ColumnItem.call(this, tweetData);
 }
 
-var TweetProto = Tweet.prototype;
-
-TweetProto._buildTweetHTML = function() {
-  // TODO: entities
-  this.html = utils.escapeHTML(this.text);
-};
+var TweetProto = Tweet.prototype = Object.create(ColumnItem.prototype);
 
 module.exports = Tweet;

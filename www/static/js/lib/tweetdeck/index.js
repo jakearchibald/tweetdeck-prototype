@@ -3,10 +3,10 @@
 var Promise = require('rsvp').Promise;
 var fetch = require('../fetch');
 var utils = require('../utils');
-var User = require('./User');
-var Account = require('./Account');
-var Column = require('./Column');
-var Feed = require('./Feed');
+var User = require('./user');
+var Account = require('./account');
+var Column = require('./column');
+var Feed = require('./feed');
 
 /**
  * Private utils
