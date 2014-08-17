@@ -1,5 +1,8 @@
 var utils = require('../utils');
-var ColumnItem = require('./columnitem');
+var TweetColumnItem = require('./tweetcolumnitem');
+var FollowColumnItem = require('./followcolumnitem');
+var FavouriteColumnItem = require('./favouritecolumnitem');
+var ListAddColumnItem = require('./listaddcolumnitem');
 
 function Feed(key, feedData, account, proxy) {
   this.key = key;
@@ -25,9 +28,23 @@ FeedProto.fetch = function(sinceId) {
     datas = datas.statuses || datas;
     
     return datas.map(function(data) {
-      return new ColumnItem(data);
-    });
-  });
+      if (this.type == "interactions" || this.type == "networkactivity") {
+        switch (data.action) {
+          case "follow":
+            return new FollowColumnItem(data);
+          case "favourite":
+            return new FavouriteColumnItem(data);
+          case "mention":
+            return new TweetColumnItem(data.target_objects[0]);
+          case "list_member_added":
+            return new ListAddColumnItem(data);
+          default:
+            return new TweetColumnItem(data.targets[0]);
+        }
+      }
+      return new TweetColumnItem(data);
+    }.bind(this));
+  }.bind(this));
 };
 
 FeedProto._getEndpoint = function() {

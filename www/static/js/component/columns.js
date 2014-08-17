@@ -2,6 +2,8 @@ var React = require('react');
 var DOM = React.DOM;
 var utils = require('../lib/utils');
 var Swiper = require('../lib/swiper');
+var FollowColumnItem = require('./../lib/tweetdeck/followcolumnitem');
+var ListAddColumnItem = require('./../lib/tweetdeck/listaddcolumnitem');
 
 module.exports = React.createClass({
   componentDidMount: function () {
@@ -60,7 +62,39 @@ var Column = React.createClass({
           this.props.column.title
         ),
         DOM.div({ className: 'column-scroller', ref: 'scroller' },
-          this.state.items.map(Item)
+          this.state.items.map(function(item) {
+            if (item instanceof FollowColumnItem) {
+              return FollowItem({item: item});
+            }
+            else if (item instanceof ListAddColumnItem) {
+              return ListAddItem({item: item});
+            }
+            return Item({item: item});
+          })
+        )
+      )
+    );
+  }
+});
+
+var FollowItem = React.createClass({
+  render: function () {
+    return (
+      DOM.article({ className: 'tweet media', key: this.props.item.id },
+        DOM.div({ className: 'fake-img media__img' }),
+        DOM.div({ className: 'media__body',  dangerouslySetInnerHTML: {__html: this.props.item.followed.getDescriptionHTML()} })
+      )
+    );
+  }
+});
+
+var ListAddItem = React.createClass({
+  render: function () {
+    return (
+      DOM.article({ className: 'tweet media', key: this.props.item.id },
+        DOM.div({ className: 'fake-img media__img' }),
+        DOM.div({ className: 'media__body'},
+          this.props.item.adder.name + ' added you to a list'
         )
       )
     );
@@ -70,9 +104,9 @@ var Column = React.createClass({
 var Item = React.createClass({
   render: function () {
     return (
-      DOM.article({ className: 'tweet media', key: this.props.id },
+      DOM.article({ className: 'tweet media', key: this.props.item.id },
         DOM.div({ className: 'fake-img media__img' }),
-        DOM.div({ className: 'media__body',  dangerouslySetInnerHTML: {__html: this.props.html} })
+        DOM.div({ className: 'media__body',  dangerouslySetInnerHTML: {__html: this.props.item.getHTML()} })
       )
     );
   }

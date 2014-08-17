@@ -34,6 +34,10 @@ ColumnProto.update = function() {
       });
     }
 
+    columnItems = columnItems.sort(function(a, b) {
+      return b.date - a.date;
+    });
+
     this.items = columnItems.concat(this.items);
 
     return columnItems;
