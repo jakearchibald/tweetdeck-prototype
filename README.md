@@ -11,7 +11,7 @@ If you're taking a ticket on, make sure you announce it in the comments so other
 ## Getting set up
 
 * Install [Node](http://nodejs.org/),
-* Install Sass `gem install sass` (3.3 required)
+* Install Sass `gem install sass` (>=3.3 required)
 
 Then clone this repo & run:
 
