@@ -10,11 +10,14 @@ If you're taking a ticket on, make sure you announce it in the comments so other
 
 ## Getting set up
 
-Install [Node](http://nodejs.org/), then clone this repo & run:
+* Install [Node](http://nodejs.org/),
+* Install Sass `gem install sass` (3.3 required)
+
+Then clone this repo & run:
 
 ```sh
-$ npm install
-$ npm start
+npm install
+npm start
 ```
 
 You should be able to access the site at [localhost:8000](http://localhost:8000). API requests to TweetDeck are handled via proxy which runs on [localhost:8001](http://localhost:8001).
