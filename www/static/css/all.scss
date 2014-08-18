@@ -1,3 +1,11 @@
 @import 'utils';
 @import 'global';
-@import 'components';
+@import 'layout';
+
+// Components
+@import 'component/header';
+@import 'component/columns';
+@import 'component/buttons';
+@import 'component/login-form';
+@import 'component/tweet';
+@import 'component/media';

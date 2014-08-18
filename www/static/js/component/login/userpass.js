@@ -18,13 +18,17 @@ module.exports = React.createClass({
 
   render: function () {
     return DOM.form({ className: 'login-form', method: 'POST', onSubmit: this.onSubmit },
+      DOM.p({}, 'Sign in with your Twitter account'),
+      DOM.div({ className: 'login-form__error-message' },
+        DOM.p({}, this.props.loginMessage)
+      ),
       FieldGroup({},
         DOM.input({
           type: 'text',
           name: 'username',
           ref: 'username',
           required: true,
-          placeholder: 'Username or email'
+          placeholder: '@username'
         })
       ),
       FieldGroup({},
@@ -35,10 +39,7 @@ module.exports = React.createClass({
           required: true,
           placeholder: 'Password'
         }),
-        DOM.button({ type: 'submit' }, 'Sign in')
-      ),
-      DOM.div({ className: 'login-message' },
-        DOM.p({}, this.props.loginMessage)
+        DOM.button({ type: 'submit', className: 'button login-form__submit-button' }, 'Sign in')
       )
     );
   }

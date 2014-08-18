@@ -1,0 +1,61 @@
+/**
+ * Columns
+ */
+
+.columns {
+  height: 100%;
+  @include flex(1);
+  @include display-flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: #ddd;
+}
+
+.column-panner {
+  @include display-flex;
+  @media (min-width: 500px) and (min-height: 500px) {
+    // triggering gap at the end of scroll - there must be a better way than this
+    &::after {
+      content: '';
+      min-width: 1px;
+    }
+  }
+}
+
+.column {
+  background: #fff;
+  min-width: 100%;
+  @include display-flex;
+  @include flex-flow(column);
+
+  @media (min-width: 500px) and (min-height: 500px) {
+    min-width: 300px;
+    margin: 20px 20px 20px 0;
+    &:first-child {
+      margin-left: 20px;
+    }
+  }
+}
+
+.column-header {
+  background: #eee;
+  color: #111;
+  border-bottom: 2px solid #ddd;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: none;
+  font-size: 1.4rem;
+  padding: 9px 15px;
+
+  @media (min-width: 500px) and (min-height: 500px) {
+    display: block;
+  }
+}
+
+.column-scroller {
+  @include flex(1);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}

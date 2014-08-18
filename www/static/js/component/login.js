@@ -5,6 +5,7 @@ var Promise = require('rsvp').Promise;
 var React = require('react');
 var DOM = React.DOM;
 
+var LoginFormView = require('./login/container');
 var SMSAuthChallengeView = require('./login/smsauthchallenge');
 var MobileAppAuthChallengeView = require('./login/mobileappauthchallenge');
 var UserPassView = require('./login/userpass');
@@ -168,22 +169,33 @@ module.exports = React.createClass({
   },
 
   render: function () {
+
     if (this.state.inProgress) {
-      return DOM.img({ src: 'static/imgs/spinner.gif' });
-    }
-    if (this.state.twoFactorChallenge.viaSMSCode) {
-      return SMSAuthChallengeView({
-        loginMessage: this.state.loginMessage,
-        onSubmit: this.state.onMobileCodeSubmit
+      return LoginFormView({
+        loginComponent: DOM.img({ src: 'static/imgs/spinner.gif' })
       });
     }
-    if (this.state.twoFactorChallenge.viaMobileApp) {
-      return MobileAppAuthChallengeView({});
+
+    if (this.state.twoFactorChallenge.viaSMSCode) {
+      return LoginFormView({
+        loginComponent: SMSAuthChallengeView({
+          loginMessage: this.state.loginMessage,
+          onSubmit: this.state.onMobileCodeSubmit
+        })
+      });
     }
 
-    return UserPassView({
-      loginMessage: this.state.loginMessage,
-      onSubmit: this.onLoginSubmit
+    if (this.state.twoFactorChallenge.viaMobileApp) {
+      return LoginFormView({
+        loginComponent: MobileAppAuthChallengeView({})
+      });
+    }
+
+    return LoginFormView({
+      loginComponent: UserPassView({
+        loginMessage: this.state.loginMessage,
+        onSubmit: this.onLoginSubmit
+      })
     });
   }
 });

@@ -15,7 +15,7 @@ function streamError(why) {
 
 function sassTask(dev) {
   return gulp
-    .src('www/static/css/*.scss')
+    .src('www/static/css/**/*.scss')
     .pipe(sass({ sourcemap: dev, style: 'compressed' }))
     .pipe(gulp.dest('www/static/build/css/'));
 }
