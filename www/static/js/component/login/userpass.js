@@ -16,6 +16,10 @@ module.exports = React.createClass({
     this.props.onSubmit(username, password);
   },
 
+  componentDidMount: function () {
+    this.refs.username.getDOMNode().focus();
+  },
+
   render: function () {
     return DOM.form({ className: 'login-form', method: 'POST', onSubmit: this.onSubmit },
       DOM.p({}, 'Sign in with your Twitter account'),

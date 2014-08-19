@@ -5,7 +5,7 @@ var Promise = require('rsvp').Promise;
 var React = require('react');
 var DOM = React.DOM;
 
-var LoginFormView = require('./login/container');
+var ModalDialog = require('./modal-dialog');
 var SMSAuthChallengeView = require('./login/smsauthchallenge');
 var MobileAppAuthChallengeView = require('./login/mobileappauthchallenge');
 var UserPassView = require('./login/userpass');
@@ -171,14 +171,14 @@ module.exports = React.createClass({
   render: function () {
 
     if (this.state.inProgress) {
-      return LoginFormView({
-        loginComponent: DOM.img({ src: 'static/imgs/spinner.gif' })
+      return ModalDialog({
+        contentComponent: DOM.img({ src: 'static/imgs/spinner.gif', className: 'loading-spinner' })
       });
     }
 
     if (this.state.twoFactorChallenge.viaSMSCode) {
-      return LoginFormView({
-        loginComponent: SMSAuthChallengeView({
+      return ModalDialog({
+        contentComponent: SMSAuthChallengeView({
           loginMessage: this.state.loginMessage,
           onSubmit: this.state.onMobileCodeSubmit
         })
@@ -186,13 +186,13 @@ module.exports = React.createClass({
     }
 
     if (this.state.twoFactorChallenge.viaMobileApp) {
-      return LoginFormView({
-        loginComponent: MobileAppAuthChallengeView({})
+      return ModalDialog({
+        contentComponent: MobileAppAuthChallengeView({})
       });
     }
 
-    return LoginFormView({
-      loginComponent: UserPassView({
+    return ModalDialog({
+      contentComponent: UserPassView({
         loginMessage: this.state.loginMessage,
         onSubmit: this.onLoginSubmit
       })

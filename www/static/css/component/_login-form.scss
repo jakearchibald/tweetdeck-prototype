@@ -2,33 +2,6 @@
  * Login
  */
 
-.login-form__container {
-  z-index: 100;
-  position: absolute;
-  margin-left: auto;
-  margin-right: auto;
-  left: 0;
-  right: 0;
-  box-sizing: border-box;
-  width: 350px;
-  border: 1px solid #eee;
-  background-color: #eff;
-  padding: 10px;
-  top: 51px;
-  -webkit-transition: top 1s;
-  transition: top 0.7s;
-}
-
-.login-form__container.closed {
-  top: -200px;
-}
-
-@media (max-width: 500px) {
-  .login-form__container {
-    width: 100%;
-  }
-}
-
 .login-form__field-group input {
   font-size: 1em;
   height: 2.4em;

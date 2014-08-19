@@ -1,0 +1,26 @@
+.modal-dialog {
+  z-index: 100;
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+  width: 350px;
+  border: 1px solid #eee;
+  background-color: #eff;
+  padding: 10px;
+  top: 51px;
+  -webkit-transition: top 1s;
+  transition: top 0.7s;
+}
+
+.modal-dialog.closed {
+  top: -200px;
+}
+
+@media (max-width: 500px) {
+  .modal-dialog {
+    width: 100%;
+  }
+}
