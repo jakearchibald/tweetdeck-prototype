@@ -1,8 +1,10 @@
+/**
+ * Modal Dialog
+ */
+
 .modal-dialog {
-  margin: auto;
   box-sizing: border-box;
   overflow: auto;
-  width: 350px;
   border: 1px solid #eee;
   background-color: #eff;
   padding: 10px;
@@ -14,9 +16,10 @@
   @include transform(translate3d(0, -200px, 0));
 }
 
-@media (max-width: 500px) {
+@media (min-width: 500px) {
   .modal-dialog {
-    width: 100%;
+    width: 350px;
+    margin: auto;
   }
 }
 
