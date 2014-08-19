@@ -56,3 +56,18 @@
      min-width: #{$prefix}min-content;
    }
  }
+
+/**
+ * Transforms and Transitions
+ */
+
+  @mixin transform($transforms) {
+    @each $prefix in -webkit-, -moz-, -ms-, '' {
+      #{$prefix}transform: $transforms;
+    }
+  }
+  @mixin transition($transitions) {
+    @each $prefix in -webkit-, -moz-, -ms-, '' {
+      #{$prefix}transition: #{$prefix}$transitions;
+    }
+  }

@@ -9,8 +9,12 @@ module.exports = React.createClass({
 
   render: function () {
     return DOM.div({
-      className: 'modal-dialog closed',
-      ref: 'container'
-    }, this.props.contentComponent);
+        className: 'modal-overlay'
+      },
+      DOM.div({
+        className: 'modal-dialog closed',
+        ref: 'container'
+      }, this.props.contentComponent)
+    );
   }
 });

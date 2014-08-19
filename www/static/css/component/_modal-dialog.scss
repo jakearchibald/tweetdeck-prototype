@@ -1,26 +1,31 @@
 .modal-dialog {
-  z-index: 100;
-  position: absolute;
-  margin-left: auto;
-  margin-right: auto;
-  left: 0;
-  right: 0;
+  margin: auto;
   box-sizing: border-box;
+  overflow: auto;
   width: 350px;
   border: 1px solid #eee;
   background-color: #eff;
   padding: 10px;
-  top: 51px;
-  -webkit-transition: top 1s;
-  transition: top 0.7s;
+  @include transform(translate3d(0, 51px, 0));
+  @include transition(transform 0.5s);
 }
 
 .modal-dialog.closed {
-  top: -200px;
+  @include transform(translate3d(0, -200px, 0));
 }
 
 @media (max-width: 500px) {
   .modal-dialog {
     width: 100%;
   }
+}
+
+.modal-overlay {
+  z-index: 100;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.3);
 }
