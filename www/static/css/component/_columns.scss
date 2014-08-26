@@ -13,6 +13,8 @@
 
 .column-panner {
   @include display-flex;
+  min-width: 100%;
+
   @media (min-width: 500px) and (min-height: 500px) {
     // triggering gap at the end of scroll - there must be a better way than this
     &::after {
