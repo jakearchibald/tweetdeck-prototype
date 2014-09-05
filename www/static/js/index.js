@@ -3,7 +3,6 @@ var Promise = RSVP.Promise;
 var utils = require('./lib/utils');
 var tweetdeck = require('./lib/tweetdeck');
 var tweetdeckDb = require('./lib/tweetdeckdb');
-var makeTweets = require('./lib/maketweets');
 
 /**
  * UI
