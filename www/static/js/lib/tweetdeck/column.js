@@ -1,4 +1,5 @@
 var Promise = require('rsvp').Promise;
+var ColumnUtils = require('./columnutils');
 
 function Column(key, columnData, feeds) {
   this.key = key;
@@ -8,8 +9,8 @@ function Column(key, columnData, feeds) {
   this.updating = false;
   this.items = [];
 
-  // TODO: replace this with something better
-  this.title = columnData.title || "Unknown column title";
+  var defaultTitle = ColumnUtils.getTitle(feeds[0].type);
+  this.title = columnData.title || defaultTitle || "Unknown column title";
 }
 
 var ColumnProto = Column.prototype;
