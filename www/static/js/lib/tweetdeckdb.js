@@ -5,7 +5,7 @@ var User = require('./tweetdeck/user');
 function TweetdeckDb() {
   if (IndexedDouchebag.supported) {
     this.idb = new IndexedDouchebag('tweetdeck', 1, function(db, oldVersion) {
-      if (oldVersion < 1) {
+      if (oldVersion < 1 || oldVersion === 9223372036854776000) {
         db.createObjectStore('keyval');
       }
     });
