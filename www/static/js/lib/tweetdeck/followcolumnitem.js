@@ -3,12 +3,14 @@ var ColumnItem = require('./columnitem');
 
 function FollowColumnItem(data) {
   ColumnItem.call(this);
+  var followedData = data.targets[0];
+  var followerData = data.sources[0];
 
-  this.id = data.id;
+  this.id = followerData.id + '-followed-' + followedData.id;
   this.date = new Date(data.created_at);
 
-  this.followed = new TwitterUser(data.targets[0]);
-  this.follower = new TwitterUser(data.sources[0]);
+  this.followed = new TwitterUser(followedData);
+  this.follower = new TwitterUser(followerData);
 }
 
 var FollowColumnItemProto = FollowColumnItem.prototype = Object.create(ColumnItem.prototype);

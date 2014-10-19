@@ -64,12 +64,12 @@ var Column = React.createClass({
         DOM.div({ className: 'column-scroller', ref: 'scroller' },
           this.state.items.map(function(item) {
             if (item instanceof FollowColumnItem) {
-              return FollowItem({item: item});
+              return FollowItem({item: item, key:item.id});
             }
             else if (item instanceof ListAddColumnItem) {
-              return ListAddItem({item: item});
+              return ListAddItem({item: item, key:item.id});
             }
-            return Item({item: item});
+            return Item({item: item, key:item.id});
           })
         )
       )
