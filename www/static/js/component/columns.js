@@ -24,7 +24,7 @@ module.exports = React.createClass({
       DOM.div({ className: 'columns', ref: 'columns' },
         DOM.div({ className: 'column-panner' },
           this.props.columns.map(function(column) {
-            return Column({column: column});
+            return Column({column: column, key: column.key});
           })
         )
       )
