@@ -35,7 +35,7 @@ module.exports = React.createClass({
 var Column = React.createClass({
   getInitialState: function () {
     return {
-      items: []
+      items: null
     };
   },
   componentDidMount: function() {
@@ -62,7 +62,9 @@ var Column = React.createClass({
           this.props.column.title
         ),
         DOM.div({ className: 'column-scroller', ref: 'scroller' },
-          this.state.items.map(function(item) {
+          (!this.state.items) ?
+            Loader({column:this.props.column}) :
+            this.state.items.map(function (item) {
             if (item instanceof FollowColumnItem) {
               return FollowItem({item: item, key:item.id});
             }
@@ -109,5 +111,16 @@ var Item = React.createClass({
         DOM.div({ className: 'media__body',  dangerouslySetInnerHTML: {__html: this.props.item.getHTML()} })
       )
     );
+  }
+});
+
+var Loader = React.createClass({
+  render: function() {
+    return (
+      DOM.div( {className:'column-loader'},
+        DOM.img({ src: 'static/imgs/spinner-small.gif'}),
+        DOM.span({}, 'Loading...')
+      )
+    )
   }
 });

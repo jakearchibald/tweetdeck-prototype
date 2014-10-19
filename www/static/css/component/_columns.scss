@@ -63,4 +63,13 @@
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+.column-loader {
+  color: #aaaaaa;
+  padding: 20px;
+  text-align: center;
+  img, span {
+    vertical-align: middle;
+    margin:2px;
+  }
+}
 }
