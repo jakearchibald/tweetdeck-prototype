@@ -51,8 +51,8 @@ var ColumnHeadingsNav = React.createClass({
         this.props.columns.map(ColumnHeading)
       ),
       DOM.div({ className: 'column-headings-nav-pips' },
-        this.props.columns.map(function(o, i, arr) {
-          return DOM.div({ className: 'pip' },
+        this.props.columns.map(function(column) {
+          return DOM.div({ className: 'pip', key:column.key},
             DOM.div({ className: 'pip-fill' })
           );
         })

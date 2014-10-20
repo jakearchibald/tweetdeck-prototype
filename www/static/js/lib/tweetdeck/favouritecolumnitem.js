@@ -5,7 +5,7 @@ function FavouriteColumnItem(data) {
   TweetColumnItem.call(this.targets[0]);
 
   this.favouritedBy = new TwitterUser(data.sources[0]);
-  this.id = this.id + '-fav-' + this.favouritedBy.id;
+  this.id = this.id + '-fav-' + data.sources[0].id;
   this.date = new Date(data.created_at);
 }
 

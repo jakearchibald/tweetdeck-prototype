@@ -26,13 +26,19 @@
 
 .column {
   background: #fff;
+  width: 100%;
   min-width: 100%;
   @include display-flex;
   @include flex-flow(column);
 
   @media (min-width: 500px) and (min-height: 500px) {
+    position: relative;
+    width: 300px;
     min-width: 300px;
     margin: 20px 20px 20px 0;
+    -webkit-animation: appear 0.2s; /* Chrome, Safari, Opera */
+    animation: appear 0.2s;
+
     &:first-child {
       margin-left: 20px;
     }
@@ -60,4 +66,26 @@
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+}
+
+.column-loader {
+  color: #aaaaaa;
+  padding: 20px;
+  text-align: center;
+  img, span {
+    vertical-align: middle;
+    margin:2px;
+  }
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes appear {
+  0%   {top:-500px;}
+  100% {top:0;}
+}
+
+/* Standard syntax */
+@keyframes appear {
+  0%   {top:-500px;}
+  100% {top:0;}
 }
