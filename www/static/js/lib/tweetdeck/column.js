@@ -16,36 +16,34 @@ function Column(key, columnData, feeds) {
 var ColumnProto = Column.prototype;
 
 // resolves with new tweets
-ColumnProto.update = function() {
+ColumnProto.loadMore = function() {
   this.updating = true;
-  return Promise.all(
-    this.feeds.map(function(f) { return f.fetch(); })
-  ).then(function(columns) {
-    this.updating = false;
+  var lastId = this.items.length > 0 ? this.items[this.items.length - 1].id : null;
+  return Promise
+    .all(this.feeds.map(function (f) {
+      return f.fetch(lastId);
+    }))
+    .then(function (columns) {
+      this.updating = false;
 
-    var columnItems;
+      this.items = this.items.concat(columns
+        .reduce(concat)
+        .sort(byDate));
 
-    // move tweets into one ordered array
-    if (!columns[1]) {
-      columnItems = columns[0];
-    }
-    else {
-      columnItems = columns.reduce(function(a, b) {
-        return a.concat(b);
-      });
-    }
-
-    columnItems = columnItems.sort(function(a, b) {
-      return b.date - a.date;
+      return this.items;
+    }.bind(this))
+    .catch(function (err) {
+      console.log('feed update error', err);
+      throw err;
     });
-
-    this.items = columnItems.concat(this.items);
-
-    return columnItems;
-  }.bind(this)).catch(function(err) {
-    console.log('feed update error', err);
-    throw err;
-  }.bind(this));
 };
+
+function byDate(a, b) {
+  return b.date - a.date;
+}
+
+function concat(a, b) {
+  return a.concat(b);
+}
 
 module.exports = Column;

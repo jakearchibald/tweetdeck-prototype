@@ -14,11 +14,14 @@ function Feed(key, feedData, account, proxy) {
 
 var FeedProto = Feed.prototype;
 
-FeedProto.fetch = function(sinceId) {
+FeedProto.fetch = function(maxId) {
   var endpoint = this._getEndpoint();
 
-  endpoint.opts.since_id = sinceId || 1;
-  
+  endpoint.opts.since_id = 1;
+  if (maxId) {
+    endpoint.opts.max_id = maxId;
+  }
+
   var url = endpoint.url + '?' + utils.objToUrlParams(endpoint.opts);
   
   return this.account.proxiedRequest(url, {
