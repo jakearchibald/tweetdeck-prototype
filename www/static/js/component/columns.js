@@ -35,11 +35,12 @@ module.exports = React.createClass({
 var Column = React.createClass({
   getInitialState: function () {
     return {
-      items: null
+      items: []
     };
   },
   componentDidMount: function() {
     var scroller = this.refs.scroller.getDOMNode();
+    var tweets = this.refs.tweets.getDOMNode();
 
     scroller.addEventListener('wheel', function(event) {
       if (Math.abs(event.deltaY) >= Math.abs(event.deltaX)) {
@@ -47,14 +48,22 @@ var Column = React.createClass({
         event.stopPropagation();
         scroller.scrollTop += event.deltaY;
       }
-    });
 
-    this.props.column.update().then(function() {
-      this.setState({
-        items: this.props.column.items
-      });
+      if (scroller.scrollTop + scroller.clientHeight > tweets.clientHeight - 20) {
+        this.loadMore();
+      }
+    }.bind(this));
+
+    this.loadMore();
+  },
+
+  loadMore: function() {
+    this.setState({loading: true});
+    this.props.column.loadMore().then(function(items) {
+      this.setState({ loading: false, items: items });
     }.bind(this));
   },
+
   render: function () {
     return (
       DOM.article({ className: 'column', key: this.props.column.key },
@@ -62,17 +71,18 @@ var Column = React.createClass({
           this.props.column.title
         ),
         DOM.div({ className: 'column-scroller', ref: 'scroller' },
-          (!this.state.items) ?
-            Loader({column:this.props.column}) :
+          DOM.div({ className: 'tweet-container', ref: 'tweets'},
             this.state.items.map(function (item) {
-            if (item instanceof FollowColumnItem) {
-              return FollowItem({item: item, key:item.id});
-            }
-            else if (item instanceof ListAddColumnItem) {
-              return ListAddItem({item: item, key:item.id});
-            }
-            return Item({item: item, key:item.id});
-          })
+                if (item instanceof FollowColumnItem) {
+                  return FollowItem({item: item, key:item.id});
+                }
+                else if (item instanceof ListAddColumnItem) {
+                  return ListAddItem({item: item, key:item.id});
+                }
+                return Item({item: item, key:item.id});
+              }
+          ),
+          this.state.loading ? Loader({column:this.props.column, key:'loader'}) : null)
         )
       )
     );
