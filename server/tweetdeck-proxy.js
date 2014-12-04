@@ -31,8 +31,9 @@ module.exports = http.createServer(function (req, res) {
 
   var tweetdeckReq = https.request(data, function(twres) {
     Object.keys(twres.headers).forEach(function (k) {
-      res.setHeader(k, twres.headers[k]);
+      headers[k] = twres.headers[k];
     });
+    res.writeHead(twres.statusCode, headers);
     twres.pipe(res);
   });
 
