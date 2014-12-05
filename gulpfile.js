@@ -41,7 +41,10 @@ gulp.task('watch', ['sass'], function() {
       // log errors if they happen
       .on('error', streamError)
       .pipe(source('all.js'))
-      .pipe(gulp.dest('www/static/build/js/'));
+      .pipe(gulp.dest('www/static/build/js/'))
+      .on('end', function () {
+        console.log('Built all.js');
+      });
   }
 
   rebundle();
