@@ -1,3 +1,5 @@
+'use strict';
+
 var browserify = require('browserify');
 var browserSync = require('browser-sync');
 var del = require('del');
@@ -53,13 +55,7 @@ gulp.task('watch', ['sass'], function() {
     cache: {}, packageCache: {}, fullPaths: true, // watchify args
     debug: true
   }));
-  bundler.exclude('vertx');
-  bundler.transform(to5ify.configure({
-    experimental: true
-  }));
-  bundler.on('update', rebundle);
-
-  function rebundle () {
+  var rebundle = function rebundle () {
     return bundler.bundle()
       // log errors if they happen
       .on('error', streamError)
@@ -72,9 +68,13 @@ gulp.task('watch', ['sass'], function() {
       .on('end', function () {
         console.log('Built all.js');
       });
-  }
+  };
 
-  rebundle();
+  bundler.exclude('vertx');
+  bundler.transform(to5ify.configure({
+    experimental: true
+  }));
+  bundler.on('update', rebundle);
 
   // js-head
   // gulp.watch('www/static/js/head.js', ['js-head']);
