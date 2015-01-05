@@ -1,3 +1,6 @@
+"use strict";
+require("regenerator/runtime");
+
 var RSVP = require('rsvp');
 var Promise = RSVP.Promise;
 var utils = require('./lib/utils');
