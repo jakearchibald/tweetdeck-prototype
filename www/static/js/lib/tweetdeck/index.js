@@ -32,7 +32,7 @@ function TweetDeck(opts) {
   this.columns = null;
   this.accounts = null;
   this.metadata = null;
-  this.resetInitialFetch();
+  this._pIntialFetch = null;
 }
 
 var TD = TweetDeck.prototype;
@@ -145,10 +145,6 @@ TD._fetchRawEverything = function () {
   return this._authorizedRequest('/clients/blackbird/all', {
     type: 'json'
   }).then(this._processRawData.bind(this));
-};
-
-TD.resetInitialFetch = function () {
-  this._pIntialFetch = Promise.reject(Error("No data fetched"));
 };
 
 TD._processRawData = function(rawData) {
