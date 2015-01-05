@@ -196,7 +196,7 @@ module.exports = React.createClass({
     return ModalDialog({
       contentComponent: DOM.div({},
         (this.state.inProgress ?
-          DOM.img({ src: 'static/imgs/spinner.gif', className: 'loading-spinner' }) :
+          DOM.img({ src: 'static/imgs/spinner-bubbles.svg', className: 'loading-spinner' }) :
           this.getContent())
       )
     });
