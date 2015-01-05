@@ -1,8 +1,11 @@
 'use strict';
-require('regenerator/runtime');
 
-const RSVP = require('rsvp');
-const Promise = RSVP.Promise;
+// 'polyfills'
+require('regenerator/runtime');
+if (!window.Promise) {
+  window.Promise = require('es6-promise').Promise;
+}
+
 const utils = require('./lib/utils');
 
 /**

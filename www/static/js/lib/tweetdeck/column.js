@@ -1,4 +1,3 @@
-var Promise = require('rsvp').Promise;
 var ColumnUtils = require('./columnutils');
 
 function Column(key, columnData, feeds) {

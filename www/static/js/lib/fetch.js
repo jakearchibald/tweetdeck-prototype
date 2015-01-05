@@ -1,4 +1,3 @@
-var Promise = require('rsvp').Promise;
 var defaults = require('./utils').defaults;
 
 module.exports = function fetch(url, opts) {

@@ -1,5 +1,3 @@
-var Promise = require('rsvp').Promise;
-
 function promisifyRequest(obj) {
   return new Promise(function(resolve, reject) {
     function onsuccess(event) {

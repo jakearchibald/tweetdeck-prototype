@@ -1,6 +1,5 @@
 'use strict';
 
-var Promise = require('rsvp').Promise;
 var fetch = require('../fetch');
 var utils = require('../utils');
 var User = require('./user');

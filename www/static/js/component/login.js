@@ -1,7 +1,6 @@
 var tweetdeck = require('../lib/tweetdeck');
 var utils = require('./../lib/utils');
 
-var Promise = require('rsvp').Promise;
 var React = require('react');
 var DOM = React.DOM;
 

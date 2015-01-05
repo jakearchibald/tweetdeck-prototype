@@ -1,5 +1,3 @@
-var Promise = require('rsvp').Promise;
-
 exports.defaults = function defaults(opts, defaultOpts) {
   var r = {};
 
