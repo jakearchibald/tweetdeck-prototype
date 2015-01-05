@@ -1,8 +1,9 @@
 {
   "name": "tweetdeck-offline-prototype",
   "version": "0.0.0",
-  "description": "",
+  "description": "(mobile|offline)-first Tweetdeck prototype",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "start": "npm install && gulp"
   },
@@ -13,7 +14,8 @@
     "del": "^1.1.1",
     "express": "^4.10.7",
     "gulp": "^3.8.6",
-    "gulp-ruby-sass": "^0.7.1",
+    "gulp-sass": "^1.2.4",
+    "gulp-sourcemaps": "^1.3.0",
     "handlebars": "^2.0.0",
     "mediator-js": "^0.9.7",
     "react": "^0.12.2",

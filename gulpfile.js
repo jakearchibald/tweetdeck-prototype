@@ -1,5 +1,6 @@
 var gulp = require('gulp');
-var sass = require('gulp-ruby-sass');
+var sass = require('gulp-sass');
+var sourcemaps = require('gulp-sourcemaps');
 var source = require('vinyl-source-stream');
 var watchify = require('watchify');
 var browserify = require('browserify');
@@ -16,7 +17,9 @@ function streamError(why) {
 function sassTask(dev) {
   return gulp
     .src('www/static/css/**/*.scss')
-    .pipe(sass({ sourcemap: dev, style: 'compressed' }))
+    .pipe(sourcemaps.init())
+      .pipe(sass({ outputStyle: dev ? 'expanded' : 'compressed' }))
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest('www/static/build/css/'));
 }
 
