@@ -1,10 +1,12 @@
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var sourcemaps = require('gulp-sourcemaps');
-var source = require('vinyl-source-stream');
-var watchify = require('watchify');
 var browserify = require('browserify');
 var del = require('del');
+var gulp = require('gulp');
+var sass = require('gulp-sass');
+var source = require('vinyl-source-stream');
+var sourcemaps = require('gulp-sourcemaps');
+var to5ify = require('6to5ify');
+var watchify = require('watchify');
+
 var app = require('./server');
 var tweetdeckProxy = require('./server/tweetdeck-proxy');
 
@@ -38,6 +40,9 @@ gulp.task('watch', ['sass'], function() {
   // js
   var bundler = watchify(browserify('./www/static/js/index.js', watchify.args));
   bundler.exclude('vertx');
+  bundler.transform(to5ify.configure({
+    experimental: true
+  }));
   bundler.on('update', rebundle);
 
   function rebundle () {
