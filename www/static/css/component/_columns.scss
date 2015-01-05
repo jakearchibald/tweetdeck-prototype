@@ -70,11 +70,16 @@
 
 .column-loader {
   height: 3em;
-  background: #f5f8fa;
   color: #aab8c2;
   text-align: center;
   fill: currentColor; // Let color cascade to SVG fill
   overflow: hidden;
+  background: #f5f8fa;
+  transition: background-color 100ms linear;
+}
+
+.column-loader--loading {
+  background: rgba(#f5f8fa, 0);
 }
 
 .column-loader-button {

@@ -4,7 +4,7 @@
 
 .app-header {
   z-index: 200;
-  background: #55acee;
+  background: #9266cc;
   @include display-flex;
 }
 
@@ -41,14 +41,14 @@
     top: 0;
     left: 0;
     bottom: 0;
-    background: linear-gradient(to right, #55acee, rgba(#55acee, 0));
+    background: linear-gradient(to right, #9266cc, rgba(#9266cc, 0));
     z-index: 1;
   }
 
   &::after {
     left: auto;
     right: 0;
-    background: linear-gradient(to left, #55acee, rgba(#55acee, 0));
+    background: linear-gradient(to left, #9266cc, rgba(#9266cc, 0));
   }
 }
 

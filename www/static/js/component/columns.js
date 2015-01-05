@@ -1,5 +1,6 @@
-var React = require('react');
+var React = require('react/addons');
 var DOM = React.DOM;
+var cx = React.addons.classSet;
 var utils = require('../lib/utils');
 var Swiper = require('../lib/swiper');
 var FollowColumnItem = require('./../lib/tweetdeck/followcolumnitem');
@@ -100,8 +101,12 @@ var Item = React.createClass({
 
 var Loader = React.createClass({
   render: function() {
+    var classes = cx({
+      'column-loader': true,
+      'column-loader--loading': this.props.loading
+    });
     return (
-      DOM.div({ className: 'column-loader' },
+      DOM.div({ className: classes },
         (this.props.loading ?
           DOM.div({ className: 'column-loader-spinner' },
             DOM.img({ src: 'static/imgs/spinner-bubbles.svg'})
