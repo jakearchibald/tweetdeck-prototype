@@ -80,7 +80,7 @@ var Column = React.createClass({
         DOM.div({ className: 'column-scroller', ref: 'scroller' },
           DOM.div({ className: 'tweet-container', ref: 'tweets'},
             this.state.items.map(function (item) {
-              return Item({ item: item, key:item.id });
+              return Item({ item: item, key: item.id });
             }),
             (!this.state.exhausted ?
               Loader({ loading: this.state.loading, onLoad: this.loadMore, key: 'loader' }) :

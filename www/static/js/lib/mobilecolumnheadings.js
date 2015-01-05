@@ -27,10 +27,10 @@ MobileColumnHeadingsProto.render = function(pos) {
     var phase = pos * (arr.length - 1) - i;
 
     if (phase < 1 && phase > -1) {
-      pip.style.opacity = 1 - Math.abs(phase);
+      pip.style.opacity = 0.2 + (1 - Math.abs(phase));
     }
     else {
-      pip.style.opacity = 0;
+      pip.style.opacity = 0.2;
     }
   }.bind(this));
 };
