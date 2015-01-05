@@ -1,7 +1,8 @@
 'use strict';
 
 // 'polyfills'
-require('regenerator/runtime');
+require('6to5/polyfill');
+
 if (!window.Promise) {
   window.Promise = require('es6-promise').Promise;
 }
