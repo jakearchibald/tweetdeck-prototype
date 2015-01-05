@@ -18,6 +18,7 @@ var ColumnProto = Column.prototype;
 // resolves with new tweets
 ColumnProto.loadMore = function() {
   this.updating = true;
+  // TODO remove multi-feed capability to avoid missing tweets bug
   var lastId = this.items.length > 0 ? this.items[this.items.length - 1].id : null;
   return Promise
     .all(this.feeds.map(function (f) {
@@ -26,11 +27,14 @@ ColumnProto.loadMore = function() {
     .then(function (columns) {
       this.updating = false;
 
-      this.items = this.items.concat(columns
-        .reduce(concat)
-        .sort(byDate));
+      var previousLength = this.items.length;
+      this.items = this.items.concat(columns.reduce(concat).sort(byDate));
 
-      return this.items;
+      return {
+        items: this.items,
+        // Got nothing back, must be the end
+        exhausted: (previousLength === this.items.length)
+      };
     }.bind(this))
     .catch(function (err) {
       console.log('feed update error', err);

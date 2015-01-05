@@ -69,13 +69,31 @@
 }
 
 .column-loader {
-  color: #aaaaaa;
-  padding: 20px;
+  height: 3em;
+  background: #f5f8fa;
+  color: #aab8c2;
   text-align: center;
-  img, span {
-    vertical-align: middle;
-    margin:2px;
-  }
+  fill: currentColor; // Let color cascade to SVG fill
+  overflow: hidden;
+}
+
+.column-loader-button {
+  color: #aab8c2;
+  box-shadow: none;
+  font-weight: normal;
+  border-radius: 0;
+  border: none;
+  margin: 0;
+  width: 100%;
+  padding: 1em 0;
+  background: transparent;
+  line-height: 1;
+}
+
+.column-loader-spinner img {
+  height: 3em;
+  width: 3em;
+  fill: currentColor; // Let color cascade to SVG fill
 }
 
 /* Chrome, Safari, Opera */
