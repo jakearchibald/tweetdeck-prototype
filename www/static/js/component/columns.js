@@ -5,6 +5,8 @@ var utils = require('../lib/utils');
 var Swiper = require('../lib/swiper');
 
 module.exports = React.createClass({
+  displayName: 'Columns',
+
   componentDidMount: function () {
     var scroller = this.refs.columns.getDOMNode();
     this.props.swiper.setColumnsEl(scroller);
@@ -32,6 +34,8 @@ module.exports = React.createClass({
 });
 
 var Column = React.createClass({
+  displayName: 'Column',
+
   getInitialState: function () {
     return {
       items: [],
@@ -88,6 +92,8 @@ var Column = React.createClass({
 });
 
 var Item = React.createClass({
+  displayName: 'Item',
+
   render: function () {
     return (
       DOM.article({ className: 'tweet media', key: this.props.item.id },
@@ -99,6 +105,8 @@ var Item = React.createClass({
 });
 
 var Loader = React.createClass({
+  displayName: 'Loader',
+
   render: function() {
     var classes = cx({
       'column-loader': true,
