@@ -1,22 +1,22 @@
-"use strict";
-require("regenerator/runtime");
+'use strict';
+require('regenerator/runtime');
 
-var RSVP = require('rsvp');
-var Promise = RSVP.Promise;
-var utils = require('./lib/utils');
-var tweetdeck = require('./lib/tweetdeck');
-var tweetdeckDb = require('./lib/tweetdeckdb');
+const RSVP = require('rsvp');
+const Promise = RSVP.Promise;
+const utils = require('./lib/utils');
+const tweetdeck = require('./lib/tweetdeck');
+const tweetdeckDb = require('./lib/tweetdeckdb');
 
 /**
  * UI
  */
 
-var React = require('react');
-var DOM = React.DOM;
-var LoginView = require('./component/login');
-var ColumnsView = require('./component/columns');
-var HeaderView = require('./component/header');
-var Swiper = require('./lib/swiper.js');
+const React = require('react');
+const DOM = React.DOM;
+const LoginView = require('./component/login');
+const ColumnsView = require('./component/columns');
+const HeaderView = require('./component/header');
+const Swiper = require('./lib/swiper.js');
 
 window.DOM = DOM;
 
@@ -24,26 +24,26 @@ window.DOM = DOM;
 React.initializeTouchEvents(true);
 
 // Root View
-var RootView = React.createClass({
+const RootView = React.createClass({
   getInitialState: function () {
     return {
       localSessionDataFetched: false,
-      user: "",
+      user: '',
       columns: null,
       accounts: [],
       swiper: this.createSwiper()
     };
   },
 
-  fetchInitialData: function() {
+  fetchInitialData: function () {
     tweetdeck.initialFetch()
       .then(function () {
         this.setState({
           columns: tweetdeck.columns
         });
       }.bind(this))
-      .catch(function(err) {
-        if (err.message == 'SessionExpired') {
+      .catch(function (err) {
+        if (err.message === 'SessionExpired') {
           this.setState({
             user: null
           });
@@ -55,7 +55,7 @@ var RootView = React.createClass({
 
   createSwiper: function () {
     var swiper = new Swiper();
-    var largeWidth = window.matchMedia("(min-width: 500px) and (min-height: 500px)");
+    var largeWidth = window.matchMedia('(min-width: 500px) and (min-height: 500px)');
     var handleWidthChange = function () {
       if (largeWidth.matches) {
         swiper.stop();
@@ -65,7 +65,7 @@ var RootView = React.createClass({
       }
     }.bind(this);
 
-    window.addEventListener('resize', function() {
+    window.addEventListener('resize', function () {
       swiper.updateLayout();
     });
 
@@ -75,7 +75,7 @@ var RootView = React.createClass({
   },
 
   componentDidMount: function () {
-    tweetdeckDb.getUser().then(function(user) {
+    tweetdeckDb.getUser().then(function (user) {
       this.setState({
         localSessionDataFetched: true,
         user: user
@@ -99,8 +99,8 @@ var RootView = React.createClass({
 
   render: function () {
     if (!this.state.localSessionDataFetched) {
-      return DOM.div({ className: "app" },
-        DOM.div({ className: "page" },
+      return DOM.div({ className: 'app' },
+        DOM.div({ className: 'page' },
           HeaderView({})
         )
       );
@@ -110,16 +110,16 @@ var RootView = React.createClass({
     // it'd be great if the login were a modal dialog rather than a
     // switch between the columns view
     if (!this.state.user) {
-      return DOM.div({ className: "app" },
-        DOM.div({ className: "page" },
+      return DOM.div({ className: 'app' },
+        DOM.div({ className: 'page' },
           HeaderView({}),
           LoginView({ onLoginSuccess: this.loginDidSucceed })
         )
       );
     }
 
-    return DOM.div({ className: "app" },
-      DOM.div({ className: "page" },
+    return DOM.div({ className: 'app' },
+      DOM.div({ className: 'page' },
         HeaderView({ columns: this.state.columns, swiper: this.state.swiper }),
         (this.state.columns ? ColumnsView({ columns: this.state.columns, swiper: this.state.swiper }) : undefined)
       )
@@ -127,6 +127,6 @@ var RootView = React.createClass({
   }
 });
 
-utils.domReady.then(function() {
+utils.domReady.then(function () {
   React.renderComponent(RootView({}), document.querySelector('.content'));
 });
