@@ -1,15 +1,18 @@
+'use strict';
+
 var tweetdeck = require('../lib/tweetdeck');
-var utils = require('./../lib/utils');
+var utils = require('../lib/utils');
 
 var React = require('react');
 var DOM = React.DOM;
 
-var ModalDialog = require('./modal-dialog');
-var SMSAuthChallengeView = require('./login/smsauthchallenge');
-var MobileAppAuthChallengeView = require('./login/mobileappauthchallenge');
-var UserPassView = require('./login/userpass');
+var ModalDialog = React.createFactory(require('./modal-dialog'));
+var SMSAuthChallengeView = React.createFactory(require('./login/smsauthchallenge'));
+var MobileAppAuthChallengeView = React.createFactory(require('./login/mobileappauthchallenge'));
+var UserPassView = React.createFactory(require('./login/userpass'));
 
 module.exports = React.createClass({
+  displayName: 'LoginView',
 
   propTypes: {
     onLoginSuccess: React.PropTypes.func.isRequired
@@ -90,7 +93,7 @@ module.exports = React.createClass({
   authenticateViaSMSCode: function(twoFactorChallenge) {
     return this.getSMSCodeFromUser(twoFactorChallenge)
       .then(function (code) {
-        return this.attemptTwoFactor( {code: code} )
+        return this.attemptTwoFactor({ code: code })
           .then(this.handleLoginResponse);
       }.bind(this));
   },
@@ -134,11 +137,11 @@ module.exports = React.createClass({
     }.bind(this));
   },
 
-  attemptTwoFactor: function(opts) {
+  attemptTwoFactor: function (opts) {
     this.setState({
       inProgress: true
     });
-    var opts = utils.defaults(opts, {
+    opts = utils.defaults(opts, {
       requestId: this.state.twoFactorChallenge.requestId,
       userId: this.state.twoFactorChallenge.userId,
     });
@@ -157,10 +160,11 @@ module.exports = React.createClass({
     var xAuthErrors = {
       '32': 'User/pass incorrect',
       '236': 'SMS auth code incorrect'
-    }
+    };
     var message;
+
     try {
-      message = xAuthErrors[code.toString()]
+      message = xAuthErrors[code.toString()];
     } catch (e) {
       message = 'Unknown xAuth error';
     }
