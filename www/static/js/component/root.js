@@ -1,7 +1,7 @@
 const React = require('react');
-const LoginView = require('./login');
-const ColumnsView = require('./columns');
-const HeaderView = require('./header');
+const LoginView = React.createFactory(require('./login'));
+const ColumnsView = React.createFactory(require('./columns'));
+const HeaderView = React.createFactory(require('./header'));
 
 const Swiper = require('../lib/swiper.js');
 const tweetdeck = require('../lib/tweetdeck');
