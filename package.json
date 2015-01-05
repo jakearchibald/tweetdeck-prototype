@@ -21,6 +21,7 @@
     "swig": "^1.4.1",
     "vinyl": "^0.4.6",
     "vinyl-source-stream": "^1.0.0",
-    "watchify": "^2.2.1"
+    "watchify": "^2.2.1",
+    "gsap": "~1.15.0"
   }
 }

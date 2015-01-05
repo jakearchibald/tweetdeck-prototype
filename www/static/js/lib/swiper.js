@@ -1,4 +1,4 @@
-var TweenLite = require('./greensock/TweenLite');
+var TweenLite = require('gsap/src/uncompressed/TweenLite');
 var utils = require('./utils');
 var EventEmitter = require('events').EventEmitter;
 
