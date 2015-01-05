@@ -1,5 +1,4 @@
 var utils = require('../utils');
-var fetch = require('../fetch');
 
 function Account(rawData, proxy) {
   this.name = rawData.name;

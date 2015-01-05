@@ -21,9 +21,7 @@ FeedProto.fetch = function(maxId) {
 
   var url = endpoint.url + '?' + utils.objToUrlParams(endpoint.opts);
   
-  return this.account.proxiedRequest(url, {
-    type: 'json'
-  }).then(function(datas) {
+  return this.account.proxiedRequest(url).then(r => r.json()).then(function(datas) {
     // search feeds have tweets in .statuses
     datas = datas.statuses || datas;
     

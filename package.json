@@ -27,7 +27,8 @@
     "vinyl-source-stream": "^1.0.0",
     "watchify": "^2.2.1",
     "6to5": "^2.5.0",
-    "vinyl-buffer": "^1.0.0"
+    "vinyl-buffer": "^1.0.0",
+    "fetch": "git+ssh://git@github.com:github/fetch.git"
   },
   "devDependencies": {
     "browser-sync": "^1.8.3"

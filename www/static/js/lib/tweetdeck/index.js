@@ -1,6 +1,5 @@
 'use strict';
 
-var fetch = require('../fetch');
 var utils = require('../utils');
 var User = require('./user');
 var Account = require('./account');
@@ -60,9 +59,8 @@ TD.login = function (username, password) {
     headers: {
       'Authorization': basicAuthHeader(username, password),
       'X-TD-Authtype': 'twitter'
-    },
-    type: 'json'
-  }).then(this._transformLoginResponse.bind(this));
+    }
+  }).then(r => r.json()).then(this._transformLoginResponse.bind(this));
 };
 
 TD.verifyTwoFactor = function (opts) {
@@ -77,9 +75,8 @@ TD.verifyTwoFactor = function (opts) {
     headers: {
       'X-TD-Authtype': 'twitter'
     },
-    body: JSON.stringify(body),
-    type: 'json'
-  }).then(this._transformLoginResponse.bind(this));
+    body: JSON.stringify(body)
+  }).then(r => r.json()).then(this._transformLoginResponse.bind(this));
 };
 
 TD._transformLoginResponse = function (res) {
@@ -142,9 +139,9 @@ TD.initialFetch = function () {
 };
 
 TD._fetchRawEverything = function () {
-  return this._authorizedRequest('/clients/blackbird/all', {
-    type: 'json'
-  }).then(this._processRawData.bind(this));
+  return this._authorizedRequest('/clients/blackbird/all')
+    .then(r => r.json())
+    .then(this._processRawData.bind(this));
 };
 
 TD._processRawData = function(rawData) {
