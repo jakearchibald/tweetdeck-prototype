@@ -2,9 +2,6 @@
 // 'polyfills'
 require('6to5/polyfill');
 
-if (!window.Promise) {
-  window.Promise = require('es6-promise').Promise;
-}
 
 const utils = require('./lib/utils');
 

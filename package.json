@@ -26,7 +26,6 @@
     "vinyl": "^0.4.6",
     "vinyl-source-stream": "^1.0.0",
     "watchify": "^2.2.1",
-    "es6-promise": "^2.0.1",
     "6to5": "^2.5.0",
     "vinyl-buffer": "^1.0.0"
   },
