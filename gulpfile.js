@@ -34,6 +34,7 @@ gulp.task('watch', ['sass'], function() {
 
   // js
   var bundler = watchify(browserify('./www/static/js/index.js', watchify.args));
+  bundler.exclude('vertx');
   bundler.on('update', rebundle);
 
   function rebundle () {
