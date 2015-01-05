@@ -1,5 +1,6 @@
 var express = require('express');
 var swig = require('swig');
+var path = require('path');
 
 var app = express();
 
@@ -21,6 +22,10 @@ app.get(RegExp('^/(tweetdeck-prototype)?$'), function(req, res) {
 
 app.get('/tweetdeck-prototype/', function(req, res) {
   res.render('../www/index.html');
+});
+
+app.get('/tweetdeck-prototype/service-worker.js', function(req, res) {
+  res.sendFile(path.resolve('../tweetdeck-prototype/www/static/js/sw/index.js'));
 });
 
 module.exports = app;
