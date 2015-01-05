@@ -75,6 +75,7 @@ gulp.task('watch', ['sass'], function() {
     experimental: true
   }));
   bundler.on('update', rebundle);
+  rebundle();
 
   // js-head
   // gulp.watch('www/static/js/head.js', ['js-head']);
@@ -85,6 +86,6 @@ gulp.task('server', function() {
   tweetdeckProxy.listen(8001);
 });
 
-gulp.task('clean', del.bind(null, 'build'));
+gulp.task('clean', del.bind(null, 'www/static/build'));
 
 gulp.task('default', ['clean', 'watch', 'server', 'browser-sync']);
