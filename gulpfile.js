@@ -1,4 +1,5 @@
 var browserify = require('browserify');
+var browserSync = require('browser-sync');
 var del = require('del');
 var gulp = require('gulp');
 var sass = require('gulp-sass');
@@ -22,7 +23,8 @@ function sassTask(dev) {
     .pipe(sourcemaps.init())
       .pipe(sass({ outputStyle: dev ? 'expanded' : 'compressed' }))
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest('www/static/build/css/'));
+    .pipe(gulp.dest('www/static/build/css/'))
+    .pipe(browserSync.reload({ stream: true }));
 }
 
 gulp.task('sass', function() {
@@ -31,6 +33,14 @@ gulp.task('sass', function() {
 
 gulp.task('sass-build', function() {
   return sassTask(false);
+});
+
+gulp.task('browser-sync', function() {
+  browserSync({
+    notify: true,
+    proxy: 'localhost:8002',
+    open: false
+  });
 });
 
 gulp.task('watch', ['sass'], function() {
@@ -51,6 +61,7 @@ gulp.task('watch', ['sass'], function() {
       .on('error', streamError)
       .pipe(source('all.js'))
       .pipe(gulp.dest('www/static/build/js/'))
+      .pipe(browserSync.reload({ stream: true }))
       .on('end', function () {
         console.log('Built all.js');
       });
@@ -63,10 +74,10 @@ gulp.task('watch', ['sass'], function() {
 });
 
 gulp.task('server', function() {
-  app.listen(8000);
+  app.listen(8002);
   tweetdeckProxy.listen(8001);
 });
 
 gulp.task('clean', del.bind(null, 'build'));
 
-gulp.task('default', ['clean', 'watch', 'server']);
+gulp.task('default', ['clean', 'watch', 'server', 'browser-sync']);

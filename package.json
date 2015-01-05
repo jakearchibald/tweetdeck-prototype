@@ -25,7 +25,10 @@
     "swig": "^1.4.1",
     "vinyl": "^0.4.6",
     "vinyl-source-stream": "^1.0.0",
-    "watchify": "^2.2.1",
-    "regenerator": "^0.8.3"
+    "regenerator": "^0.8.3",
+    "watchify": "^2.2.1"
+  },
+  "devDependencies": {
+    "browser-sync": "^1.8.3"
   }
 }
