@@ -5,9 +5,9 @@
 .modal-dialog {
   box-sizing: border-box;
   overflow: auto;
-  border: 1px solid #eee;
-  background-color: #eff;
-  padding: 10px;
+  border: 1px solid #cbb7ea;
+  background-color: #f3edfa;
+  padding: 1em 2em;
   @include transform(translate3d(0, 51px, 0));
   @include transition(transform 0.5s);
 }

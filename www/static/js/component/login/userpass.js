@@ -19,7 +19,6 @@ module.exports = React.createClass({
 
   render: function () {
     return DOM.form({ className: 'login-form', method: 'POST', onSubmit: this.onSubmit },
-      DOM.p({}, 'Sign in with your Twitter account'),
       DOM.div({ className: 'login-form__error-message' },
         DOM.p({}, this.props.loginMessage)
       ),
@@ -29,7 +28,7 @@ module.exports = React.createClass({
           name: 'username',
           ref: 'username',
           required: true,
-          placeholder: '@username'
+          placeholder: 'Phone, email or username'
         })
       ),
       FieldGroup({},
