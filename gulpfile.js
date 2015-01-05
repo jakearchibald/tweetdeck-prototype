@@ -3,9 +3,9 @@ var sass = require('gulp-ruby-sass');
 var source = require('vinyl-source-stream');
 var watchify = require('watchify');
 var browserify = require('browserify');
+var del = require('del');
 var app = require('./server');
 var tweetdeckProxy = require('./server/tweetdeck-proxy');
-var rimraf = require('gulp-rimraf');
 
 function streamError(why) {
   console.error(why);
@@ -58,10 +58,6 @@ gulp.task('server', function() {
   tweetdeckProxy.listen(8001);
 });
 
-gulp.task('clean', function() {
-  gulp
-    .src('build/*', { read: false })
-    .pipe(rimraf());
-});
+gulp.task('clean', del.bind(null, 'build'));
 
 gulp.task('default', ['clean', 'watch', 'server']);

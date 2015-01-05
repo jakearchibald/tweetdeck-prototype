@@ -10,9 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "browserify": "^8.0.3",
+    "del": "^1.1.1",
     "express": "^4.10.7",
     "gulp": "^3.8.6",
-    "gulp-rimraf": "^0.1.0",
     "gulp-ruby-sass": "^0.7.1",
     "handlebars": "^2.0.0",
     "mediator-js": "^0.9.7",
