@@ -31,6 +31,13 @@ function createSwiper() {
   return swiper;
 }
 
+function makeDefaultColumns(account) {
+  return [
+    new Column('home', account),
+    new Column('mentions', account)
+  ];
+}
+
 module.exports = React.createClass({
   displayName: 'RootView',
 
@@ -53,10 +60,7 @@ module.exports = React.createClass({
         // Note: account might be not be defined – that's ok
         this.setState({
           account: account,
-          columns: [
-            new Column('home', account),
-            new Column('mentions', account)
-          ],
+          columns: account && makeDefaultColumns(account),
           attemptedLogin: true
         });
       })
