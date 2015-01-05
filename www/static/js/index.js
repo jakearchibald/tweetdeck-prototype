@@ -1,5 +1,4 @@
 'use strict';
-
 // 'polyfills'
 require('6to5/polyfill');
 

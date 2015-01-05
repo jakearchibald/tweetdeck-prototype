@@ -7,6 +7,7 @@ var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
 var to5ify = require('6to5ify');
 var watchify = require('watchify');
+var buffer = require('vinyl-buffer');
 
 var app = require('./server');
 var tweetdeckProxy = require('./server/tweetdeck-proxy');
@@ -48,7 +49,10 @@ gulp.task('watch', ['sass'], function() {
   gulp.watch('www/static/css/**/*.scss', ['sass']);
 
   // js
-  var bundler = watchify(browserify('./www/static/js/index.js', watchify.args));
+  var bundler = watchify(browserify('./www/static/js/index.js', {
+    cache: {}, packageCache: {}, fullPaths: true, // watchify args
+    debug: true
+  }));
   bundler.exclude('vertx');
   bundler.transform(to5ify.configure({
     experimental: true
@@ -60,6 +64,9 @@ gulp.task('watch', ['sass'], function() {
       // log errors if they happen
       .on('error', streamError)
       .pipe(source('all.js'))
+      .pipe(buffer())
+      .pipe(sourcemaps.init({ loadMaps: true })) // loads map from browserify file
+      .pipe(sourcemaps.write('./')) // writes .map file
       .pipe(gulp.dest('www/static/build/js/'))
       .pipe(browserSync.reload({ stream: true }))
       .on('end', function () {

@@ -1,8 +1,3 @@
 node_modules
 .sass-cache
-www/static/build/js/all.js
-www/static/build/js/head-all.js
-www/static/build/css/all.css
-www/static/build/css/all.css.map
-www/static/build/css/head.css
-www/static/build/css/head.css.map
+www/static/build
