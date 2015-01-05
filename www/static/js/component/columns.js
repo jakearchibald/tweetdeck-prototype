@@ -20,12 +20,13 @@ module.exports = React.createClass({
       scroller.scrollLeft += event.deltaX;
     }.bind(this));
   },
+
   render: function () {
     return (
       DOM.div({ className: 'columns', ref: 'columns' },
         DOM.div({ className: 'column-panner' },
           this.props.columns.map(function(column) {
-            return Column({column: column, key: column.key});
+            return Column({ column: column, key: column.type });
           })
         )
       )
@@ -72,7 +73,7 @@ var Column = React.createClass({
 
   render: function () {
     return (
-      DOM.article({ className: 'column', key: this.props.column.key },
+      DOM.article({ className: 'column' },
         DOM.header({ className: 'column-header' },
           this.props.column.title
         ),

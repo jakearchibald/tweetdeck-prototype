@@ -4,7 +4,6 @@ var utils = require('../utils');
 var User = require('./user');
 var Account = require('./account');
 var Column = require('./column');
-var Feed = require('./feed');
 
 /**
  * Private utils
@@ -27,22 +26,18 @@ function TweetDeck(opts) {
   });
 
   this.proxy = opts.proxy;
-  this.user = null;
-  this.columns = null;
-  this.accounts = null;
-  this.metadata = null;
-  this._pIntialFetch = null;
+  this.fetchAccountDone = false;
 }
 
 var TD = TweetDeck.prototype;
 
-TD._authorizedRequest = function (path, opts) {
-  if (!this.user) {
+TD.authorizedRequest = function (user, path, opts) {
+  if (!user) {
     return Promise.reject(Error("Not logged in"));
   }
   opts = opts || {};
   opts.headers = opts.headers || {};
-  opts.headers['Authorization'] = sessionHeader(this.user.session);
+  opts.headers['Authorization'] = sessionHeader(user.session);
   return fetch(this.proxy + path, opts);
 };
 
@@ -50,17 +45,15 @@ TD._authorizedRequest = function (path, opts) {
  * Login
  */
 
-TD.setUser = function(user) {
-  this.user = user;
-};
-
 TD.login = function (username, password) {
   return fetch(this.proxy + '/login', {
     headers: {
       'Authorization': basicAuthHeader(username, password),
       'X-TD-Authtype': 'twitter'
     }
-  }).then(r => r.json()).then(this._transformLoginResponse.bind(this));
+  })
+  .then(r => r.json())
+  .then(this.transformLoginResponse.bind(this));
 };
 
 TD.verifyTwoFactor = function (opts) {
@@ -76,17 +69,18 @@ TD.verifyTwoFactor = function (opts) {
       'X-TD-Authtype': 'twitter'
     },
     body: JSON.stringify(body)
-  }).then(r => r.json()).then(this._transformLoginResponse.bind(this));
+  })
+  .then(r => r.json())
+  .then(this.transformLoginResponse.bind(this));
 };
 
-TD._transformLoginResponse = function (res) {
+TD.transformLoginResponse = function (res) {
   if (res.screen_name) {
-    this.user = new User({
+    return new User({
       screenName: res.screen_name,
       id: res.user_id,
       session: res.session
     });
-    return this.user;
   }
 
   var response = {
@@ -130,56 +124,28 @@ TD._transformLoginResponse = function (res) {
  * Data
  */
 
-TD.initialFetch = function () {
-  if (this._initialFetchUser !== this.user) {
-    this._initialFetchUser = this.user;
-    this._pIntialFetch = this._fetchRawEverything();
+TD.fetchAccount = function (user) {
+  if (!this.fetchAccountDone) {
+    this.fetchAccountDone = true;
+    this.pAccount = this.fetchAndExtractAccountForUser(user);
   }
-  return this._pIntialFetch;
+  return this.pAccount;
 };
 
-TD._fetchRawEverything = function () {
-  return this._authorizedRequest('/clients/blackbird/all')
+TD.fetchAndExtractAccountForUser = function (user) {
+  return this.authorizedRequest(user, '/clients/blackbird/all')
     .then(r => r.json())
-    .then(this._processRawData.bind(this));
+    .then(this.extractAccountForUser.bind(this, user));
 };
 
-TD._processRawData = function(rawData) {
+TD.extractAccountForUser = function (user, rawData) {
   if (rawData.error) {
     throw Error(rawData.error);
   }
 
-  this.metadata = {
-    recentSearches: rawData.client.recent_searches
-  };
-
-  var accountsByID = {};
-  this.accounts = [];
-
-  rawData.accounts.forEach(function(accountData) {
-    var account = new Account(accountData, this.proxy);
-    accountsByID[account.id] = account;
-    this.accounts.push(account);
-  }.bind(this));
-
-  var feedsByID = {};
-
-  Object.keys(rawData.feeds).forEach(function(feedKey) {
-    var feedData = rawData.feeds[feedKey];
-    var account = accountsByID[feedData.account.userid];
-    var feed = new Feed(feedKey, feedData, account, this.proxy);
-
-    feedsByID[feed.key] = feed;
-  }.bind(this));
-
-  this.columns = rawData.client.columns.map(function(columnID) {
-    var columnData = rawData.columns[columnID];
-    var feeds = columnData.feeds.map(function(feedID) {
-      return feedsByID[feedID];
-    });
-
-    return new Column(columnID, columnData, feeds);
-  }.bind(this));
+  // Only keep the sign-in account
+  var rawAccount = rawData.accounts.find(account => account.uid === user.id);
+  return new Account(rawAccount, this.proxy);
 };
 
 module.exports = new TweetDeck();

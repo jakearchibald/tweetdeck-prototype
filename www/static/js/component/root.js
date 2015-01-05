@@ -1,4 +1,5 @@
 const React = require('react');
+const DOM = React.DOM;
 const LoginView = React.createFactory(require('./login'));
 const ColumnsView = React.createFactory(require('./columns'));
 const HeaderView = React.createFactory(require('./header'));
@@ -7,83 +8,72 @@ const Swiper = require('../lib/swiper.js');
 const tweetdeck = require('../lib/tweetdeck');
 const tweetdeckDb = require('../lib/tweetdeckdb');
 
+// TODO move data handling to a better palce
+var Column = require('../lib/tweetdeck/column');
+
+function createSwiper() {
+  var swiper = new Swiper();
+  var largeWidth = window.matchMedia('(min-width: 500px) and (min-height: 500px)');
+  function handleWidthChange() {
+    if (largeWidth.matches) {
+      swiper.stop();
+    } else {
+      swiper.start();
+    }
+  }
+
+  window.addEventListener('resize', function () {
+    swiper.updateLayout();
+  });
+
+  largeWidth.addListener(handleWidthChange);
+  handleWidthChange();
+  return swiper;
+}
+
 module.exports = React.createClass({
   displayName: 'RootView',
 
   getInitialState: function () {
     return {
-      localSessionDataFetched: false,
-      user: '',
+      account: null,
+      attemptedLogin: false,
       columns: null,
-      accounts: [],
-      swiper: this.createSwiper()
+      swiper: createSwiper()
     };
   },
 
-  fetchInitialData: function () {
-    tweetdeck.initialFetch()
-      .then(function () {
+  attemptLogin: function () {
+    tweetdeckDb.getUser()
+      .then(user => {
+        if (!user) return;
+        return tweetdeck.fetchAccount(user);
+      })
+      .then(account => {
+        // Note: account might be not be defined – that's ok
         this.setState({
-          columns: tweetdeck.columns
+          account: account,
+          columns: [
+            new Column('home', account),
+            new Column('mentions', account)
+          ],
+          attemptedLogin: true
         });
-      }.bind(this))
-      .catch(function (err) {
-        if (err.message === 'SessionExpired') {
-          this.setState({
-            user: null
-          });
-          tweetdeckDb.deleteUser();
-        }
-        console.error('Unexpected error', err.stack);
-      }.bind(this));
-  },
-
-  createSwiper: function () {
-    var swiper = new Swiper();
-    var largeWidth = window.matchMedia('(min-width: 500px) and (min-height: 500px)');
-    var handleWidthChange = function () {
-      if (largeWidth.matches) {
-        swiper.stop();
-      }
-      else {
-        swiper.start();
-      }
-    }.bind(this);
-
-    window.addEventListener('resize', function () {
-      swiper.updateLayout();
-    });
-
-    largeWidth.addListener(handleWidthChange);
-    handleWidthChange();
-    return swiper;
+      })
+      .catch(why => console.error(why.stack));
   },
 
   componentDidMount: function () {
-    tweetdeckDb.getUser().then(function (user) {
-      this.setState({
-        localSessionDataFetched: true,
-        user: user
-      });
-
-      if (user) {
-        tweetdeck.setUser(user);
-        this.fetchInitialData();
-      }
-    }.bind(this));
+    this.attemptLogin();
   },
 
   loginDidSucceed: function (user) {
-    tweetdeckDb.setUser(user);
-    this.setState({
-      user: user
-    });
-
-    this.fetchInitialData();
+    tweetdeckDb.setUser(user)
+      .then(this.attemptLogin);
   },
 
   render: function () {
-    if (!this.state.localSessionDataFetched) {
+    if (!this.state.attemptedLogin) {
       return DOM.div({ className: 'app' },
         DOM.div({ className: 'page' },
           HeaderView({})
@@ -94,7 +84,7 @@ module.exports = React.createClass({
     // TODO: it's possible the user will be logged out during a session,
     // it'd be great if the login were a modal dialog rather than a
     // switch between the columns view
-    if (!this.state.user) {
+    if (!this.state.account) {
       return DOM.div({ className: 'app' },
         DOM.div({ className: 'page' },
           HeaderView({}),
@@ -106,7 +96,7 @@ module.exports = React.createClass({
     return DOM.div({ className: 'app' },
       DOM.div({ className: 'page' },
         HeaderView({ columns: this.state.columns, swiper: this.state.swiper }),
-        (this.state.columns ? ColumnsView({ columns: this.state.columns, swiper: this.state.swiper }) : undefined)
+        ColumnsView({ columns: this.state.columns, swiper: this.state.swiper })
       )
     );
   }

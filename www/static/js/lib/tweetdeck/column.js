@@ -1,15 +1,12 @@
 var ColumnUtils = require('./columnutils');
+var Feed = require('./feed');
 
-function Column(key, columnData, feeds) {
-  this.key = key;
-  this.feeds = feeds;
-  this.settings = columnData.settings;
-  this.type = columnData.type;
+function Column(type, account) {
+  this.type = type;
   this.updating = false;
   this.items = [];
-
-  var defaultTitle = ColumnUtils.getTitle(feeds[0].type);
-  this.title = columnData.title || defaultTitle || "Unknown column title";
+  this.title = ColumnUtils.getTitle(this.type);
+  this.feed = new Feed(type, account);
 }
 
 var ColumnProto = Column.prototype;
@@ -19,15 +16,12 @@ ColumnProto.loadMore = function() {
   this.updating = true;
   // TODO remove multi-feed capability to avoid missing tweets bug
   var lastId = this.items.length > 0 ? this.items[this.items.length - 1].id : null;
-  return Promise
-    .all(this.feeds.map(function (f) {
-      return f.fetch(lastId);
-    }))
-    .then(function (columns) {
+  return this.feed.fetch(lastId)
+    .then(function (data) {
       this.updating = false;
 
       var previousLength = this.items.length;
-      this.items = this.items.concat(columns.reduce(concat).sort(byDate));
+      this.items = this.items.concat(data).sort(byDate);
 
       return {
         items: this.items,
