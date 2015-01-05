@@ -1,8 +1,9 @@
 {
   "name": "tweetdeck-offline-prototype",
   "version": "0.0.0",
-  "description": "",
+  "description": "(mobile|offline)-first Tweetdeck prototype",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "start": "gulp"
   },
