@@ -14,7 +14,7 @@ module.exports = function domToReact(el) {
   const props = {};
 
   Array.prototype.forEach.call(el.attributes, function(attribute) {
-    const name = (name === 'class') ? 'className' : attribute.nodeName;
+    const name = (attribute.nodeName === 'class' ? 'className' : attribute.nodeName);
     props[name] = attribute.value;
   });
 
