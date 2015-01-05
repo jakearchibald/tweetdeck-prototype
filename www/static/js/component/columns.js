@@ -98,7 +98,9 @@ var Item = React.createClass({
   render: function () {
     return (
       DOM.article({ className: 'tweet media', key: this.props.item.id },
-        DOM.div({ className: 'fake-img media__img' }),
+        DOM.div({ className: 'tweet__avatar media__img' },
+          DOM.img({ src: this.props.item.user.avatar })
+        ),
         DOM.div({ className: 'media__body',  dangerouslySetInnerHTML: {__html: this.props.item.getHTML()} })
       )
     );

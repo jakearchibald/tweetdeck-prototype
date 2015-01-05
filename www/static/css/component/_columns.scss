@@ -25,7 +25,6 @@
 }
 
 .column {
-  background: #fff;
   width: 100%;
   min-width: 100%;
   @include display-flex;
@@ -33,28 +32,27 @@
 
   @media (min-width: 500px) and (min-height: 500px) {
     position: relative;
-    width: 300px;
-    min-width: 300px;
-    margin: 20px 20px 20px 0;
+    width: 50%;
+    min-width: 20em;
+    max-width: 30em;
+    margin: 0 1.5em 1.5em 0;
     -webkit-animation: appear 0.2s; /* Chrome, Safari, Opera */
     animation: appear 0.2s;
 
     &:first-child {
-      margin-left: 20px;
+      margin-left: 1.5em;
     }
   }
 }
 
 .column-header {
-  background: #eee;
   color: #111;
-  border-bottom: 2px solid #ddd;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   display: none;
   font-size: 1.4rem;
-  padding: 9px 15px;
+  padding: 1em 0 0.444em;
 
   @media (min-width: 500px) and (min-height: 500px) {
     display: block;
@@ -66,6 +64,8 @@
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+
+  background: #fff;
 }
 
 .column-loader {
