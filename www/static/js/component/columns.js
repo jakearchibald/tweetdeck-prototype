@@ -3,8 +3,6 @@ var DOM = React.DOM;
 var cx = React.addons.classSet;
 var utils = require('../lib/utils');
 var Swiper = require('../lib/swiper');
-var FollowColumnItem = require('./../lib/tweetdeck/followcolumnitem');
-var ListAddColumnItem = require('./../lib/tweetdeck/listaddcolumnitem');
 
 module.exports = React.createClass({
   componentDidMount: function () {
