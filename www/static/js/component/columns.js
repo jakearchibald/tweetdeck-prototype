@@ -75,41 +75,12 @@ var Column = React.createClass({
         DOM.div({ className: 'column-scroller', ref: 'scroller' },
           DOM.div({ className: 'tweet-container', ref: 'tweets'},
             this.state.items.map(function (item) {
-              if (item instanceof FollowColumnItem) {
-                return FollowItem({item: item, key:item.id});
-              } else if (item instanceof ListAddColumnItem) {
-                return ListAddItem({ item: item, key:item.id });
-              }
               return Item({ item: item, key:item.id });
             }),
             (!this.state.exhausted ?
               Loader({ loading: this.state.loading, onLoad: this.loadMore, key: 'loader' }) :
               null)
           )
-        )
-      )
-    );
-  }
-});
-
-var FollowItem = React.createClass({
-  render: function () {
-    return (
-      DOM.article({ className: 'tweet media', key: this.props.item.id },
-        DOM.div({ className: 'fake-img media__img' }),
-        DOM.div({ className: 'media__body',  dangerouslySetInnerHTML: {__html: this.props.item.followed.getDescriptionHTML()} })
-      )
-    );
-  }
-});
-
-var ListAddItem = React.createClass({
-  render: function () {
-    return (
-      DOM.article({ className: 'tweet media', key: this.props.item.id },
-        DOM.div({ className: 'fake-img media__img' }),
-        DOM.div({ className: 'media__body'},
-          this.props.item.adder.name + ' added you to a list'
         )
       )
     );
