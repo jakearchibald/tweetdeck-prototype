@@ -73,16 +73,16 @@ var Column = React.createClass({
         DOM.div({ className: 'column-scroller', ref: 'scroller' },
           DOM.div({ className: 'tweet-container', ref: 'tweets'},
             this.state.items.map(function (item) {
-                if (item instanceof FollowColumnItem) {
-                  return FollowItem({item: item, key:item.id});
-                }
-                else if (item instanceof ListAddColumnItem) {
-                  return ListAddItem({item: item, key:item.id});
-                }
-                return Item({item: item, key:item.id});
+              if (item instanceof FollowColumnItem) {
+                return FollowItem({item: item, key:item.id});
               }
-          ),
-          this.state.loading ? Loader({column:this.props.column, key:'loader'}) : null)
+              else if (item instanceof ListAddColumnItem) {
+                return ListAddItem({item: item, key:item.id});
+              }
+              return Item({item: item, key:item.id});
+            }),
+            this.state.loading ? Loader({column:this.props.column, key:'loader'}) : null
+          )
         )
       )
     );

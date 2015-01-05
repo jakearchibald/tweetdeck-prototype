@@ -46,7 +46,7 @@ var RootView = React.createClass({
           });
           tweetdeckDb.deleteUser();
         }
-        console.error('Unexpected error', err);
+        console.error('Unexpected error', err.stack);
       }.bind(this));
   },
 
@@ -103,8 +103,8 @@ var RootView = React.createClass({
       );
     }
 
-    // TODO: it's possible the user will be logged out during a session, 
-    // it'd be great if the login were a modal dialog rather than a 
+    // TODO: it's possible the user will be logged out during a session,
+    // it'd be great if the login were a modal dialog rather than a
     // switch between the columns view
     if (!this.state.user) {
       return DOM.div({ className: "app" },
