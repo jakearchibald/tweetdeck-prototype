@@ -1,11 +1,9 @@
-var React = require('react');
-var DOM = React.DOM;
+'use strict';
 
-var FieldGroup = React.createClass({
-  render: function () {
-    return DOM.div({ className: 'login-form__field-group' }, this.props.children);
-  }
-});
+const React = require('react');
+const DOM = React.DOM;
+
+const FieldGroup = React.createFactory(require('../field-group'));
 
 module.exports = React.createClass({
 
