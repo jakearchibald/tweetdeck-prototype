@@ -39,6 +39,7 @@ var Column = React.createClass({
       exhausted: false
     };
   },
+
   componentDidMount: function() {
     var scroller = this.refs.scroller.getDOMNode();
     var tweets = this.refs.tweets.getDOMNode();
@@ -49,7 +50,7 @@ var Column = React.createClass({
         event.stopPropagation();
         scroller.scrollTop += event.deltaY;
       }
-    }.bind(this));
+    });
 
     this.loadMore();
   },

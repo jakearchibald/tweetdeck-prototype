@@ -21,15 +21,15 @@ module.exports = React.createClass({
   getDefaultProps: function () {
     return {
       mobileAuthRequestPollInterval: 5000,
-      mobileAuthRequestLimit: 10,
-      mobileAuthRequestCount: 0
+      mobileAuthRequestLimit: 10
     };
   },
 
   getInitialState: function () {
     return {
       inProgress: false,
-      twoFactorChallenge: {}
+      twoFactorChallenge: {},
+      mobileAuthRequestCount: 0
     };
   },
 
@@ -94,8 +94,8 @@ module.exports = React.createClass({
     return this.getSMSCodeFromUser(twoFactorChallenge)
       .then(function (code) {
         return this.attemptTwoFactor({ code: code })
-          .then(this.handleLoginResponse);
-      }.bind(this));
+      }.bind(this))
+      .then(this.handleLoginResponse);
   },
 
   /**
@@ -111,12 +111,15 @@ module.exports = React.createClass({
       });
 
       var mobileAuthTimeout;
-      if (this.props.mobileAuthRequestCount >= this.props.mobileAuthRequestLimit) {
+      if (this.state.mobileAuthRequestCount >= this.props.mobileAuthRequestLimit) {
         clearTimeout(mobileAuthTimeout);
         return reject(Error('You took too long to authenticate via the mobile app'));
       }
 
-      this.props.mobileAuthRequestCount += 1;
+      this.setState({
+        mobileAuthRequestCount: this.state.mobileAuthRequestCount + 1
+      });
+
       mobileAuthTimeout = setTimeout(function () {
         this.attemptTwoFactor()
           .then(this.handleLoginResponse)
@@ -171,34 +174,32 @@ module.exports = React.createClass({
     return message;
   },
 
-  render: function () {
-
-    if (this.state.inProgress) {
-      return ModalDialog({
-        contentComponent: DOM.img({ src: 'static/imgs/spinner.gif', className: 'loading-spinner' })
-      });
-    }
-
+  getContent: function () {
     if (this.state.twoFactorChallenge.viaSMSCode) {
-      return ModalDialog({
-        contentComponent: SMSAuthChallengeView({
-          loginMessage: this.state.loginMessage,
-          onSubmit: this.state.onMobileCodeSubmit
-        })
+      return SMSAuthChallengeView({
+        loginMessage: this.state.loginMessage,
+        onSubmit: this.state.onMobileCodeSubmit
       });
     }
 
     if (this.state.twoFactorChallenge.viaMobileApp) {
-      return ModalDialog({
-        contentComponent: MobileAppAuthChallengeView({})
-      });
+      return MobileAppAuthChallengeView({});
     }
 
-    return ModalDialog({
-      contentComponent: UserPassView({
-        loginMessage: this.state.loginMessage,
-        onSubmit: this.onLoginSubmit
-      })
+    return UserPassView({
+      loginMessage: this.state.loginMessage,
+      onSubmit: this.onLoginSubmit
     });
+  },
+
+  render: function () {
+    return ModalDialog({
+      contentComponent: DOM.div({},
+        (this.state.inProgress ?
+          DOM.img({ src: 'static/imgs/spinner.gif', className: 'loading-spinner' }) :
+          this.getContent())
+      )
+    });
+
   }
 });
