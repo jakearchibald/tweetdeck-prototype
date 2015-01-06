@@ -1,0 +1,19 @@
+{
+  "name": "Twitter Offline",
+  "shortname": "twoffline",
+  "icons": [{
+        "src": "imgs/icons/icon-128x128.png",
+        "sizes": "128x128"
+      }, {
+        "src": "imgs/icons/apple-touch-icon.png",
+        "sizes": "152x152"
+      }, {
+        "src": "imgs/icons/ms-touch-icon-144x144-precomposed.png",
+        "sizes": "144x144"
+      }, {
+        "src": "imgs/icons/chrome-touch-icon-192x192.png",
+        "sizes": "192x192"
+      }],
+  "start_url": "/tweetdeck-prototype",
+  "display": "standalone"
+}
