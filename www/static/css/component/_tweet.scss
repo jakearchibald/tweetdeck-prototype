@@ -3,10 +3,28 @@
  */
 
 .tweet {
-  padding: 1em;
+  padding: 12px;
+  border-bottom: 1px solid rgba(#9266CC, 0.2);
 }
 
 .tweet__avatar {
-  width: 2.5em;
-  height: 2.5em;
+  width: 54px;
+  height: 54px;
+
+  & img {
+    width: 100%;
+  }
+}
+
+.tweet__user {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tweet__user__name {
+  font-weight: bold;
+}
+
+.tweet__user__username {
+  color: rgba(#000, 0.5);
 }
