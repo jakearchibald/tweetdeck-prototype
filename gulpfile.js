@@ -11,7 +11,7 @@ var to5ify = require('6to5ify');
 var watchify = require('watchify');
 var buffer = require('vinyl-buffer');
 
-var app = require('./server');
+var server = require('./server');
 var tweetdeckProxy = require('./server/tweetdeck-proxy');
 
 function streamError(why) {
@@ -59,7 +59,7 @@ gulp.task('watch', ['sass'], function() {
 
   var bundlers = {
     'all.js': createBundler('./www/static/js/index.js'),
-    'sw.js': createBundler('./www/static/js-sw/index.js')
+    'sw.js': createBundler('./www/static/js/sw/index.js')
   };
 
   var rebundle = function rebundle (bundler, outputFile) {
@@ -94,7 +94,9 @@ gulp.task('watch', ['sass'], function() {
 });
 
 gulp.task('server', function() {
-  app.listen(8002);
+  server.createApp({
+    disableServiceWorker: process.argv.indexOf('--disable-sw') > -1
+  }).listen(8002);
   tweetdeckProxy.listen(8001);
 });
 
