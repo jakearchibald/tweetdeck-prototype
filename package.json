@@ -16,7 +16,7 @@
     "browserify": "^8.0.3",
     "del": "^1.1.1",
     "express": "^4.10.7",
-    "fetch": "git+https://github.com/github/fetch.git",
+    "fetch": "git+https://github.com/github/fetch.git#^v0.4.0",
     "gsap": "~1.15.0",
     "gulp": "^3.8.6",
     "gulp-sass": "^1.2.4",
