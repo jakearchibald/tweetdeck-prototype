@@ -1,35 +1,33 @@
 'use strict';
 
 const React = require('react/addons');
-const Column = React.createFactory(require('./column'));
+const Column = require('./column');
 const DOM = React.DOM;
 
 module.exports = React.createClass({
   displayName: 'Columns',
 
-  componentDidMount: function () {
-    var scroller = this.refs.columns.getDOMNode();
+  componentDidMount() {
+    const scroller = this.refs.columns.getDOMNode();
     this.props.swiper.setColumnsEl(scroller);
 
-    scroller.addEventListener('wheel', function(event) {
+    scroller.addEventListener('wheel', (event) => {
       if (this.props.swiper.isActive()) {
         return;
       }
       event.preventDefault();
       event.stopPropagation();
       scroller.scrollLeft += event.deltaX;
-    }.bind(this));
+    });
   },
 
-  render: function () {
+  render() {
     return (
-      DOM.div({ className: 'columns', ref: 'columns' },
-        DOM.div({ className: 'column-panner' },
-          this.props.columns.map(function(column) {
-            return Column({ column: column, key: column.type });
-          })
-        )
-      )
+      <div className="columns" ref="columns">
+        <div className="column-panner">
+          {this.props.columns.map((column) => <Column column={column} key={column.type} />)}
+        </div>
+      </div>
     );
   }
 });
