@@ -1,3 +1,5 @@
+'use strict';
+
 const React = require('react');
 const DOM = React.DOM;
 const LoginView = require('./login');

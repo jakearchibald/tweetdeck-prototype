@@ -1,15 +1,15 @@
 'use strict';
 
-var tweetdeck = require('../lib/tweetdeck');
-var utils = require('../lib/utils');
+const tweetdeck = require('../lib/tweetdeck');
+const utils = require('../lib/utils');
 
-var React = require('react');
-var DOM = React.DOM;
+const React = require('react');
+const DOM = React.DOM;
 
-var ModalDialog = React.createFactory(require('./modal-dialog'));
-var SMSAuthChallengeView = React.createFactory(require('./login/smsauthchallenge'));
-var MobileAppAuthChallengeView = React.createFactory(require('./login/mobileappauthchallenge'));
-var UserPassView = React.createFactory(require('./login/userpass'));
+const ModalDialog = require('./modal-dialog');
+const SMSAuthChallengeView = require('./login/smsauthchallenge');
+const MobileAppAuthChallengeView = require('./login/mobileappauthchallenge');
+const UserPassView = require('./login/userpass');
 
 module.exports = React.createClass({
   displayName: 'LoginView',
@@ -18,14 +18,14 @@ module.exports = React.createClass({
     onLoginSuccess: React.PropTypes.func.isRequired
   },
 
-  getDefaultProps: function () {
+  getDefaultProps() {
     return {
       mobileAuthRequestPollInterval: 5000,
       mobileAuthRequestLimit: 10
     };
   },
 
-  getInitialState: function () {
+  getInitialState() {
     return {
       inProgress: false,
       twoFactorChallenge: {},
@@ -33,14 +33,14 @@ module.exports = React.createClass({
     };
   },
 
-  showLoginError: function (err) {
+  showLoginError(err) {
     this.setState({
       inProgress: false,
       loginMessage: err.message
     });
   },
 
-  onLoginSubmit: function (username, password) {
+  onLoginSubmit(username, password) {
     this.setState({
       inProgress: true
     });
@@ -48,7 +48,7 @@ module.exports = React.createClass({
       .then(this.props.onLoginSuccess, this.showLoginError);
   },
 
-  login: function(username, password) {
+  login(username, password) {
     return tweetdeck
       .login(username, password)
       .then(this.handleLoginResponse);
@@ -62,8 +62,8 @@ module.exports = React.createClass({
    * c) Identify and reject on tdapi errors (response.error),
    * d) resolve with a successful response (user object).
    */
-  handleLoginResponse: function (response) {
-    return new Promise(function (resolve, reject) {
+  handleLoginResponse(response) {
+    return new Promise((resolve, reject) => {
 
       if (response.twoFactorChallenge) {
         if (response.twoFactorChallenge.viaSMSCode) {
@@ -83,18 +83,18 @@ module.exports = React.createClass({
       }
 
       return resolve(response);
-    }.bind(this));
+    });
   },
 
   /**
    * authenticateViaSMSCode()
    * Waits for the user to enter SMS code, then sends for authentication.
    */
-  authenticateViaSMSCode: function(twoFactorChallenge) {
+  authenticateViaSMSCode(twoFactorChallenge) {
     return this.getSMSCodeFromUser(twoFactorChallenge)
-      .then(function (code) {
+      .then((code) => {
         return this.attemptTwoFactor({ code: code })
-      }.bind(this))
+      })
       .then(this.handleLoginResponse);
   },
 
@@ -103,14 +103,14 @@ module.exports = React.createClass({
    * Polls the login endpoint every 2s waiting for the user to authenticate via the mobile app.
    * Rejects once mobileAuthRequestLimit is reached.
    */
-  authenticateViaMobileApp: function (twoFactorChallenge) {
-    return new Promise(function (resolve, reject) {
+  authenticateViaMobileApp(twoFactorChallenge) {
+    return new Promise((resolve, reject) => {
       this.setState({
         inProgress: false,
         twoFactorChallenge: this.mergeTwoFactorChallengeState(twoFactorChallenge)
       });
 
-      var mobileAuthTimeout;
+      let mobileAuthTimeout;
       if (this.state.mobileAuthRequestCount >= this.props.mobileAuthRequestLimit) {
         clearTimeout(mobileAuthTimeout);
         return reject(Error('You took too long to authenticate via the mobile app'));
@@ -120,16 +120,16 @@ module.exports = React.createClass({
         mobileAuthRequestCount: this.state.mobileAuthRequestCount + 1
       });
 
-      mobileAuthTimeout = setTimeout(function () {
+      mobileAuthTimeout = setTimeout(_ => {
         this.attemptTwoFactor()
           .then(this.handleLoginResponse)
           .then(resolve);
-      }.bind(this), this.props.mobileAuthRequestPollInterval);
-    }.bind(this));
+      }, this.props.mobileAuthRequestPollInterval);
+    });
   },
 
-  getSMSCodeFromUser: function (twoFactorChallenge) {
-    return new Promise(function (resolve, reject) {
+  getSMSCodeFromUser(twoFactorChallenge) {
+    return new Promise((resolve, reject) => {
       this.setState({
         inProgress: false,
         twoFactorChallenge: this.mergeTwoFactorChallengeState(twoFactorChallenge),
@@ -140,7 +140,7 @@ module.exports = React.createClass({
     }.bind(this));
   },
 
-  attemptTwoFactor: function (opts) {
+  attemptTwoFactor(opts) {
     this.setState({
       inProgress: true
     });
@@ -152,20 +152,20 @@ module.exports = React.createClass({
     return tweetdeck.verifyTwoFactor(opts);
   },
 
-  mergeTwoFactorChallengeState: function (twoFactorChallenge) {
+  mergeTwoFactorChallengeState(twoFactorChallenge) {
     return utils.defaults(twoFactorChallenge, {
       requestId: this.state.twoFactorChallenge.requestId,
       userId: this.state.twoFactorChallenge.userId
     });
   },
 
-  getXAuthErrorMessageForCode: function (code) {
-    var xAuthErrors = {
+  getXAuthErrorMessageForCode(code) {
+    const xAuthErrors = {
       '32': 'User/pass incorrect',
       '236': 'SMS auth code incorrect'
     };
-    var message;
 
+    let message;
     try {
       message = xAuthErrors[code.toString()];
     } catch (e) {
@@ -174,32 +174,29 @@ module.exports = React.createClass({
     return message;
   },
 
-  getContent: function () {
+  getContent() {
     if (this.state.twoFactorChallenge.viaSMSCode) {
-      return SMSAuthChallengeView({
-        loginMessage: this.state.loginMessage,
-        onSubmit: this.state.onMobileCodeSubmit
-      });
+      return <SMSAuthChallengeView
+        loginMessage={this.state.loginMessage}
+        onSubmit={this.state.onMobileCodeSubmit} />;
     }
 
     if (this.state.twoFactorChallenge.viaMobileApp) {
-      return MobileAppAuthChallengeView({});
+      return <MobileAppAuthChallengeView />;
     }
 
-    return UserPassView({
-      loginMessage: this.state.loginMessage,
-      onSubmit: this.onLoginSubmit
-    });
+    return <UserPassView
+      loginMessage={this.state.loginMessage}
+      onSubmit={this.onLoginSubmit} />;
   },
 
-  render: function () {
-    return ModalDialog({
-      contentComponent: DOM.div({},
-        (this.state.inProgress ?
-          DOM.img({ src: 'static/imgs/spinner-bubbles.svg', className: 'loading-spinner' }) :
-          this.getContent())
-      )
-    });
+  getModalComponent() {
+    return this.state.inProgress ?
+      <img src="static/imgs/spinner-bubbles.svg" className="loading-spinner" /> :
+      this.getContent();
+  },
 
+  render() {
+    return <ModalDialog contentComponent={this.getModalComponent()} />;
   }
 });
