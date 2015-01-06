@@ -50,32 +50,44 @@ gulp.task('watch', ['sass'], function() {
   // sass
   gulp.watch('www/static/css/**/*.scss', ['sass']);
 
-  // js
-  var bundler = watchify(browserify('./www/static/js/index.js', {
-    cache: {}, packageCache: {}, fullPaths: true, // watchify args
-    debug: true
-  }));
-  var rebundle = function rebundle () {
+  var createBundler = function (src) {
+    return watchify(browserify(src, {
+      cache: {}, packageCache: {}, fullPaths: true, // watchify args
+      debug: true
+    }));
+  };
+
+  var bundlers = {
+    'all.js': createBundler('./www/static/js/index.js'),
+    'sw.js': createBundler('./www/static/js-sw/index.js')
+  };
+
+  var rebundle = function rebundle (bundler, outputFile) {
     return bundler.bundle()
       // log errors if they happen
       .on('error', streamError)
-      .pipe(source('all.js'))
+      .pipe(source(outputFile))
       .pipe(buffer())
       .pipe(sourcemaps.init({ loadMaps: true })) // loads map from browserify file
       .pipe(sourcemaps.write('./')) // writes .map file
       .pipe(gulp.dest('www/static/build/js/'))
       .pipe(browserSync.reload({ stream: true }))
       .on('end', function () {
-        console.log('Built all.js');
+        console.log('Built all JS');
       });
   };
 
-  bundler.exclude('vertx');
-  bundler.transform(to5ify.configure({
-    experimental: true
-  }));
-  bundler.on('update', rebundle);
-  rebundle();
+  Object.keys(bundlers).forEach(function (key) {
+    var bundler = bundlers[key];
+    bundler.exclude('vertx');
+    bundler.transform(to5ify.configure({
+      experimental: true
+    }));
+    bundler.on('update', function () {
+      rebundle(bundlers[key], key);
+    });
+    rebundle(bundlers[key], key);
+  });
 
   // js-head
   // gulp.watch('www/static/js/head.js', ['js-head']);

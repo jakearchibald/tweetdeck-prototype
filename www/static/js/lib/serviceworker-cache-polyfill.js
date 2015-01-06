@@ -1,3 +1,5 @@
+// Cannot feature-detect, as we have these implemented but they reject
+
 if (!Cache.prototype.add) {
   Cache.prototype.add = function add(request) {
     return this.addAll([request]);
@@ -81,3 +83,5 @@ if (!CacheStorage.prototype.match) {
     });
   };
 }
+
+module.exports = self.caches;

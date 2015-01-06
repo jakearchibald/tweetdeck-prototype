@@ -25,7 +25,7 @@ app.get('/tweetdeck-prototype/', function(req, res) {
 });
 
 app.get('/tweetdeck-prototype/service-worker.js', function(req, res) {
-  res.sendFile(path.resolve('../tweetdeck-prototype/www/static/js/sw/index.js'));
+  res.sendFile(path.resolve('../tweetdeck-prototype/www/static/build/js/sw.js'));
 });
 
 module.exports = app;
