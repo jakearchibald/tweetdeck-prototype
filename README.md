@@ -13,7 +13,6 @@ If you're taking a ticket on, make sure you announce it in the comments so other
 Install [Node](http://nodejs.org/) then clone this repo & run:
 
 ```sh
-npm install
 npm start
 ```
 
