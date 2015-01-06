@@ -27,9 +27,9 @@
     <style>{% include "static/build/css/head.css" %}</style>
     <script>
       navigator.serviceWorker && navigator.serviceWorker.register('service-worker.js').then(function(reg) {
-        console.log('registered', reg);
+        console.log('SW registered', reg);
       }, function(err) {
-        console.log('error', err);
+        console.error('SW registration error', err);
       });
     </script>
     <script src="static/build/js/all.js" async></script>

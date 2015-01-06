@@ -20,7 +20,7 @@ if (!Cache.prototype.addAll) {
 
     return Promise.resolve().then(function() {
       if (arguments.length < 1) throw new TypeError();
-      
+
       // Simulate sequence<(Request or USVString)> binding:
       var sequence = [];
 
