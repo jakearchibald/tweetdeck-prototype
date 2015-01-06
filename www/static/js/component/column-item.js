@@ -5,7 +5,7 @@ const React = require('react');
 module.exports = React.createClass({
   displayName: 'Item',
 
-  render: function () {
+  render() {
     return (
       <article className="tweet media" key={this.props.item.id}>
         <div className="tweet__avatar media__img">

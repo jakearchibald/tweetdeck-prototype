@@ -23,10 +23,7 @@ function createSwiper() {
     }
   }
 
-  window.addEventListener('resize', function () {
-    swiper.updateLayout();
-  });
-
+  window.addEventListener('resize', swiper.updateLayout.bind(swiper));
   largeWidth.addListener(handleWidthChange);
   handleWidthChange();
   return swiper;
