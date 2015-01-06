@@ -1,5 +1,34 @@
 var utils = require('../utils');
 var TweetColumnItem = require('./tweetcolumnitem');
+var _ = require('lodash');
+
+var TWITTER = {
+  BASE: 'https://api.twitter.com',
+  ENDPOINTS: {
+    home: {
+      url: '/1.1/statuses/home_timeline.json',
+      query: {
+        count: 200,
+        include_my_retweets: 1,
+        include_entities: 1,
+        include_cards: 1,
+        send_error_codes: 1,
+        include_user_entities: 1
+      }
+    },
+    mentions: {
+      url: '/1.1/statuses/mentions_timeline.json',
+      query: {
+        count: 200,
+        include_my_retweets: 1,
+        include_entities: 1,
+        include_cards: 1,
+        send_error_codes: 1,
+        include_user_entities: 1
+      }
+    }
+  }
+};
 
 function Feed(type, account) {
   this.type = type;
@@ -8,68 +37,28 @@ function Feed(type, account) {
 
 var FeedProto = Feed.prototype;
 
-FeedProto.fetch = function(maxId) {
-  var endpoint = this._getEndpoint();
+FeedProto.fetch = function(opts) {
+  opts = opts || {};
 
-  endpoint.opts.since_id = 1;
-  if (maxId) {
-    endpoint.opts.max_id = maxId;
-  }
+  var endpoint = TWITTER.ENDPOINTS[this.type];
+  var query = _.chain(endpoint.query || {})
+    .clone()
+    .extend(opts.query || {})
+    // Only keep truthy values
+    .pick(function (value) {
+      return (typeof value !== 'undefined' && value !== null);
+    })
+    .value();
 
-  var url = endpoint.url + '?' + utils.objToUrlParams(endpoint.opts);
+  var url = TWITTER.BASE + endpoint.url + '?' + utils.objToUrlParams(query);
 
-  return this.account.proxiedRequest(url).then(r => r.json()).then(function(datas) {
-    // search feeds have tweets in .statuses
-    datas = datas.statuses || datas;
-
-    return datas.filter(function(data) {
-      if (data.action == 'follow' || data.action == 'list_member_added') {
-        return false;
-      }
-      return true;
-    }).map(function(data) {
-      if (this.type == "interactions" || this.type == "networkactivity") {
-        switch (data.action) {
-          case "mention":
-            return new TweetColumnItem(data.target_objects[0]);
-          default:
-            return new TweetColumnItem(data.targets[0]);
-        }
-      }
-      return new TweetColumnItem(data);
-    }.bind(this));
-  }.bind(this));
-};
-
-FeedProto._getEndpoint = function() {
-  switch(this.type) {
-    case "home":
-      return {
-        url: "https://api.twitter.com/1.1/statuses/home_timeline.json",
-        opts: {
-          count: 200,
-          include_my_retweets: 1,
-          include_entities: 1,
-          include_cards: 1,
-          send_error_codes: 1,
-          include_user_entities: 1
-        }
-      };
-    case "mentions":
-      return {
-        url: "https://api.twitter.com/1.1/statuses/mentions_timeline.json",
-        opts: {
-          count: 200,
-          include_my_retweets: 1,
-          include_entities: 1,
-          include_cards: 1,
-          send_error_codes: 1,
-          include_user_entities: 1
-        }
-      };
-
-    throw Error('Unknown feed type');
-  }
+  return this.account.proxiedRequest(url)
+    .then(r => r.json())
+    .then(tweets =>
+      tweets.map(data =>
+        new TweetColumnItem(data)
+      )
+    );
 };
 
 module.exports = Feed;
