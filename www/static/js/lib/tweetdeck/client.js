@@ -35,7 +35,7 @@ module.exports = {
     const endpoint = TWITTER.ENDPOINTS[opts.type];
     const query = _.chain(endpoint.query || {})
       .clone()
-      .extend(opts.query || {})
+      .extend(opts.cursor.query || {})
       // Only keep truthy values
       .pick(function (value) {
         return (typeof value !== 'undefined' && value !== null);

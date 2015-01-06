@@ -15,13 +15,19 @@ class Column {
       .fetch({
         account: this.account,
         type: this.type,
-        query: opts.query
+        cursor: opts.cursor || {}
       })
-      .then(data => {
+      .then(items => items.sort(columnUtils.sort.byDate))
+      .then(items => {
         return {
-          items: data.sort(columnUtils.sort.byDate),
+          items: items,
           // Got nothing back, must be the end
-          exhausted: !data.length
+          exhausted: !items.length,
+          cursors: {
+            request: opts.cursor || {},
+            up: columnUtils.cursor.up(items),
+            down: columnUtils.cursor.down(items)
+          }
         };
       });
   }

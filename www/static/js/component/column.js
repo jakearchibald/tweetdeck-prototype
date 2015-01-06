@@ -12,7 +12,8 @@ module.exports = React.createClass({
     return {
       items: [],
       loading: false,
-      exhausted: false
+      exhausted: false,
+      cursors: {}
     };
   },
 
@@ -34,14 +35,13 @@ module.exports = React.createClass({
   loadMore() {
     this.setState({ loading: true });
     this.props.column.load({
-      query: {
-        max_id: this.state.items.slice(-1).reduce((last, tweet) => tweet.id, null)
-      }
+      cursor: this.state.cursors.down || {}
     }).then(result => {
       this.setState({
         loading: false,
         items: this.state.items.concat(result.items),
-        exhausted: result.exhausted
+        exhausted: result.exhausted,
+        cursors: result.cursors
       });
     });
   },

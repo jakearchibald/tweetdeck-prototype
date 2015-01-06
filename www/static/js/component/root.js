@@ -31,8 +31,7 @@ function createSwiper() {
 
 function makeDefaultColumns(account) {
   return [
-    new Column('home', account),
-    new Column('mentions', account)
+    new Column('home', account)
   ];
 }
 
