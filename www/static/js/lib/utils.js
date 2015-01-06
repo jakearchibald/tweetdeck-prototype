@@ -70,3 +70,35 @@ exports.escapeHTML = function escapeHTML(string) {
     return entityMap[s];
   });
 };
+
+const SECOND = 1000;
+const MINUTE = 60 * SECOND;
+const HOUR = 60 * MINUTE;
+const DAY = 24 * HOUR;
+const WEEK = 7 * DAY;
+const YEAR = DAY * 365;
+const MONTH = YEAR / 12;
+
+const timeFormats = [
+  [ 0.7 * MINUTE, 'now' ],
+  [ 60 * MINUTE, 'm', MINUTE ],
+  [ DAY, 'h', HOUR ],
+  [ Infinity, 'd', DAY ]
+];
+
+exports.relativeTime = function(input, reference) {
+  if (!reference) {
+    reference = Date.now();
+  }
+
+  var delta = reference - input;
+
+  var format = timeFormats.find(function(format) {
+    return delta < format[0];
+  });
+
+  if (format[2]) {
+    return Math.round(delta/format[2]) + format[1];
+  }
+  return format[1];
+};

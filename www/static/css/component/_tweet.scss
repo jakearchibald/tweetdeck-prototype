@@ -16,15 +16,31 @@
   }
 }
 
-.tweet__user {
+.tweet__title {
+  @include display-flex;
+  font: inherit;
+  margin: 0;
+  padding: 0;
   white-space: nowrap;
-  text-overflow: ellipsis;
 }
 
-.tweet__user__name {
+.tweet__name {
   font-weight: bold;
+  margin: 0 0.3em 0 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
-.tweet__user__username {
+.tweet__username {
   color: rgba(#000, 0.5);
+  margin: 0 0.3em 0 0;
+  overflow: hidden;
+}
+
+.tweet__time {
+  @include flex(1);
+  color: rgba(#000, 0.6);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

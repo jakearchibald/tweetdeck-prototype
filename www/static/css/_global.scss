@@ -13,3 +13,18 @@ body {
 img {
     max-width: 100%;
 }
+
+a {
+
+  &:link,
+  &:visited {
+    text-decoration: none;
+    color: #9266CC;
+  }
+
+  &:hover,
+  &:active,
+  &:focus {
+    text-decoration: underline;
+  }
+}
