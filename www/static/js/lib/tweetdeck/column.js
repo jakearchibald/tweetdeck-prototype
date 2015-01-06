@@ -1,38 +1,30 @@
 var columnUtils = require('./columnutils');
-var client = require('./client');
+var TweetStore = require('../tweet-store');
 
-function Column(type, account) {
-  this.type = type;
-  this.updating = false;
-  this.title = columnUtils.getTitle(this.type);
-  this.account = account;
-}
-
-var ColumnProto = Column.prototype;
-
-// resolves with new tweets
-ColumnProto.load = function (opts) {
-  if (this.updating) {
-    return Promise.reject(Error('Already updating.'));
-  }
-  opts = opts || {};
-  this.updating = true;
-  // TODO remove multi-feed capability to avoid missing tweets bug
-  return client.fetch({
-    account: this.account,
-    type: this.type,
-    query: opts.query
-  }).then(data => {
+class Column {
+  constructor(type, account) {
+    this.type = type;
     this.updating = false;
-    return {
-      items: data.sort(columnUtils.sort.byDate),
-      // Got nothing back, must be the end
-      exhausted: !data.length
-    };
-  }).catch(err => {
-    console.log('feed update error', err);
-    throw err;
-  });
-};
+    this.title = columnUtils.getTitle(this.type);
+    this.account = account;
+    this.tweetStore = new TweetStore();
+  }
+
+  load(opts={}) {
+    return this.tweetStore
+      .fetch({
+        account: this.account,
+        type: this.type,
+        query: opts.query
+      })
+      .then(data => {
+        return {
+          items: data.sort(columnUtils.sort.byDate),
+          // Got nothing back, must be the end
+          exhausted: !data.length
+        };
+      });
+  }
+}
 
 module.exports = Column;

@@ -31,9 +31,7 @@ var TWITTER = {
 };
 
 module.exports = {
-  fetch(opts) {
-    opts = opts || {};
-
+  fetch(opts={}) {
     const endpoint = TWITTER.ENDPOINTS[opts.type];
     const query = _.chain(endpoint.query || {})
       .clone()
