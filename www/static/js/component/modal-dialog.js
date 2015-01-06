@@ -1,15 +1,29 @@
-var React = require('react');
+'use strict';
+
+const React = require('react/addons');
+const cx = React.addons.classSet;
 
 module.exports = React.createClass({
+  getInitialState() {
+    return { mounted: false };
+  },
+
   componentDidMount() {
-    // TODO: This is yucky, get rid of it.
-    this.refs.container.getDOMNode().classList.remove('closed');
+    // For the animation
+    this.setState({
+      mounted: true
+    });
   },
 
   render() {
+    const classes = cx({
+      closed: !this.state.mounted,
+      'modal-dialog': true
+    });
+
     return (
       <div className="modal-overlay">
-        <div className="modal-dialog closed" ref="container">
+        <div className={classes} ref="container">
           {this.props.contentComponent}
         </div>
       </div>
