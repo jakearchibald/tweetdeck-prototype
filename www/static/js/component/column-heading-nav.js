@@ -29,10 +29,10 @@ module.exports = React.createClass({
     return (
       <div className="column-headings-nav" ref="headingsNav">
         <ol className="column-headings-nav-panner">
-          {this.props.columns.map(c => <ColumnHeading title={c.title} />)}
+          {this.props.columns.map(c => <ColumnHeading title={c.title} key={c.type} />)}
         </ol>
         <div className="column-headings-nav-pips">
-          {this.props.columns.map(column => <div className="pip" key={column.key}><div className="pip-fill" /></div>)}
+          {this.props.columns.map(c => <div className="pip" key={c.type}><div className="pip-fill" /></div>)}
         </div>
       </div>
     );
