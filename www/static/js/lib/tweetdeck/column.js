@@ -33,8 +33,4 @@ ColumnProto.load = function (opts) {
   });
 };
 
-function concat(a, b) {
-  return a.concat(b);
-}
-
 module.exports = Column;
