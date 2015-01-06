@@ -1,8 +1,8 @@
 const React = require('react');
 const DOM = React.DOM;
-const LoginView = React.createFactory(require('./login'));
-const ColumnsView = React.createFactory(require('./columns'));
-const HeaderView = React.createFactory(require('./header'));
+const LoginView = require('./login');
+const ColumnsView = require('./columns');
+const HeaderView = require('./header');
 
 const Swiper = require('../lib/swiper.js');
 const tweetdeck = require('../lib/tweetdeck');
@@ -41,7 +41,7 @@ function makeDefaultColumns(account) {
 module.exports = React.createClass({
   displayName: 'RootView',
 
-  getInitialState: function () {
+  getInitialState() {
     return {
       account: null,
       attemptedLogin: false,
@@ -50,12 +50,9 @@ module.exports = React.createClass({
     };
   },
 
-  attemptLogin: function () {
+  attemptLogin() {
     tweetdeckDb.getUser()
-      .then(user => {
-        if (!user) return;
-        return tweetdeck.fetchAccount(user);
-      })
+      .then(user => user && tweetdeck.fetchAccount(user))
       .then(account => {
         // Note: account might be not be defined – that's ok
         this.setState({
@@ -67,21 +64,23 @@ module.exports = React.createClass({
       .catch(why => console.error(why.stack));
   },
 
-  componentDidMount: function () {
+  componentDidMount() {
     this.attemptLogin();
   },
 
-  loginDidSucceed: function (user) {
+  loginDidSucceed(user) {
     tweetdeckDb.setUser(user)
       .then(this.attemptLogin);
   },
 
-  render: function () {
+  render() {
     if (!this.state.attemptedLogin) {
-      return DOM.div({ className: 'app' },
-        DOM.div({ className: 'page' },
-          HeaderView({})
-        )
+      return (
+        <div className="app">
+          <div className="page">
+            <HeaderView />
+          </div>
+        </div>
       );
     }
 
@@ -89,19 +88,23 @@ module.exports = React.createClass({
     // it'd be great if the login were a modal dialog rather than a
     // switch between the columns view
     if (!this.state.account) {
-      return DOM.div({ className: 'app' },
-        DOM.div({ className: 'page' },
-          HeaderView({}),
-          LoginView({ onLoginSuccess: this.loginDidSucceed })
-        )
+      return (
+        <div className="app">
+          <div className="page">
+            <HeaderView />
+            <LoginView onLoginSuccess={this.loginDidSucceed} />
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="app">
+          <div className="page">
+            <HeaderView columns={this.state.columns} swiper={this.state.swiper} />
+            <ColumnsView columns={this.state.columns} swiper={this.state.swiper} />
+          </div>
+        </div>
       );
     }
-
-    return DOM.div({ className: 'app' },
-      DOM.div({ className: 'page' },
-        HeaderView({ columns: this.state.columns, swiper: this.state.swiper }),
-        ColumnsView({ columns: this.state.columns, swiper: this.state.swiper })
-      )
-    );
   }
 });
