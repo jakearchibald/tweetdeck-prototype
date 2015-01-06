@@ -1,7 +1,6 @@
 'use strict';
 
 const React = require('react');
-const DOM = React.DOM;
 const cx = React.addons.classSet;
 
 module.exports = React.createClass({

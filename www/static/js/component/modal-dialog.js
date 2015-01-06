@@ -1,20 +1,18 @@
 var React = require('react');
-var DOM = React.DOM;
 
 module.exports = React.createClass({
-
-  componentDidMount: function () {
+  componentDidMount() {
+    // TODO: This is yucky, get rid of it.
     this.refs.container.getDOMNode().classList.remove('closed');
   },
 
-  render: function () {
-    return DOM.div({
-        className: 'modal-overlay'
-      },
-      DOM.div({
-        className: 'modal-dialog closed',
-        ref: 'container'
-      }, this.props.contentComponent)
+  render() {
+    return (
+      <div className="modal-overlay">
+        <div className="modal-dialog closed" ref="container">
+          {this.props.contentComponent}
+        </div>
+      </div>
     );
   }
 });

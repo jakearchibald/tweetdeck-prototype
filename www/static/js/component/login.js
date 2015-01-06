@@ -4,8 +4,6 @@ const tweetdeck = require('../lib/tweetdeck');
 const utils = require('../lib/utils');
 
 const React = require('react');
-const DOM = React.DOM;
-
 const ModalDialog = require('./modal-dialog');
 const SMSAuthChallengeView = require('./login/smsauthchallenge');
 const MobileAppAuthChallengeView = require('./login/mobileappauthchallenge');

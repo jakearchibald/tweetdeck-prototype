@@ -1,7 +1,6 @@
 'use strict';
 
 const React = require('react');
-const DOM = React.DOM;
 
 module.exports = React.createClass({
   displayName: 'Item',

@@ -1,7 +1,6 @@
 'use strict';
 
 const React = require('react');
-const DOM = React.DOM;
 
 const domToReact = require('../lib/domtoreact');
 const ColumnHeadingsNav = require('./column-heading-nav');

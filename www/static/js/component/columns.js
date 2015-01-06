@@ -2,7 +2,6 @@
 
 const React = require('react/addons');
 const Column = require('./column');
-const DOM = React.DOM;
 
 module.exports = React.createClass({
   displayName: 'Columns',

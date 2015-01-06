@@ -1,7 +1,6 @@
 'use strict';
 
 const React = require('react');
-const DOM = React.DOM;
 const LoginView = require('./login');
 const ColumnsView = require('./columns');
 const HeaderView = require('./header');
