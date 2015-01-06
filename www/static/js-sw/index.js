@@ -2,8 +2,9 @@ var caches = require('../js/lib/serviceworker-cache-polyfill');
 
 self.addEventListener('install', function(event) {
    event.waitUntil(
-    caches.open('twoffline-static-v6').then(function(cache) {
+    caches.open('twoffline-static-v7').then(function(cache) {
       return cache.addAll([
+        '/tweetdeck-prototype/',
         '/tweetdeck-prototype/static/build/css/all.css',
         '/tweetdeck-prototype/static/build/js/all.js'
       ]);
@@ -20,7 +21,7 @@ self.addEventListener('fetch', function(event) {
 });
 
 var validCaches = [
-  'twoffline-static-v6'
+  'twoffline-static-v7'
 ];
 
 self.addEventListener('activate', function (event) {
