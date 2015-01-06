@@ -29,19 +29,36 @@ module.exports = React.createClass({
       }
     });
 
-    this.loadMore();
+    this.loadDown();
   },
 
-  loadMore() {
-    this.setState({ loading: true });
+  loadDown() {
+    this.setState({ loadingDown: true });
     this.props.column.load({
       cursor: this.state.cursors.down || {}
     }).then(result => {
+      var newCursors = this.state.cursors;
+      newCursors.down = result.cursors.down;
       this.setState({
-        loading: false,
+        loadingDown: false,
         items: this.state.items.concat(result.items),
         exhausted: result.exhausted,
-        cursors: result.cursors
+        cursors: newCursors
+      });
+    });
+  },
+
+  loadUp() {
+    this.setState({ loadingUp: true });
+    this.props.column.load({
+      cursor: this.state.cursors.up || {}
+    }).then(result => {
+      var newCursors = this.state.cursors;
+      newCursors.up = result.cursors.up;
+      this.setState({
+        loadingUp: false,
+        items: result.items.concat(this.state.items),
+        cursors: newCursors
       });
     });
   },
@@ -54,8 +71,9 @@ module.exports = React.createClass({
         </header>
         <div className="column-scroller" ref="scroller">
           <div className="tweet-container" ref="items">
+            {this.state.items.length ? <Loader loading={this.state.loadingUp} onLoad={this.loadUp} /> : null}
             {this.state.items.map(item => <Item item={item} key={item.id} />)}
-            {this.state.exhausted ? null : <Loader loading={this.state.loading} onLoad={this.loadMore} key="loader" />}
+            {this.state.exhausted ? null : <Loader loading={this.state.loadingDown} onLoad={this.loadDown} />}
           </div>
         </div>
       </article>
