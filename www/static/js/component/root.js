@@ -9,11 +9,11 @@ const tweetdeck = require('../lib/tweetdeck');
 const tweetdeckDb = require('../lib/tweetdeckdb');
 
 // TODO move data handling to a better palce
-var Column = require('../lib/tweetdeck/column');
+const Column = require('../lib/tweetdeck/column');
 
 function createSwiper() {
-  var swiper = new Swiper();
-  var largeWidth = window.matchMedia('(min-width: 500px) and (min-height: 500px)');
+  const swiper = new Swiper();
+  const largeWidth = window.matchMedia('(min-width: 500px) and (min-height: 500px)');
   function handleWidthChange() {
     if (largeWidth.matches) {
       swiper.stop();
