@@ -10,7 +10,7 @@ function TweetColumnItem(data) {
 
   if (data.retweeted_status) {
     this.retweetedBy = new TwitterUser(data.user);
-    this.user = new TwitterUser(data.retweeted_status);
+    this.user = new TwitterUser(data.retweeted_status.user);
     this._text = data.retweeted_status.text;
     this._entities = data.retweeted_status.entities;
   }
