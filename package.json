@@ -5,7 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "start": "npm install && gulp"
+    "start": "npm install && gulp --disable-sw"
   },
   "author": "",
   "license": "ISC",
