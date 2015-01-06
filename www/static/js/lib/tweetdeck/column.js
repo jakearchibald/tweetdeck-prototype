@@ -1,11 +1,11 @@
 var columnUtils = require('./columnutils');
-var Feed = require('./feed');
+var client = require('./client');
 
 function Column(type, account) {
   this.type = type;
   this.updating = false;
   this.title = columnUtils.getTitle(this.type);
-  this.feed = new Feed(type, account);
+  this.account = account;
 }
 
 var ColumnProto = Column.prototype;
@@ -18,7 +18,9 @@ ColumnProto.load = function (opts) {
   opts = opts || {};
   this.updating = true;
   // TODO remove multi-feed capability to avoid missing tweets bug
-  return this.feed.fetch({
+  return client.fetch({
+    account: this.account,
+    type: this.type,
     query: opts.query
   }).then(data => {
     this.updating = false;
