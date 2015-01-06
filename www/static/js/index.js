@@ -5,11 +5,13 @@ require('fetch');
 
 const React = require('react');
 const utils = require('./lib/utils');
-const RootView = React.createFactory(require('./component/root'));
+const RootView = require('./component/root');
 
 // UI setup
 React.initializeTouchEvents(true);
 
-utils.domReady.then(function () {
-  React.render(RootView({}), document.querySelector('.content'));
-}).catch(why => console.error(why.stack));
+utils.domReady.then(
+  React.render.bind(React, <RootView />, document.querySelector('.content'))
+).catch(why =>
+  console.error(why.stack)
+);
