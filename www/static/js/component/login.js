@@ -2,6 +2,7 @@
 
 const tweetdeck = require('../lib/tweetdeck');
 const utils = require('../lib/utils');
+const Promise = require('../lib/promise');
 
 const React = require('react');
 const ModalDialog = require('./modal-dialog');

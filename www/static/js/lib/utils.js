@@ -1,3 +1,5 @@
+const Promise = require('./promise');
+
 exports.defaults = function defaults(opts, defaultOpts) {
   var r = {};
 

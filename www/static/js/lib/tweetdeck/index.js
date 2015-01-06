@@ -1,6 +1,7 @@
 'use strict';
 
 var utils = require('../utils');
+var Promise = require('../promise');
 var User = require('./user');
 var Account = require('./account');
 var Column = require('./column');

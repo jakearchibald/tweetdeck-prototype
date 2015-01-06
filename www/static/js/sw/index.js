@@ -1,4 +1,5 @@
-var caches = require('../lib/serviceworker-cache-polyfill');
+const caches = require('../lib/serviceworker-cache-polyfill');
+const Promise = require('../lib/promise');
 
 self.addEventListener('install', function(event) {
    event.waitUntil(

@@ -1,4 +1,7 @@
+'use strict';
 // Cannot feature-detect, as we have these implemented but they reject
+
+const Promise = require('./promise');
 
 if (!Cache.prototype.add) {
   Cache.prototype.add = function add(request) {

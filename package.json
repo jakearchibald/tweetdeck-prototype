@@ -5,7 +5,8 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "start": "npm install && gulp --disable-sw"
+    "start": "npm install && gulp --disable-sw",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
@@ -32,6 +33,14 @@
     "watchify": "^2.2.1"
   },
   "devDependencies": {
-    "browser-sync": "^1.8.3"
+    "browser-sync": "^1.8.3",
+    "jest-cli": "^0.2.1",
+    "react-tools": "^0.12.2"
+  },
+  "jest": {
+    "scriptPreprocessor": "test-preprocessor.js",
+    "unmockedModulePathPatterns": [
+      "node_modules/react"
+    ]
   }
 }

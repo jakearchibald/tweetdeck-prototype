@@ -1,3 +1,7 @@
+'use strict';
+
+const Promise = require('./promise');
+
 function promisifyRequest(obj) {
   return new Promise(function(resolve, reject) {
     function onsuccess(event) {

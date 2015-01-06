@@ -1,4 +1,5 @@
 var IndexedDouchebag = require('./indexeddouchebag');
+var Promise = require('./promise');
 var User = require('./tweetdeck/user');
 
 function TweetdeckDb() {
