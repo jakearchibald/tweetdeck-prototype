@@ -4,6 +4,7 @@ function TwitterUser(data) {
   this.name = data.name;
   this.screenName = data.screen_name;
   this.avatar = data.profile_image_url_https;
+  this.avatarBigger = this.avatar && this.avatar.replace('_normal.', '_bigger.');
   this.protected = data.protected;
   this.twitterURL = 'https://twitter.com/' + this.screenName;
   this._description = data.description;
