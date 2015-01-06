@@ -3,6 +3,7 @@
 const React = require('react');
 const Loader = require('./loader');
 const Item = require('./column-item');
+var _ = require('lodash');
 
 module.exports = React.createClass({
   displayName: 'Column',
@@ -17,9 +18,9 @@ module.exports = React.createClass({
 
   componentDidMount() {
     const scroller = this.refs.scroller.getDOMNode();
-    const tweets = this.refs.tweets.getDOMNode();
+    const items = this.refs.items.getDOMNode();
 
-    scroller.addEventListener('wheel', (event) => {
+    scroller.addEventListener('wheel', event => {
       if (Math.abs(event.deltaY) >= Math.abs(event.deltaX)) {
         event.preventDefault();
         event.stopPropagation();
@@ -32,10 +33,14 @@ module.exports = React.createClass({
 
   loadMore() {
     this.setState({ loading: true });
-    this.props.column.loadMore().then((result) => {
+    this.props.column.load({
+      query: {
+        max_id: this.state.items.slice(-1).reduce((last, tweet) => tweet.id, null)
+      }
+    }).then(result => {
       this.setState({
         loading: false,
-        items: result.items,
+        items: this.state.items.concat(result.items),
         exhausted: result.exhausted
       });
     });
@@ -48,8 +53,8 @@ module.exports = React.createClass({
           {this.props.column.title}
         </header>
         <div className="column-scroller" ref="scroller">
-          <div className="tweet-container" ref="tweets">
-            {this.state.items.map((item) => <Item item={item} key={item.id} />)}
+          <div className="tweet-container" ref="items">
+            {this.state.items.map(item => <Item item={item} key={item.id} />)}
             {this.state.exhausted ? null : <Loader loading={this.state.loading} onLoad={this.loadMore} key="loader" />}
           </div>
         </div>

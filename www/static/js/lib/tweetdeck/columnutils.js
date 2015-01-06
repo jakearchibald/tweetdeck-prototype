@@ -3,6 +3,14 @@ var columnTitles = {
   'mentions': 'Mentions',
 };
 
-module.exports.getTitle = function getTitle(feedtype) {
-  return columnTitles[feedtype];
-};
+module.exports = {
+    getTitle(feedtype) {
+      return columnTitles[feedtype];
+    },
+
+    sort: {
+        byDate(a, b) {
+          return b.date - a.date;
+        }
+    }
+}
