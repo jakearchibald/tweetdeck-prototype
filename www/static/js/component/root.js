@@ -62,7 +62,7 @@ module.exports = React.createClass({
       .catch(why => console.error(why.stack));
   },
 
-  componentDidMount() {
+  componentWillMount() {
     this.attemptLogin();
   },
 
