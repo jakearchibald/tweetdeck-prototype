@@ -38,6 +38,18 @@ gulp.task('sass-build', function() {
   return sassTask(false);
 });
 
+gulp.task('copy', ['clean'], function () {
+  return gulp.src([
+    // Copy all files
+    'www/static/**',
+    // Exclude the following files
+    // (other tasks will handle the copying of these files)
+    '!www/static/**/*.scss',
+    '!www/static/**/*.js',
+    '!www/static/**/*.map'
+  ]).pipe(gulp.dest('www/static/build'));
+});
+
 gulp.task('browser-sync', function() {
   browserSync({
     notify: true,
@@ -102,4 +114,4 @@ gulp.task('server', function() {
 
 gulp.task('clean', del.bind(null, 'www/static/build'));
 
-gulp.task('default', ['clean', 'watch', 'server', 'browser-sync']);
+gulp.task('default', ['clean', 'copy', 'watch', 'server', 'browser-sync']);
