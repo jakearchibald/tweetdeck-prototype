@@ -2,17 +2,7 @@ var _ = require('lodash');
 var TweetInterval = require('./tweet-interval');
 var columnUtils = require('./tweetdeck/columnUtils');
 var { Request, RequestResult } = require('./request-result');
-window.TweetInterval = TweetInterval;
-
-function makeIntervalFromTweets(tweets) {
-  return (tweets.length ?
-    new TweetInterval(
-      TweetInterval.inclusiveEndpoint(_.last(tweets)),
-      TweetInterval.inclusiveEndpoint(_.first(tweets))
-    ) :
-    TweetInterval.empty
-  );
-}
+var storeUtils = require('./store-utils')
 
 class MemoryOrderedStore {
   constructor() {
@@ -20,21 +10,7 @@ class MemoryOrderedStore {
   }
 
   fetch(request) {
-    return new Promise(resolve => resolve(this.doFetch(request)));
-  }
-
-  doFetch(request) {
-    // By default, request absolutely everything
     const requestInterval = request.cursor.interval || TweetInterval.whole;
-    const storeInterval = makeIntervalFromTweets(this.store);
-
-    if (storeInterval.empty) {
-      throw Error('Store is empty');
-    }
-
-    if (requestInterval.intersection(storeInterval).empty) {
-      throw Error('Request cannot be satisfied by store');
-    }
 
     // Return tweets that are within the requested interval and are before a gap
     var result = _.chain(this.store)
@@ -42,12 +18,24 @@ class MemoryOrderedStore {
       .take(tweet => !tweet.isGap)
       .value();
 
-    return new RequestResult(request, result);
+    return Promise.resolve(
+      new RequestResult(request, result)
+    );
+  }
+
+  getStoreInterval() {
+    return new Promise(resolve =>
+      resolve(storeUtils.makeIntervalFromTweets(this.store))
+    );
   }
 
   putRequestResult(requestResult) {
     this.store = this.store
-      .concat(requestResult.result.map(this.tweetToStoreObject))
+      .concat(
+        requestResult.result.map(
+          storeUtils.makeOrderedStoreObjectFromTweet
+        )
+      )
       .sort(columnUtils.sort.byCreatedAtDesc)
       // Dedupe
       .reduce(
@@ -62,13 +50,6 @@ class MemoryOrderedStore {
       )
       .newStore;
     return requestResult;
-  }
-
-  tweetToStoreObject(tweet) {
-    return {
-      id_str: tweet.id_str,
-      created_at: new Date(tweet.created_at).getTime()
-    };
   }
 }
 
