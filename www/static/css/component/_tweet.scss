@@ -2,7 +2,8 @@
  * Tweet
  */
 
-.tweet {
+
+%abstract-tweet {
   text-align: center;
   padding: 40px 0 0;
   margin: 0 auto;
@@ -11,19 +12,23 @@
   font-size: 5.2vw;
   overflow: hidden;
   position: relative;
-
+  
   @media (min-width: 400px) {
     font-size: 1.3rem;
     width: 400px;
   }
+}
 
+.tweet {
+  @extend %abstract-tweet;
+  
   & + .tweet {
     border-top: 1px solid #D1D3D4;
   }
 }
 
 .tweet-hero {
-  @extend .tweet;
+  @extend %abstract-tweet;
   background: #000;
   color: #fff;
 }
