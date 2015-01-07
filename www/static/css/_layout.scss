@@ -7,4 +7,9 @@
   height: 35px;
   fill: #1C8CE5;
   margin: 36px 0;
+  transition: transform 100ms ease-in;
+}
+
+.logo:active {
+  transform: scale(1.1);
 }

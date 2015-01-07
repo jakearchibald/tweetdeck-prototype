@@ -18,11 +18,13 @@ module.exports = React.createClass({
 
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll);
+    document.querySelector('.logo').addEventListener('click', this.handleHeaderClick);
     this.loadDown();
   },
 
   componentWillUnmount: function() {
     window.removeEventListener('scroll', this.handleScroll);
+    document.querySelector('.logo').removeEventListener('click', this.handleHeaderClick);
   },
 
   handleScroll(e) {
@@ -33,6 +35,12 @@ module.exports = React.createClass({
         document.documentElement.scrollTop + window.innerHeight >= document.body.clientHeight &&
         this.state.items.length) {
       this.loadDown();
+    }
+  },
+
+  handleHeaderClick(e) {
+    if (this.state.items.length) {
+      this.loadUp();
     }
   },
 
@@ -83,7 +91,6 @@ module.exports = React.createClass({
   render() {
     return (
       <div className="column">
-        {this.state.items.length ? <Loader loading={this.state.loadingUp} onLoad={this.loadUp} /> : null}
         {this.state.items.map(item => <Item item={item} key={item.id} />)}
         {this.state.exhausted ? null : <Loader loading={this.state.loadingDown} onLoad={this.loadDown} />}
       </div>
