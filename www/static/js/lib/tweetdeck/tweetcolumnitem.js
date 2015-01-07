@@ -5,13 +5,13 @@ var tweetdeckUtils = require('./utils');
 class TweetColumnItem extends ColumnItem {
   constructor(data) {
     super();
-    this.id = String(data.id);
+    this.id = String(data.id_str);
     this.date = new Date(data.created_at);
     this.favouriteCount = data.favourite_count;
     this.retweetCount = data.retweet_count;
 
     var sourceTweet = data.retweeted_status || data;
-    
+
     if (data.retweeted_status) {
       this.retweetedBy = new TwitterUser(data.user);
     }

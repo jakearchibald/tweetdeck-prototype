@@ -30,11 +30,11 @@ module.exports = React.createClass({
     }).then(result => {
       var newCursors = this.state.cursors;
       newCursors.down = result.cursors.down;
-      newCursors.up = newCursors.up || result.cursors.up;
+      newCursors.up = this.state.cursors.up || result.cursors.up;
       this.setState({
         loadingDown: false,
         items: this.state.items.concat(result.items),
-        exhausted: result.exhausted,
+        exhausted: false,
         cursors: newCursors
       });
     });

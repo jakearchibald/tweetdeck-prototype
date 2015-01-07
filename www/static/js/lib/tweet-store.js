@@ -1,4 +1,3 @@
-var client = require('./tweetdeck/client');
 var MemoryKeyValueStore = require('./memory-key-value-store');
 
 class TweetStore {
@@ -15,11 +14,12 @@ class TweetStore {
     }
 
     put(tweet) {
+        // TODO remember data about the request from which the tweet came
         return this.keyValueStore.put(tweet.id_str, tweet);
     }
 
-    putMany(tweets) {
-        return Promise.all(tweets.map(this.put, this));
+    putRequestResult(requestResult) {
+        return Promise.all(requestResult.result.map(this.put, this)).then(_ => requestResult);
     }
 }
 

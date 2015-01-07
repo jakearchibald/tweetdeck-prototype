@@ -1,6 +1,7 @@
 var columnUtils = require('./columnutils');
 var TimelineStore = require('../timeline-store');
 var TweetColumnItem = require('./tweetcolumnitem');
+var { Request } = require('../request-result');
 
 class Column {
   constructor(type, account) {
@@ -9,32 +10,19 @@ class Column {
     this.title = columnUtils.getTitle(this.type);
     this.account = account;
     this.timelineStore = new TimelineStore();
+    window.timelineStore = this.timelineStore;
   }
 
   load(opts={}) {
     return this.timelineStore
-      .fetch({
-        account: this.account,
-        type: this.type,
-        cursor: opts.cursor || {}
-      })
-      .then(items =>
-        items.map(data =>
-          new TweetColumnItem(data)
-        )
-      )
-      // TODO they *must* come sorted from the ordered store
-      .then(items => items.sort(columnUtils.sort.byDate))
-      .then(items => {
+      .fetch(new Request(this.account, opts.cursor))
+      .then(requestResult => {
         return {
-          items: items,
-          // Got nothing back, must be the end
-          exhausted: !items.length,
-          cursors: {
-            request: opts.cursor || {},
-            up: columnUtils.cursor.up(items),
-            down: columnUtils.cursor.down(items)
-          }
+          items: requestResult.result.map(data =>
+            new TweetColumnItem(data)
+          ),
+          exhausted: false,
+          cursors: requestResult.data.cursors
         };
       });
   }

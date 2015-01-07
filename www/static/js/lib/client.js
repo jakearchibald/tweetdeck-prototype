@@ -1,5 +1,6 @@
-var utils = require('../utils');
+var utils = require('./utils');
 var _ = require('lodash');
+var { RequestResult } = require('./request-result');
 
 var TWITTER = {
   BASE: 'https://api.twitter.com',
@@ -30,11 +31,11 @@ var TWITTER = {
 };
 
 module.exports = {
-  fetch(opts={}) {
-    const endpoint = TWITTER.ENDPOINTS[opts.type];
+  fetch(request={}) {
+    const endpoint = TWITTER.ENDPOINTS.home;
     const query = _.chain(endpoint.query || {})
       .clone()
-      .extend(opts.cursor.query || {})
+      .extend(request.cursor.query || {})
       // Only keep truthy values
       .pick(function (value) {
         return (typeof value !== 'undefined' && value !== null);
@@ -43,6 +44,10 @@ module.exports = {
 
     const url = TWITTER.BASE + endpoint.url + '?' + utils.objToUrlParams(query);
 
-    return opts.account.proxiedRequest(url).then(r => r.json());
+    return request.account.proxiedRequest(url)
+      .then(r => r.json())
+      .then(result => {
+        return new RequestResult(request, result);
+      });
   }
 }
