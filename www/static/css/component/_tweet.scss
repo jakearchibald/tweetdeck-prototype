@@ -10,6 +10,7 @@
   font-size: 1.05rem;
   font-size: 5.2vw;
   overflow: hidden;
+  position: relative;
 
   @media (min-width: 400px) {
     font-size: 1.3rem;
@@ -21,11 +22,41 @@
   }
 }
 
+.tweet-hero {
+  @extend .tweet;
+  background: #000;
+  color: #fff;
+}
+
 .tweet__title {
   margin: 0 0 0;
   padding: 0 10px;
   font-weight: normal;
   font-size: inherit;
+}
+
+.tweet__hero-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.tweet__hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000;
+  opacity: 0.4;
+}
+
+.tweet__content {
+  position: relative;
 }
 
 .tweet__avatar {
@@ -67,6 +98,8 @@
 
 .tweet__body {
   padding: 0 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tweet__actions {
@@ -106,4 +139,12 @@
   margin-right: 5px;
   box-sizing: border-box;
   padding-left: 9px;
+}
+
+// dunno if there's a more BEMmy way of doing this
+.tweet-hero {
+  & .tweet__actions {
+    fill: #fff;
+    color: #fff;
+  }
 }

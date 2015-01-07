@@ -9,21 +9,24 @@ class TweetColumnItem extends ColumnItem {
     this.date = new Date(data.created_at);
     this.favouriteCount = data.favourite_count;
     this.retweetCount = data.retweet_count;
+
+    var sourceTweet = data.retweeted_status || data;
     
     if (data.retweeted_status) {
       this.retweetedBy = new TwitterUser(data.user);
-      this.user = new TwitterUser(data.retweeted_status.user);
-      this._text = data.retweeted_status.text;
-      this._entities = data.retweeted_status.entities;
-    }
-    else {
-      // .sender if for DMs, may want to subclass this out
-      this.user = new TwitterUser(data.user || data.sender);
-      this._text = data.text;
-      this._entities = data.entities;
     }
 
+    this.user = new TwitterUser(sourceTweet.user || sourceTweet.sender);
+    this._text = sourceTweet.text;
+    this._entities = sourceTweet.entities;
     this._html = undefined;
+
+    if (sourceTweet.entities.media) {
+      let photo = sourceTweet.entities.media.find(p => p.type = 'photo');
+      if (photo) {
+        this.heroImg = photo.media_url_https;
+      }
+    }
   }
 
   getHTML() {
