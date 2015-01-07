@@ -17,10 +17,29 @@ module.exports = React.createClass({
   },
 
   componentDidMount() {
+    window.addEventListener('scroll', this.handleScroll);
     this.loadDown();
   },
 
+  componentWillUnmount: function() {
+    window.removeEventListener('scroll', this.handleScroll);
+  },
+
+  handleScroll(e) {
+    if (this.state.loadingDown) {
+      e.preventDefault();
+    }
+    if (document.body.clientHeight > window.innerHeight &&
+        document.documentElement.scrollTop + window.innerHeight > document.body.clientHeight &&
+        this.state.items.length) {
+      this.loadDown();
+    }
+  },
+
   loadDown() {
+    if (this.state.loadingDown) {
+      return;
+    }
     this.setState({
       loadingDown: true
     });
@@ -41,6 +60,9 @@ module.exports = React.createClass({
   },
 
   loadUp() {
+    if (this.state.loadingUp) {
+      return;
+    }
     this.setState({
       loadingUp: true
     });
