@@ -30,7 +30,7 @@ module.exports = React.createClass({
       e.preventDefault();
     }
     if (document.body.clientHeight > window.innerHeight &&
-        document.documentElement.scrollTop + window.innerHeight > document.body.clientHeight &&
+        document.documentElement.scrollTop + window.innerHeight >= document.body.clientHeight &&
         this.state.items.length) {
       this.loadDown();
     }
