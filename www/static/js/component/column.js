@@ -3,7 +3,6 @@
 const React = require('react');
 const Loader = require('./loader');
 const Item = require('./column-item');
-var _ = require('lodash');
 
 module.exports = React.createClass({
   displayName: 'Column',

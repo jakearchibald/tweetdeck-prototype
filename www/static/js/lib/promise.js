@@ -1,3 +1,3 @@
 var rsvp = require('rsvp');
 
-module.exports = window.Promise ? window.Promise : rsvp.Promise;
+module.exports = self.Promise ? self.Promise : rsvp.Promise;
