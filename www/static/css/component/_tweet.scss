@@ -3,44 +3,56 @@
  */
 
 .tweet {
-  padding: 12px;
-  border-bottom: 1px solid rgba(#9266CC, 0.2);
-}
+  text-align: center;
+  padding: 40px 0;
+  line-height: 1.4;
+  font-size: 0.9rem;
+  font-size: 3.9vw;
 
-.tweet__avatar {
-  width: 54px;
-  height: 54px;
-
-  & img {
-    width: 100%;
+  @media (min-width: 500px) and (min-height: 500px) {
+    font-size: 0.9rem;
   }
 }
 
 .tweet__title {
-  @include display-flex;
-  font: inherit;
-  margin: 0;
-  padding: 0;
-  white-space: nowrap;
+  margin: 0 0 0;
+  padding: 0 10px;
+}
+
+.tweet__avatar {
+  display: block;
+  margin: 0 auto 1em;
+  width: 50px;
+  height: 50px;
+  border-radius: 3px;
 }
 
 .tweet__name {
-  font-weight: bold;
   margin: 0 0.3em 0 0;
-  text-overflow: ellipsis;
-  overflow: hidden;
 }
 
 .tweet__username {
-  color: rgba(#000, 0.5);
-  margin: 0 0.3em 0 0;
-  overflow: hidden;
+  font-weight: normal;
+}
+
+.tweet__title-text {
+  @include display-flex;
+  white-space: nowrap;
+
+  &::before {
+    content: '';
+    @include flex(1);
+  }
 }
 
 .tweet__time {
   @include flex(1);
-  color: rgba(#000, 0.6);
   text-align: right;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-transform: uppercase;
+  font-weight: normal;
+  color: rgba(#000, 0.4);
+}
+
+.tweet__body {
+  padding: 0 40px;
 }
