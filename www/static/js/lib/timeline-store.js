@@ -2,16 +2,13 @@ var _ = require('lodash');
 var client = require('./client');
 var columnUtils = require('./tweetdeck/columnutils');
 var MemoryOrderedStore = require('./memory-ordered-store');
-var IDBKeyValueStore = require('./idb-key-value-store');
 var TweetStore = require('./tweet-store');
 var { Request, RequestResult } = require('./request-result');
 
 class TimelineStore {
   constructor(opts={}) {
     this.orderedStore = opts.orderedStore || new MemoryOrderedStore();
-    this.tweetStore = opts.tweetStore || new TweetStore({
-      keyValueStore: new IDBKeyValueStore()
-    });
+    this.tweetStore = opts.tweetStore || new TweetStore();
     this.upstream = opts.upstream || client;
   }
 
