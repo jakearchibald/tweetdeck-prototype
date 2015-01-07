@@ -1,15 +1,18 @@
 'use strict';
 
-const React = require('react');
+const React = require('react/addons');
+const Immutable = require('immutable');
 const Loader = require('./loader');
 const Item = require('./column-item');
+
+const update = React.addons.update;
 
 module.exports = React.createClass({
   displayName: 'Column',
 
   getInitialState() {
     return {
-      items: [],
+      items: Immutable.OrderedMap(),
       loading: false,
       exhausted: false,
       cursors: {}
@@ -33,7 +36,7 @@ module.exports = React.createClass({
       newCursors.up = this.state.cursors.up || result.cursors.up;
       this.setState({
         loadingDown: false,
-        items: this.state.items.concat(result.items),
+        items: this.state.items.merge(result.items),
         exhausted: false,
         cursors: newCursors
       });
@@ -52,17 +55,24 @@ module.exports = React.createClass({
       newCursors.up = result.cursors.up;
       this.setState({
         loadingUp: false,
-        items: result.items.concat(this.state.items),
+        items: result.items.merge(this.state.items),
         cursors: newCursors
       });
+    });
+  },
+
+  favorite(tweetItem) {
+    this.setState({
+      items: this.state.items.set(tweetItem.id,
+                 update(tweetItem, { isFavorite: { $set: true } }))
     });
   },
 
   render() {
     return (
       <div className="column">
-        {this.state.items.length ? <Loader loading={this.state.loadingUp} onLoad={this.loadUp} /> : null}
-        {this.state.items.map(item => <Item item={item} key={item.id} />)}
+        {this.state.items.count() === 0 ? <Loader loading={this.state.loadingUp} onLoad={this.loadUp} /> : null}
+        {this.state.items.map(item => <Item item={item} key={item.id} onFavorite={this.favorite} />).toArray()}
         {this.state.exhausted ? null : <Loader loading={this.state.loadingDown} onLoad={this.loadDown} />}
       </div>
     );

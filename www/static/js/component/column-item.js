@@ -2,9 +2,15 @@
 
 const React = require('react');
 const utils = require('../lib/utils');
+const tweetdeckUtils = require('../lib/tweetdeck/utils');
 
 module.exports = React.createClass({
   displayName: 'Item',
+
+  propTypes: {
+    item: React.PropTypes.object.isRequired,
+    onFavorite: React.PropTypes.func.isRequired
+  },
 
   render() {
     return (
@@ -27,15 +33,20 @@ module.exports = React.createClass({
               <span className="tweet__time">{utils.relativeTime(this.props.item.date.getTime())}</span>
             </span>
           </h1>
-          <div className="tweet__body" dangerouslySetInnerHTML={{__html: this.props.item.getHTML()}} />
+          <div className="tweet__body" dangerouslySetInnerHTML={{__html: this.getHTML()}} />
           <div className="tweet__actions">
             <span className="tweet__rt-count">{this.props.item.retweetCount || ""}</span>
             <button className="tweet__rt-button" dangerouslySetInnerHTML={{__html:"<svg viewBox='0 0 42.7 24.9'><use xlink:href='static/imgs/sprite.svg#retweet'/></svg>"}}></button>
             <span className="tweet__fav-count">{this.props.item.favouriteCount || ""}</span>
-            <button className="tweet__fav-button" dangerouslySetInnerHTML={{__html:"<svg viewBox='0 0 29.2 27.5'><use xlink:href='static/imgs/sprite.svg#fave'/></svg>"}}></button>
+            <button onClick={this.props.onFavorite.bind(null, this.props.item)} className="tweet__fav-button" dangerouslySetInnerHTML={{__html:"<svg viewBox='0 0 29.2 27.5'><use xlink:href='static/imgs/sprite.svg#fave'/></svg>"}}></button>
           </div>
         </div>
       </article>
     );
+  },
+
+  getHTML() {
+    return tweetdeckUtils.processEntities(this.props.item.text,
+        this.props.item.entities);
   }
 });
