@@ -33,12 +33,16 @@ module.exports = React.createClass({
   },
 
   loadDown() {
-    this.setState({ loadingDown: true });
+    this.setState({
+      loadingDown: true
+    });
+    // Load tweets below what we have now
     this.props.column.load({
       cursor: this.state.cursors.down || {}
     }).then(result => {
       var newCursors = this.state.cursors;
       newCursors.down = result.cursors.down;
+      newCursors.up = newCursors.up || result.cursors.up;
       this.setState({
         loadingDown: false,
         items: this.state.items.concat(result.items),
@@ -49,7 +53,10 @@ module.exports = React.createClass({
   },
 
   loadUp() {
-    this.setState({ loadingUp: true });
+    this.setState({
+      loadingUp: true
+    });
+    // Load tweets above what we have now
     this.props.column.load({
       cursor: this.state.cursors.up || {}
     }).then(result => {
