@@ -2,77 +2,13 @@
  * Columns
  */
 
-.columns {
-  height: 100%;
-  @include flex(1);
-  @include display-flex;
-  overflow-x: auto;
-  overflow-y: hidden;
-  background: #ddd;
-}
-
-.column-panner {
-  @include display-flex;
-  min-width: 100%;
-
-  @media (min-width: 500px) and (min-height: 500px) {
-    // triggering gap at the end of scroll - there must be a better way than this
-    &::after {
-      content: '';
-      min-width: 1px;
-    }
-  }
-}
-
 .column {
-  width: 100%;
-  min-width: 100%;
-  @include display-flex;
-  @include flex-flow(column);
-
-  @media (min-width: 500px) and (min-height: 500px) {
-    position: relative;
-    width: 50%;
-    min-width: 20em;
-    max-width: 30em;
-    margin: 0 1.5em 1.5em 0;
-    -webkit-animation: appear 0.2s; /* Chrome, Safari, Opera */
-    animation: appear 0.2s;
-
-    &:first-child {
-      margin-left: 1.5em;
-    }
-  }
-}
-
-.column-header {
-  color: #111;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  display: none;
-  font-size: 1.4rem;
-  padding: 1em 0 0.444em;
-
-  @media (min-width: 500px) and (min-height: 500px) {
-    display: block;
-  }
-}
-
-.column-scroller {
-  @include flex(1);
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-
-  background: #fff;
 }
 
 .column-loader {
   height: 3em;
   color: #aab8c2;
   text-align: center;
-  fill: currentColor; // Let color cascade to SVG fill
   overflow: hidden;
   background: #f5f8fa;
   transition: background-color 100ms linear;
@@ -98,10 +34,4 @@
 .column-loader-spinner img {
   height: 3em;
   width: 3em;
-  fill: currentColor; // Let color cascade to SVG fill
-}
-
-@include keyframes(appear) {
-  0%   {top:-500px;}
-  100% {top:0;}
 }

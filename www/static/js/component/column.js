@@ -17,17 +17,6 @@ module.exports = React.createClass({
   },
 
   componentDidMount() {
-    const scroller = this.refs.scroller.getDOMNode();
-    const items = this.refs.items.getDOMNode();
-
-    scroller.addEventListener('wheel', event => {
-      if (Math.abs(event.deltaY) >= Math.abs(event.deltaX)) {
-        event.preventDefault();
-        event.stopPropagation();
-        scroller.scrollTop += event.deltaY;
-      }
-    });
-
     this.loadDown();
   },
 
@@ -71,18 +60,11 @@ module.exports = React.createClass({
 
   render() {
     return (
-      <article className="column">
-        <header className="column-header">
-          {this.props.column.title}
-        </header>
-        <div className="column-scroller" ref="scroller">
-          <div className="tweet-container" ref="items">
-            {this.state.items.length ? <Loader loading={this.state.loadingUp} onLoad={this.loadUp} /> : null}
-            {this.state.items.map(item => <Item item={item} key={item.id} />)}
-            {this.state.exhausted ? null : <Loader loading={this.state.loadingDown} onLoad={this.loadDown} />}
-          </div>
-        </div>
-      </article>
+      <div className="column">
+        {this.state.items.length ? <Loader loading={this.state.loadingUp} onLoad={this.loadUp} /> : null}
+        {this.state.items.map(item => <Item item={item} key={item.id} />)}
+        {this.state.exhausted ? null : <Loader loading={this.state.loadingDown} onLoad={this.loadDown} />}
+      </div>
     );
   }
 });

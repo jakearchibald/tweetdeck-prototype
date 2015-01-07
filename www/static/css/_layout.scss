@@ -1,15 +1,3 @@
 /**
  * Page layout
  */
-
-.content, .app {
-  height: 100%;
-  overflow: hidden;
-}
-
-.page {
-  @include display-flex;
-  @include flex-flow(column);
-  height: 100%;
-  overflow: hidden;
-}

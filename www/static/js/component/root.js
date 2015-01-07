@@ -2,37 +2,17 @@
 
 const React = require('react');
 const LoginView = require('./login');
-const ColumnsView = require('./columns');
-const HeaderView = require('./header');
+const ColumnView = require('./column');
+const Loader = require('./loader');
 
-const Swiper = require('../lib/swiper.js');
 const tweetdeck = require('../lib/tweetdeck');
 const tweetdeckDb = require('../lib/tweetdeckdb');
 
 // TODO move data handling to a better palce
 const Column = require('../lib/tweetdeck/column');
 
-function createSwiper() {
-  const swiper = new Swiper();
-  const largeWidth = window.matchMedia('(min-width: 500px) and (min-height: 500px)');
-  function handleWidthChange() {
-    if (largeWidth.matches) {
-      swiper.stop();
-    } else {
-      swiper.start();
-    }
-  }
-
-  window.addEventListener('resize', swiper.updateLayout.bind(swiper));
-  largeWidth.addListener(handleWidthChange);
-  handleWidthChange();
-  return swiper;
-}
-
-function makeDefaultColumns(account) {
-  return [
-    new Column('home', account)
-  ];
+function makeDefaultColumn(account) {
+  return new Column('home', account);
 }
 
 module.exports = React.createClass({
@@ -42,8 +22,7 @@ module.exports = React.createClass({
     return {
       account: null,
       attemptedLogin: false,
-      columns: null,
-      swiper: createSwiper()
+      column: null
     };
   },
 
@@ -54,8 +33,8 @@ module.exports = React.createClass({
         // Note: account might be not be defined – that's ok
         this.setState({
           account: account,
-          columns: account && makeDefaultColumns(account),
-          attemptedLogin: true
+          attemptedLogin: true,
+          column: account && makeDefaultColumn(account)
         });
       })
       .catch(why => console.error(why.stack));
@@ -73,11 +52,7 @@ module.exports = React.createClass({
   render() {
     if (!this.state.attemptedLogin) {
       return (
-        <div className="app">
-          <div className="page">
-            <HeaderView />
-          </div>
-        </div>
+        <div className="app"></div>
       );
     }
 
@@ -87,19 +62,19 @@ module.exports = React.createClass({
     if (!this.state.account) {
       return (
         <div className="app">
-          <div className="page">
-            <HeaderView />
-            <LoginView onLoginSuccess={this.loginDidSucceed} />
-          </div>
+          <LoginView onLoginSuccess={this.loginDidSucceed} />
+        </div>
+      );
+    } else if (!this.state.column) {
+      return (
+        <div className="app">
+          <Loader loading={true}/>
         </div>
       );
     } else {
       return (
         <div className="app">
-          <div className="page">
-            <HeaderView columns={this.state.columns} swiper={this.state.swiper} />
-            <ColumnsView columns={this.state.columns} swiper={this.state.swiper} />
-          </div>
+          <ColumnView column={this.state.column} key={this.state.column.type} />
         </div>
       );
     }

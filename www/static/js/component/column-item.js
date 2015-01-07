@@ -8,7 +8,7 @@ module.exports = React.createClass({
 
   render() {
     return (
-      <article className="tweet media" key={this.props.item.id}>
+      <article className="tweet" key={this.props.item.id}>
         <h1 className="tweet__title">
           <img className="tweet__avatar" src={this.props.item.user.avatarBigger} alt="" />
           <span className="tweet__title-text">
