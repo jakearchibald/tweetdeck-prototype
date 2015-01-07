@@ -2,7 +2,6 @@
  * Button
  */
 
-button,
 .button {
   position: relative;
   border: none;
@@ -16,3 +15,20 @@ button,
   cursor: pointer;
   padding: 0 1em;
 }
+
+.unbutton {
+  display: inline-block;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+  }
+}
+

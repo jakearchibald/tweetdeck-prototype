@@ -7,8 +7,8 @@
 
 @font-face {
   font-family: whitney;
-  src: url('fonts/whitneyhtf-bold.woff2') format('woff2'),
-       url('fonts/whitneyhtf-bold.woff') format('woff');
+  src: url('fonts/whitneyhtf-semibold.woff2') format('woff2'),
+       url('fonts/whitneyhtf-semibold.woff') format('woff');
   font-weight: bold;
   font-style: normal;
 }
@@ -20,7 +20,7 @@ html, body {
 
 body {
   font: 14px/1.4 whitney, sans-serif;
-  color: #292f33;
+  color: #363E42;
 }
 
 img {
@@ -28,11 +28,10 @@ img {
 }
 
 a {
-
   &:link,
   &:visited {
     text-decoration: none;
-    color: #9266CC;
+    color: #1C8CE5;
   }
 
   &:hover,

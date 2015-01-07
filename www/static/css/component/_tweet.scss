@@ -4,19 +4,28 @@
 
 .tweet {
   text-align: center;
-  padding: 40px 0;
+  padding: 40px 0 0;
+  margin: 0 auto;
   line-height: 1.4;
-  font-size: 0.9rem;
-  font-size: 3.9vw;
+  font-size: 1.05rem;
+  font-size: 5.2vw;
+  overflow: hidden;
 
-  @media (min-width: 500px) and (min-height: 500px) {
-    font-size: 0.9rem;
+  @media (min-width: 400px) {
+    font-size: 1.3rem;
+    width: 400px;
+  }
+
+  & + .tweet {
+    border-top: 1px solid #D1D3D4;
   }
 }
 
 .tweet__title {
   margin: 0 0 0;
   padding: 0 10px;
+  font-weight: normal;
+  font-size: inherit;
 }
 
 .tweet__avatar {
@@ -27,15 +36,13 @@
   border-radius: 3px;
 }
 
-.tweet__name {
-  margin: 0 0.3em 0 0;
-  @include min-width-min-content;
-}
-
-.tweet__username {
-  font-weight: normal;
+.tweet__name-combo {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.tweet__name {
+  font-weight: bold;
 }
 
 .tweet__title-text {
@@ -50,7 +57,7 @@
   text-align: right;
   text-transform: uppercase;
   font-weight: normal;
-  color: rgba(#000, 0.4);
+  color: #B8C5CD;
   margin-left: 6px;
 }
 
@@ -60,4 +67,43 @@
 
 .tweet__body {
   padding: 0 40px;
+}
+
+.tweet__actions {
+  text-align: right;
+  padding: 40px 10px 20px;
+  fill: #CCD6DD;
+  color: #CCD6DD;
+}
+
+%tweet__action-button {
+  @extend .unbutton;
+
+  vertical-align: middle;
+  width: 31px;
+  height: 21px;
+
+  & svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.tweet__rt-button,
+.tweet__fav-button {
+  @extend %tweet__action-button;
+}
+
+.tweet__fav-button {
+  width: 20px;
+}
+
+.tweet__fav-count,
+.tweet__rt-count {
+  display: inline-block;
+  vertical-align: middle;
+  min-width: 41px;
+  margin-right: 5px;
+  box-sizing: border-box;
+  padding-left: 9px;
 }
