@@ -35,5 +35,9 @@ module.exports.createApp = function (opts) {
     res.sendFile(path.resolve(swPath));
   });
 
+  app.get('/tweetdeck-prototype/sw.js.map', function(req, res) {
+    res.sendFile(path.resolve(swPath + '.map'));
+  });
+
   return app;
 }
