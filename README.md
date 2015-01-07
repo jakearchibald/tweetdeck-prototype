@@ -1,6 +1,11 @@
 # What is this?
 
 [![](https://travis-ci.org/jakearchibald/tweetdeck-prototype.svg)](https://travis-ci.org/jakearchibald/tweetdeck-prototype/pull_requests)
+[![Code
+Climate](https://codeclimate.com/github/jakearchibald/tweetdeck-prototype/badges/gpa.svg)](https://codeclimate.com/github/jakearchibald/tweetdeck-prototype)
+[![Dependency Status](https://david-dm.org/jakearchibald/tweetdeck-prototype.svg)](https://david-dm.org/jakearchibald/tweetdeck-prototype)
+[![devDependency
+Status](https://david-dm.org/jakearchibald/tweetdeck-prototype/dev-status.svg)](https://david-dm.org/jakearchibald/tweetdeck-prototype#info=devDependencies)
 
 We're prototyping a mobile-first & offline-first version of Tweetdeck. The idea is to show/discover how close to native we can get with the web on evergreen browsers.
 
