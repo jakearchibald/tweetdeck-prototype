@@ -29,28 +29,33 @@
 
 .tweet__name {
   margin: 0 0.3em 0 0;
+  @include min-width-min-content;
 }
 
 .tweet__username {
   font-weight: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tweet__title-text {
   @include display-flex;
   white-space: nowrap;
-
-  &::before {
-    content: '';
-    @include flex(1);
-  }
 }
 
-.tweet__time {
+.tweet__time, 
+.tweet__time--spacer {
+  @include min-width-min-content;
   @include flex(1);
   text-align: right;
   text-transform: uppercase;
   font-weight: normal;
   color: rgba(#000, 0.4);
+  margin-left: 6px;
+}
+
+.tweet__time--spacer {
+  visibility: hidden;
 }
 
 .tweet__body {

@@ -12,6 +12,7 @@ module.exports = React.createClass({
         <h1 className="tweet__title">
           <img className="tweet__avatar" src={this.props.item.user.avatarBigger} alt="" />
           <span className="tweet__title-text">
+            <span className="tweet__time--spacer">{utils.relativeTime(this.props.item.date.getTime())}</span>
             <span className="tweet__name">{this.props.item.user.name} </span>
             <span className="tweet__username">@{this.props.item.user.screenName} </span>
             <span className="tweet__time">{utils.relativeTime(this.props.item.date.getTime())}</span>
