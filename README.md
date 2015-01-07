@@ -1,5 +1,7 @@
 # What is this?
 
+[![](https://travis-ci.org/jakearchibald/tweetdeck-prototype.svg)](https://travis-ci.org/jakearchibald/tweetdeck-prototype/pull_requests)
+
 We're prototyping a mobile-first & offline-first version of Tweetdeck. The idea is to show/discover how close to native we can get with the web on evergreen browsers.
 
 # Can I help?
