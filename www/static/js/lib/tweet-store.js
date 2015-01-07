@@ -11,15 +11,15 @@ class TweetStore {
     }
 
     getMany(ids) {
-        return ids.map(this.get, this);
+        return Promise.all(ids.map(this.get, this));
     }
 
     put(tweet) {
-        return this.keyValueStore.put(tweet.id, tweet);
+        return this.keyValueStore.put(tweet.id_str, tweet);
     }
 
     putMany(tweets) {
-        return tweets.map(this.put, this);
+        return Promise.all(tweets.map(this.put, this));
     }
 }
 

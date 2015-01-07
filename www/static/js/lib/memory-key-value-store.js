@@ -13,12 +13,14 @@ class MemoryKeyValueStore {
     }
 
     getMany(keys) {
-        return keys.map(this.get, this);
+        return Promise.all(keys.map(this.get, this));
     }
 
     put(key, value) {
-        this.store[key] = value;
-        return value;
+        return new Promise(resolve => {
+            this.store[key] = value;
+            return resolve(value);
+        });
     }
 }
 

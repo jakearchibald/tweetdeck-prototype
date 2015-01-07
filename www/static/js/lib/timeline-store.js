@@ -1,11 +1,14 @@
 var client = require('./tweetdeck/client');
 var MemoryOrderedStore = require('./memory-ordered-store');
+var IDBKeyValueStore = require('./idb-key-value-store');
 var TweetStore = require('./tweet-store');
 
 class TimelineStore {
   constructor(opts={}) {
     this.orderedStore = opts.orderedStore || new MemoryOrderedStore();
-    this.tweetStore = opts.tweetStore || new TweetStore();
+    this.tweetStore = opts.tweetStore || new TweetStore({
+      keyValueStore: new IDBKeyValueStore()
+    });
     this.upstream = opts.upstream || client;
   }
 
