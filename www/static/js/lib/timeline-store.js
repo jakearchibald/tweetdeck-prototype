@@ -27,7 +27,7 @@ class TimelineStore {
           // ... and to the ordered store
           .then(requestResult => this.orderedStore.putRequestResult(requestResult));
       })
-      .then(this.limitResultSizeTo(this.blockSize))
+      .then(this.limitResultSizeTo.bind(this))
       .then(this.makeCursorFromResult);
   }
 
@@ -60,13 +60,11 @@ class TimelineStore {
       .then(result => new RequestResult(requestResult.request, result));
   }
 
-  limitResultSizeTo(blockSize) {
-    return (requestResult =>
-      new RequestResult(
-        requestResult.request,
-        requestResult.result.slice(0, blockSize)
-      )
-    );
+  limitResultSizeTo(requestResult) {
+    return new RequestResult(
+      requestResult.request,
+      requestResult.result.slice(0, this.blockSize)
+    )
   }
 
   makeCursorFromResult(requestResult) {
