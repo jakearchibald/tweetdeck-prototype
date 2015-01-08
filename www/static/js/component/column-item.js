@@ -15,6 +15,9 @@ module.exports = React.createClass({
             <div className="tweet__hero-overlay"></div>
           </div>
         :null}
+        {this.props.item.retweetedBy ?
+          <div className="tweet__retweet">{this.props.item.retweetedBy.name} retweeted</div>
+        :null}
         <div className="tweet__content">
           <h1 className="tweet__title">
             <img className="tweet__avatar" src={this.props.item.user.avatarBigger} alt="" />

@@ -144,18 +144,27 @@
   padding-left: 9px;
 }
 
+.tweet__retweet {
+  position: absolute;
+  top: 3px;
+  left: 10px;
+  font-size: 0.7em;
+  color: #A9B7C1;
+}
+
 .tweet--hero {
   @extend %abstract-tweet;
   background: #000;
   color: #fff;
 
-  & .tweet__actions {
+  & .tweet__actions,
+  & .tweet__retweet {
     color: #fff;
     fill: #fff;    
   }
 
   & .tweet__body {
     padding-top: 9em;
-    text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+    text-shadow: 0 0 6px rgba(0,0,0,0.4);
   }
 }
