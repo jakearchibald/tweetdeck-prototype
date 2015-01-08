@@ -31,8 +31,10 @@ module.exports = React.createClass({
     if (this.state.loadingDown) {
       e.preventDefault();
     }
+    var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+    var infiniteScrollDistance = window.innerHeight * 0.80;
     if (document.body.clientHeight > window.innerHeight &&
-        document.documentElement.scrollTop + window.innerHeight >= document.body.clientHeight &&
+        scrollTop + window.innerHeight >= (document.body.clientHeight - infiniteScrollDistance) &&
         this.state.items.length) {
       this.loadDown();
     }
