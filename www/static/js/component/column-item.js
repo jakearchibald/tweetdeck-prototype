@@ -8,7 +8,7 @@ module.exports = React.createClass({
 
   render() {
     return (
-      <article className={this.props.item.heroImg ? "tweet-hero" : "tweet"} key={this.props.item.id}>
+      <article className={this.props.item.heroImg ? "tweet--hero" : "tweet"} key={this.props.item.id}>
         {this.props.item.heroImg ?
           <div>
             <div className="tweet__hero-img" style={{backgroundImage: "url('" + this.props.item.heroImg + "')"}}></div>

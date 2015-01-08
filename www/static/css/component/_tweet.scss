@@ -5,7 +5,7 @@
 
 %abstract-tweet {
   text-align: center;
-  padding: 40px 0 0;
+  padding: 23px 0 0;
   margin: 0 auto;
   line-height: 1.4;
   font-size: 1.05rem;
@@ -25,12 +25,6 @@
   & + .tweet {
     border-top: 1px solid #D1D3D4;
   }
-}
-
-.tweet-hero {
-  @extend %abstract-tweet;
-  background: #000;
-  color: #fff;
 }
 
 .tweet__title {
@@ -56,8 +50,12 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: #000;
-  opacity: 0.4;
+  background: linear-gradient(to top,
+    rgba(#000, 0.95),
+    rgba(#000, 0.2) 45%,
+    rgba(#000, 0.2) 55%,
+    rgba(#000, 0.95)
+  );
 }
 
 .tweet__content {
@@ -66,7 +64,7 @@
 
 .tweet__avatar {
   display: block;
-  margin: 0 auto 1em;
+  margin: 0 auto 0.7em;
   width: 50px;
   height: 50px;
   border-radius: 3px;
@@ -109,7 +107,7 @@
 
 .tweet__actions {
   text-align: right;
-  padding: 40px 10px 20px;
+  padding: 30px 10px 20px;
   fill: #CCD6DD;
   color: #CCD6DD;
 }
@@ -146,10 +144,18 @@
   padding-left: 9px;
 }
 
-// dunno if there's a more BEMmy way of doing this
-.tweet-hero {
+.tweet--hero {
+  @extend %abstract-tweet;
+  background: #000;
+  color: #fff;
+
   & .tweet__actions {
-    fill: #fff;
     color: #fff;
+    fill: #fff;    
+  }
+
+  & .tweet__body {
+    padding-top: 9em;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.4);
   }
 }
