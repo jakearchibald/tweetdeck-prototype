@@ -107,9 +107,11 @@ module.exports = React.createClass({
   render() {
     return (
       <div className="column" onScroll={this.onScroll}>
-        {header}
-        {this.state.items.map(item => <Item item={item} key={item.id} />)}
-        {this.state.exhausted ? null : <Loader loading={this.state.loadingDown} onLoad={this.loadDown} />}
+        <div>
+          {header}
+          {this.state.items.map(item => <Item item={item} key={item.id} />)}
+          {this.state.exhausted ? null : <Loader loading={this.state.loadingDown} onLoad={this.loadDown} />}
+        </div>
       </div>
     );
   }

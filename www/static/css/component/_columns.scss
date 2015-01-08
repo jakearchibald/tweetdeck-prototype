@@ -7,6 +7,12 @@
   overflow-x: hidden;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
+
+  & > * {
+    transform: translateZ(0);
+    background: #fff;
+    overflow: hidden;
+  }
 }
 
 .column-loader {
