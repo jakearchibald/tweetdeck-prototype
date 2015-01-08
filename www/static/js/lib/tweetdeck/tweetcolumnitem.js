@@ -7,7 +7,7 @@ class TweetColumnItem extends ColumnItem {
     super();
     this.id = String(data.id_str);
     this.date = new Date(data.created_at);
-    this.favouriteCount = data.favourite_count;
+    this.favoriteCount = data.favorite_count;
     this.retweetCount = data.retweet_count;
 
     var sourceTweet = data.retweeted_status || data;
