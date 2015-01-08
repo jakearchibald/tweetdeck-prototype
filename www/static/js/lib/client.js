@@ -46,6 +46,7 @@ module.exports = {
 
     return request.account.proxiedRequest(url)
       .then(r => r.json())
+      .then(result => result.filter(t => !t.in_reply_to_status_id_str))
       .then(result => {
         return new RequestResult(request, result);
       });
