@@ -22,6 +22,8 @@ class TimelineStore {
         console.log('Going to network. (%s)\n%s', why.message, why.stack.split('\n').slice(1).join('\n'));
         // Go upstrem to satisfy the request (this might be network, could be idb)
         return this.upstream.fetch(request)
+          // Only return stuff we actually requested
+          .then(this.filterByRequestInterval)
           // Add whatever we got from upstream to the tweetStore
           .then(requestResult => this.tweetStore.putRequestResult(requestResult))
           // ... and to the ordered store
@@ -50,6 +52,14 @@ class TimelineStore {
 
         return this.orderedStore.fetch(request);
       })
+  }
+
+  filterByRequestInterval(requestResult) {
+    const requestInterval = requestResult.request.cursor.interval || TweetInterval.whole;
+    return new RequestResult(
+      requestResult.request,
+      requestResult.result.filter(requestInterval.contains, requestInterval)
+    );
   }
 
   populateResultFromTweetStore(requestResult) {
