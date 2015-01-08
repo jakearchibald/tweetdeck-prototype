@@ -1,6 +1,6 @@
 'use strict';
 
-const React = require('react');
+const React = require('react/addons');
 const Loader = require('./loader');
 const Item = require('./column-item');
 const domToReact = require('../lib/domtoreact');
@@ -11,6 +11,8 @@ var header;
 utils.domReady.then(_ => {
   header = domToReact(document.querySelector('.app-header'));
 });
+
+const update = React.addons.update;
 
 module.exports = React.createClass({
   displayName: 'Column',
@@ -115,6 +117,13 @@ module.exports = React.createClass({
   },
 
   favoriteTweet(tweet) {
-    console.log('faving', tweet);
+    const favorited = tweet.source.favorited;
+    const diff = favorited ? -1 : 1;
+    const updatedTweet = update(tweet.source, {
+      favorite_count: {$apply: (i) => i + diff},
+      favorited: {$set: !favorited}
+    });
+    // FIXME: This should flow and not rely on so many references.
+    this.props.column.timelineStore.tweetStore.put(updatedTweet);
   }
 });
