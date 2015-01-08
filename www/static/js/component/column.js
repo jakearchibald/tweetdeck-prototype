@@ -39,10 +39,10 @@ module.exports = React.createClass({
     }
 
     var scrollTop = event.target.scrollTop;
-    var infiniteScrollDistance = event.target.scrollHeight * 0.80;
+    var infiniteScrollDistance = event.target.scrollHeight * 0.20;
 
     if (event.target.scrollHeight > window.innerHeight &&
-        scrollTop + window.innerHeight >= (event.target.scrollHeight - infiniteScrollDistance) &&
+        scrollTop + event.target.offsetHeight >= (event.target.scrollHeight - infiniteScrollDistance) &&
         this.state.items.length) {
       this.loadDown();
     }
