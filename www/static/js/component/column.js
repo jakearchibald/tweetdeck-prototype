@@ -108,9 +108,13 @@ module.exports = React.createClass({
     return (
       <div className="column" onScroll={this.onScroll}>
         {header}
-        {this.state.items.map(item => <Item item={item} key={item.id} />)}
+        {this.state.items.map(item => <Item item={item} key={item.id} onFavorite={this.favoriteTweet} />)}
         {this.state.exhausted ? null : <Loader loading={this.state.loadingDown} onLoad={this.loadDown} />}
       </div>
     );
+  },
+
+  favoriteTweet(tweet) {
+    console.log('faving', tweet);
   }
 });
