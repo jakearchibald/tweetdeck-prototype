@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var client = require('./client');
-var columnUtils = require('./tweetdeck/columnutils');
+var columnUtils = require('./tweetdeck/columnUtils');
 var storeUtils = require('./store-utils');
 var MemoryOrderedStore = require('./memory-ordered-store');
 var TweetStore = require('./tweet-store');

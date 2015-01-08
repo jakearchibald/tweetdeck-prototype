@@ -1,4 +1,4 @@
-var columnUtils = require('./columnutils');
+var columnUtils = require('./columnUtils');
 var TimelineStore = require('../timeline-store');
 var TweetColumnItem = require('./tweetcolumnitem');
 var { Request } = require('../request-result');
