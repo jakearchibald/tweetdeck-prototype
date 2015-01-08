@@ -16,6 +16,10 @@ module.exports = React.createClass({
     onFavorite: React.PropTypes.func.isRequired
   },
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return (this.props.item.source !== nextProps.item.source);
+  },
+
   render() {
     return (
       <article onClick={this.onTweetClick} className={this.props.item.heroImg ? "tweet--hero" : "tweet"} key={this.props.item.id}>
