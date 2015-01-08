@@ -19,7 +19,10 @@ module.exports = function domToReact(el) {
   });
 
   const args = [props].concat(
-    Array.prototype.map.call(el.childNodes, domToReact)
+    Array.prototype.filter.call(el.childNodes, el => {
+      if (el.nodeType == 3 && !el.nodeValue.trim()) return false;
+      return true;
+    }).map(domToReact)
   );
 
   return DOM[funcName].apply(DOM, args);

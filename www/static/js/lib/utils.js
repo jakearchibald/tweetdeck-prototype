@@ -104,3 +104,18 @@ exports.relativeTime = function(input, reference) {
   }
   return format[1];
 };
+
+exports.closest = function(el, selector) {
+  if (el.closest) {
+    return el.closest(selector);
+  }
+
+  var matches = el.matches || el.msMatchesSelector;
+
+  do {
+    if (el.nodeType != 1) continue;
+    if (matches.call(el, selector)) return el;
+  } while (el = el.parentNode);
+
+  return undefined;
+};

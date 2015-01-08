@@ -3,6 +3,14 @@
 const React = require('react');
 const Loader = require('./loader');
 const Item = require('./column-item');
+const domToReact = require('../lib/domtoreact');
+const utils = require('../lib/utils');
+
+var header;
+
+utils.domReady.then(_ => {
+  header = domToReact(document.querySelector('.app-header'));
+});
 
 module.exports = React.createClass({
   displayName: 'Column',
@@ -17,24 +25,24 @@ module.exports = React.createClass({
   },
 
   componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll);
     document.querySelector('.logo').addEventListener('click', this.handleHeaderClick);
     this.loadDown();
   },
 
   componentWillUnmount: function() {
-    window.removeEventListener('scroll', this.handleScroll);
     document.querySelector('.logo').removeEventListener('click', this.handleHeaderClick);
   },
 
-  handleScroll(e) {
+  onScroll(e) {
     if (this.state.loadingDown) {
       e.preventDefault();
     }
-    var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-    var infiniteScrollDistance = window.innerHeight * 0.80;
-    if (document.body.clientHeight > window.innerHeight &&
-        scrollTop + window.innerHeight >= (document.body.clientHeight - infiniteScrollDistance) &&
+
+    var scrollTop = event.target.scrollTop;
+    var infiniteScrollDistance = event.target.scrollHeight * 0.80;
+
+    if (event.target.scrollHeight > window.innerHeight &&
+        scrollTop + window.innerHeight >= (event.target.scrollHeight - infiniteScrollDistance) &&
         this.state.items.length) {
       this.loadDown();
     }
@@ -98,7 +106,8 @@ module.exports = React.createClass({
 
   render() {
     return (
-      <div className="column">
+      <div className="column" onScroll={this.onScroll}>
+        {header}
         {this.state.items.map(item => <Item item={item} key={item.id} />)}
         {this.state.exhausted ? null : <Loader loading={this.state.loadingDown} onLoad={this.loadDown} />}
       </div>

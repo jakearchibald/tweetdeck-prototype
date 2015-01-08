@@ -6,9 +6,14 @@ const utils = require('../lib/utils');
 module.exports = React.createClass({
   displayName: 'Item',
 
+  onTweetClick({target}) {
+    // ignore taps on interactive elements
+    if (utils.closest(target, 'button, a, input')) return;
+  },
+
   render() {
     return (
-      <article className={this.props.item.heroImg ? "tweet--hero" : "tweet"} key={this.props.item.id}>
+      <article onClick={this.onTweetClick} className={this.props.item.heroImg ? "tweet--hero" : "tweet"} key={this.props.item.id}>
         {this.props.item.heroImg ?
           <div>
             <div className="tweet__hero-img" style={{backgroundImage: "url('" + this.props.item.heroImg + "')"}}></div>

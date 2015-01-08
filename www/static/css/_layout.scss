@@ -13,3 +13,8 @@
 .logo:active {
   @include transform(scale(1.1));
 }
+
+.content,
+.app {
+  height: 100%;
+}

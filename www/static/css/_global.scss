@@ -16,6 +16,8 @@
 html, body {
   margin: 0;
   padding: 0;
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
@@ -24,7 +26,7 @@ body {
 }
 
 img {
-    max-width: 100%;
+  max-width: 100%;
 }
 
 a {
