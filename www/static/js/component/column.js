@@ -80,9 +80,15 @@ module.exports = React.createClass({
     }).then(result => {
       var newCursors = this.state.cursors;
       newCursors.up = result.cursors.up;
+      var newItems = result.items.concat(this.state.items);
+      // If there's a gap, we should clear everything and try again
+      if (result.containsGap) {
+        newCursors = result.cursors;
+        newItems = result.items;
+      }
       this.setState({
         loadingUp: false,
-        items: result.items.concat(this.state.items),
+        items: newItems,
         cursors: newCursors
       });
     });

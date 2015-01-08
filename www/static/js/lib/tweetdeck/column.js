@@ -27,7 +27,7 @@ class Column {
           items: requestResult.result.map(data =>
             new TweetColumnItem(data)
           ),
-          exhausted: false,
+          containsGap: requestResult.data.containsGap,
           cursors: requestResult.data.cursors
         };
       });

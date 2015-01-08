@@ -29,6 +29,12 @@ class MemoryOrderedStore {
     );
   }
 
+  clear() {
+    return new Promise(resolve =>
+      resolve(this.store = [])
+    );
+  }
+
   putRequestResult(requestResult) {
     this.store = this.store
       .concat(

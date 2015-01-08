@@ -32,23 +32,39 @@ module.exports = {
   },
 
   cursor: {
+    /**
+     * Make a cursor for paging upwards. We use the second tweet's id so that the API returns
+     * an overlap if it can, which makes gap detection possible, but we use the top tweet's date
+     * for the interval so that the result has the overlap tweet filtered out.
+     */
     up(requestResult) {
       if (!requestResult.result.length) {
         return requestResult.request.cursor;
       }
-      var topTweetData = requestResult.result.slice(0, 1).reduce(getData, null);
+      var topTweets = requestResult.result.slice(0, 2);
+      var idSourceData = topTweets.slice(-1).reduce(getData, null);
+      var dateSourceData = topTweets.slice(0,1).reduce(getData, null);
+      if (requestResult.length === 1) {
+        dateSourceData = requestResult.request.cursor.interval.from;
+      }
+
       var interval = (
-        topTweetData ?
+        dateSourceData ?
           new TweetInterval(
-            TweetInterval.excEnd(topTweetData),
+            TweetInterval.excEnd(dateSourceData),
             TweetInterval.posInf
           ) :
           TweetInterval.whole
       );
       return {
+        type: 'up',
         interval: interval,
         query: {
-          since_id: (topTweetData ? topTweetData.id_str : null)
+          since_id: (
+            idSourceData || dateSourceData ?
+              (idSourceData || dateSourceData).id_str :
+              null
+          )
         }
       };
     },
@@ -67,6 +83,7 @@ module.exports = {
           TweetInterval.whole
       );
       return {
+        type: 'down',
         interval: interval,
         query: {
           max_id: (bottomTweetData ? bottomTweetData.id_str : null)

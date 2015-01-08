@@ -1,9 +1,11 @@
 var _ = require('lodash');
 var client = require('./client');
 var columnUtils = require('./tweetdeck/columnutils');
+var storeUtils = require('./store-utils');
 var MemoryOrderedStore = require('./memory-ordered-store');
 var TweetStore = require('./tweet-store');
 var TweetInterval = require('./tweet-interval');
+window.TweetInterval = TweetInterval;
 var { Request, RequestResult } = require('./request-result');
 
 class TimelineStore {
@@ -12,6 +14,7 @@ class TimelineStore {
     this.tweetStore = opts.tweetStore || new TweetStore();
     this.upstream = opts.upstream || client;
     this.blockSize = opts.blockSize || 20;
+    this.gapThreshold = opts.gapThreshold || 10;
   }
 
   fetch(request) {
@@ -22,6 +25,7 @@ class TimelineStore {
         console.log('Going to network. (%s)\n%s', why.message, why.stack.split('\n').slice(1).join('\n'));
         // Go upstrem to satisfy the request (this might be network, could be idb)
         return this.upstream.fetch(request)
+          .then(this.detectGap.bind(this))
           // Only return stuff we actually requested
           .then(this.filterByRequestInterval)
           // Add whatever we got from upstream to the tweetStore
@@ -46,7 +50,7 @@ class TimelineStore {
 
         // To satisfy the request from the store, there must be an intersection
         // in the request and store interval
-        if (requestInterval.intersection(storeInterval).empty) {
+        if (storeInterval.intersection(requestInterval).empty) {
           throw Error('Request cannot be satisfied by store');
         }
 
@@ -54,11 +58,44 @@ class TimelineStore {
       })
   }
 
+  detectGap(requestResult) {
+    const request = requestResult.request;
+    const result = requestResult.result;
+
+    // Only looks for gaps in upward fetches, or if there was some data
+    if (request.cursor.type !== 'up' || result.length < this.gapThreshold) {
+      return requestResult;
+    }
+
+    // We only care about the bottom of the result, so make result cursor that matches
+    // the top of the request, but keeps the bottom of the result.
+    const requestInterval = request.cursor.interval || TweetInterval.whole;
+    const resultInterval = new TweetInterval(
+      TweetInterval.incEnd(_.last(result)),
+      requestInterval.to
+    );
+
+    // There's a gap when we didn't get at least everything we asked for
+    if (requestInterval.isSubsetOf(resultInterval)) {
+      return requestResult;
+    }
+
+    // Clear the store if we found a gap
+    return this.orderedStore.clear()
+      // TODO need to clear upstream?
+      .then(_ => new RequestResult(
+        request,
+        result,
+        { containsGap: true }
+      ));
+  }
+
   filterByRequestInterval(requestResult) {
     const requestInterval = requestResult.request.cursor.interval || TweetInterval.whole;
     return new RequestResult(
       requestResult.request,
-      requestResult.result.filter(requestInterval.contains, requestInterval)
+      requestResult.result.filter(requestInterval.contains, requestInterval),
+      requestResult.data
     );
   }
 
@@ -73,7 +110,8 @@ class TimelineStore {
   limitResultSizeTo(requestResult) {
     return new RequestResult(
       requestResult.request,
-      requestResult.result.slice(0, this.blockSize)
+      requestResult.result.slice(0, this.blockSize),
+      requestResult.data
     )
   }
 
@@ -86,7 +124,7 @@ class TimelineStore {
     return new RequestResult(
       requestResult.request,
       requestResult.result,
-      { cursors }
+      _.extend({}, requestResult.data, { cursors })
     );
   }
 }
