@@ -27,6 +27,7 @@ module.exports = React.createClass({
   },
 
   componentDidMount() {
+    this.props.column.addTweetChangeListener(this.handleTweetChanged);
     document.querySelector('.logo').addEventListener('click', this.handleHeaderClick);
     this.loadDown();
   },
@@ -54,6 +55,17 @@ module.exports = React.createClass({
     if (this.state.items.length) {
       this.loadUp();
     }
+  },
+
+  handleTweetChanged(changedTweet) {
+    this.setState({
+      items: this.state.items.map(tweet => {
+        if (tweet.id === changedTweet.id) {
+          return changedTweet;
+        }
+        return tweet;
+      })
+    })
   },
 
   loadDown() {
@@ -117,13 +129,7 @@ module.exports = React.createClass({
   },
 
   favoriteTweet(tweet) {
-    const favorited = tweet.source.favorited;
-    const diff = favorited ? -1 : 1;
-    const updatedTweet = update(tweet.source, {
-      favorite_count: {$apply: (i) => i + diff},
-      favorited: {$set: !favorited}
-    });
     // FIXME: This should flow and not rely on so many references.
-    this.props.column.timelineStore.tweetStore.put(updatedTweet);
+    this.props.column.favoriteTweet(tweet);
   }
 });

@@ -50,5 +50,11 @@ module.exports = {
       .then(result => {
         return new RequestResult(request, result);
       });
+  },
+
+  favoriteTweet(tweet) {
+    console.log('== client.favoriteTweet ========================');
+    console.log('tweet', tweet);
+    return Promise.resolve(tweet);
   }
 }

@@ -8,6 +8,7 @@ var TweetInterval = require('./tweet-interval');
 window.TweetInterval = TweetInterval;
 var { Request, RequestResult } = require('./request-result');
 
+
 class TimelineStore {
   constructor(opts={}) {
     this.orderedStore = opts.orderedStore || new MemoryOrderedStore();
@@ -15,6 +16,24 @@ class TimelineStore {
     this.upstream = opts.upstream || client;
     this.blockSize = opts.blockSize || 20;
     this.gapThreshold = opts.gapThreshold || 10;
+    this.tweetChangeListeners = [];
+  }
+
+  tweetChanged(tweet) {
+    this.tweetChangeListeners.forEach(fn => fn(tweet));
+    return tweet;
+  }
+
+  addTweetChangeListener(listener) {
+    this.tweetChangeListeners.push(listener);
+  }
+
+  favoriteTweet(tweet) {
+    return this.tweetStore.put(tweet)
+      .then(tweet => this.tweetChanged(tweet))
+      .then(tweet => this.upstream.favoriteTweet(tweet))
+      .then(upstreamTweet => this.tweetStore.put(upstreamTweet))
+      .then(upstreamTweet => this.tweetChanged(upstreamTweet));
   }
 
   fetch(request) {
