@@ -6,6 +6,18 @@ function wrapRequestWithResult(request) {
   return (result => new RequestResult(request, result));
 }
 
+function extendAndClean(o, ...objs) {
+  return objs
+    .reduce((memo, obj) => {
+      return memo.extend(obj);
+    }, _.chain(o).clone())
+    // Only keep truthy values
+    .pick(function (value) {
+      return (typeof value !== 'undefined' && value !== null);
+    })
+    .value();
+}
+
 var TWITTER = {
   BASE: 'https://api.twitter.com',
   ENDPOINTS: {
@@ -20,6 +32,13 @@ var TWITTER = {
         method: 'POST',
       },
       url: '/1.1/favorites/create.json',
+      query: {}
+    },
+    retweet: {
+      opts: {
+        method: 'POST',
+      },
+      url: '/1.1/statuses/retweet/{id}.json',
       query: {}
     }
   },
@@ -38,17 +57,18 @@ module.exports = {
     if (!endpoint) {
       throw Error(`No such endpoint: ${endpointKey}`);
     }
-    const query = _.chain(endpoint.query || {})
-      .clone()
-      .extend(request.cursor.query || {})
-      .extend(TWITTER.DEFAULT_QUERY)
-      // Only keep truthy values
-      .pick(function (value) {
-        return (typeof value !== 'undefined' && value !== null);
-      })
-      .value();
-
-    const url = TWITTER.BASE + endpoint.url + '?' + utils.objToUrlParams(query);
+    const query = extendAndClean(
+      endpoint.query || {},
+      request.cursor.query,
+      TWITTER.DEFAULT_QUERY
+    );
+    const params = extendAndClean(
+      endpoint.params || {},
+      request.cursor.params || {},
+      TWITTER.DEFAULT_PARAMS
+    );
+    const url = `${TWITTER.BASE}${utils.templateString(endpoint.url, params)}` +
+                `?${utils.objToQueryString(query)}`;
 
     return request.account.proxiedRequest(url, endpoint.opts || {})
       .then(r => r.json());
@@ -62,6 +82,11 @@ module.exports = {
 
   favoriteTweet(request) {
     return this.makeRequest('favorite', request)
+      .then(wrapRequestWithResult(request));
+  },
+
+  retweetTweet(request) {
+    return this.makeRequest('retweet', request)
       .then(wrapRequestWithResult(request));
   }
 }

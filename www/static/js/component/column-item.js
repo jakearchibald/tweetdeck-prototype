@@ -14,7 +14,8 @@ module.exports = React.createClass({
 
   propTypes: {
     item: React.PropTypes.object.isRequired,
-    onFavorite: React.PropTypes.func.isRequired
+    onFavorite: React.PropTypes.func.isRequired,
+    onRetweet: React.PropTypes.func.isRequired
   },
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -27,11 +28,18 @@ module.exports = React.createClass({
     }
   },
 
+  onRetweet() {
+    if (!this.props.item.retweeted) {
+      this.props.onRetweet(this.props.item);
+    }
+  },
+
   render() {
     const classes = cx({
       'tweet--hero': this.props.item.heroImg,
       'tweet': !this.props.item.heroImg,
-      'tweet--favorited': this.props.item.source.favorited
+      'tweet--favorited': this.props.item.source.favorited,
+      'tweet--retweeted': this.props.item.source.retweeted
     });
     return (
       <article onClick={this.onTweetClick} className={classes} key={this.props.item.id}>
@@ -59,7 +67,7 @@ module.exports = React.createClass({
           <div className="tweet__body" dangerouslySetInnerHTML={{__html: this.props.item.getHTML()}} />
           <div className="tweet__actions">
             <span className="tweet__rt-count">{this.props.item.retweetCount || ""}</span>
-            <button className="tweet__rt-button" dangerouslySetInnerHTML={{__html:"<svg viewBox='0 0 42.7 24.9'><use xlink:href='static/imgs/sprite.svg#retweet'/></svg>"}}></button>
+            <button onClick={this.onRetweet} className="tweet__rt-button" dangerouslySetInnerHTML={{__html:"<svg viewBox='0 0 42.7 24.9'><use xlink:href='static/imgs/sprite.svg#retweet'/></svg>"}}></button>
             <span className="tweet__fav-count">{this.props.item.favoriteCount || ""}</span>
             <button onClick={this.onFavorite} className="tweet__fav-button" dangerouslySetInnerHTML={{__html:"<svg viewBox='0 0 29.2 27.5'><use xlink:href='static/imgs/sprite.svg#fave'/></svg>"}}></button>
           </div>

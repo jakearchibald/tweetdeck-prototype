@@ -64,6 +64,23 @@ class Column {
       )
     );
   }
+
+  retweetTweet(tweet) {
+    var sourceTweet = tweet.source;
+    const retweeted = sourceTweet.retweeted;
+    const diff = retweeted ? -1 : 1;
+    const updatedTweet = update(sourceTweet, {
+      retweet_count: {$apply: (i) => i + diff},
+      retweeted: {$set: !retweeted}
+    });
+    return this.timelineStore.retweetTweet(
+      new Request(
+        this.account,
+        { params: { id: updatedTweet.id_str } },
+        updatedTweet
+      )
+    );
+  }
 }
 
 module.exports = Column;

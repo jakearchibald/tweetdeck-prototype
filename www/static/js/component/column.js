@@ -122,14 +122,17 @@ module.exports = React.createClass({
     return (
       <div className="column" onScroll={this.onScroll}>
         {header}
-        {this.state.items.map(item => <Item item={item} key={item.id} onFavorite={this.favoriteTweet} />)}
+        {this.state.items.map(item => <Item item={item} key={item.id} onFavorite={this.favoriteTweet} onRetweet={this.retweetTweet} />)}
         {this.state.exhausted ? null : <Loader loading={this.state.loadingDown} onLoad={this.loadDown} />}
       </div>
     );
   },
 
   favoriteTweet(tweet) {
-    // FIXME: This should flow and not rely on so many references.
     this.props.column.favoriteTweet(tweet);
+  },
+
+  retweetTweet(tweet) {
+    this.props.column.retweetTweet(tweet);
   }
 });

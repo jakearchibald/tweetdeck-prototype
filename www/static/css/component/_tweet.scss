@@ -177,3 +177,9 @@
     fill: #ffac33;
   }
 }
+
+.tweet--retweeted {
+  & .tweet__rt-button {
+    fill: #77b255;
+  }
+}

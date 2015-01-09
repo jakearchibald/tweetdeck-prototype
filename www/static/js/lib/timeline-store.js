@@ -41,6 +41,20 @@ class TimelineStore {
       });
   }
 
+  retweetTweet(request) {
+    return this.tweetStore.put(request.data)
+      .then(tweet => this.tweetChanged(tweet))
+      .then(tweet => this.upstream.retweetTweet(request))
+      .then(requestResult => {
+        return this.tweetStore.put(requestResult.result)
+          .then(_ => requestResult);
+      })
+      .then(requestResult => {
+        this.tweetChanged(requestResult.result)
+        return requestResult;
+      });
+  }
+
   fetch(request) {
     // get requested range from store
     return this.fetchFromStore(request)

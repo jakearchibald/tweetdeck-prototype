@@ -47,7 +47,7 @@ exports.setTransform = function setTransform(el, val) {
   el.style.WebkitTransform = el.style.transform = val;
 };
 
-exports.objToUrlParams = function objToUrlParams(obj) {
+exports.objToQueryString = function objToQueryString(obj) {
   return Object.keys(obj).reduce(function(str, key, i) {
     if (i) {
       str += '&';
@@ -118,4 +118,14 @@ exports.closest = function(el, selector) {
   } while (el = el.parentNode);
 
   return undefined;
+};
+
+exports.templateString = (string, o) => {
+  return string.replace(
+      /\{([^{}]*)\}/g,
+      function (a, b) {
+          var r = o[b];
+          return encodeURIComponent(typeof r === 'string' || typeof r === 'number' ? r : a);
+      }
+  );
 };
