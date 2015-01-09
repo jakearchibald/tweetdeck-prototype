@@ -1,6 +1,7 @@
 'use strict';
 
 const React = require('react');
+const cx = React.addons.classSet;
 const utils = require('../lib/utils');
 
 module.exports = React.createClass({
@@ -20,9 +21,20 @@ module.exports = React.createClass({
     return (this.props.item.source !== nextProps.item.source);
   },
 
+  onFavorite() {
+    if (!this.props.item.favorited) {
+      this.props.onFavorite(this.props.item);
+    }
+  },
+
   render() {
+    const classes = cx({
+      'tweet--hero': this.props.item.heroImg,
+      'tweet': !this.props.item.heroImg,
+      'tweet--favorited': this.props.item.source.favorited
+    });
     return (
-      <article onClick={this.onTweetClick} className={this.props.item.heroImg ? "tweet--hero" : "tweet"} key={this.props.item.id}>
+      <article onClick={this.onTweetClick} className={classes} key={this.props.item.id}>
         {this.props.item.heroImg ?
           <div>
             <div className="tweet__hero-img" style={{backgroundImage: "url('" + this.props.item.heroImg + "')"}}></div>
@@ -49,7 +61,7 @@ module.exports = React.createClass({
             <span className="tweet__rt-count">{this.props.item.retweetCount || ""}</span>
             <button className="tweet__rt-button" dangerouslySetInnerHTML={{__html:"<svg viewBox='0 0 42.7 24.9'><use xlink:href='static/imgs/sprite.svg#retweet'/></svg>"}}></button>
             <span className="tweet__fav-count">{this.props.item.favoriteCount || ""}</span>
-            <button onClick={this.props.onFavorite.bind(null, this.props.item)} className="tweet__fav-button" dangerouslySetInnerHTML={{__html:"<svg viewBox='0 0 29.2 27.5'><use xlink:href='static/imgs/sprite.svg#fave'/></svg>"}}></button>
+            <button onClick={this.onFavorite} className="tweet__fav-button" dangerouslySetInnerHTML={{__html:"<svg viewBox='0 0 29.2 27.5'><use xlink:href='static/imgs/sprite.svg#fave'/></svg>"}}></button>
           </div>
         </div>
       </article>

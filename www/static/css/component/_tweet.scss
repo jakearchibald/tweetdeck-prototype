@@ -12,7 +12,7 @@
   font-size: 5.2vw;
   overflow: hidden;
   position: relative;
-  
+
   @media (min-width: 400px) {
     font-size: 1.3rem;
     width: 400px;
@@ -21,7 +21,7 @@
 
 .tweet {
   @extend %abstract-tweet;
-  
+
   & + .tweet {
     border-top: 1px solid #D1D3D4;
   }
@@ -84,7 +84,7 @@
   white-space: nowrap;
 }
 
-.tweet__time, 
+.tweet__time,
 .tweet__time--spacer {
   @include min-width-min-content;
   @include flex(1);
@@ -128,6 +128,9 @@
 .tweet__rt-button,
 .tweet__fav-button {
   @extend %tweet__action-button;
+  &:active, &:focus {
+    outline: none;
+  }
 }
 
 .tweet__fav-button {
@@ -160,11 +163,17 @@
   & .tweet__actions,
   & .tweet__retweet {
     color: #fff;
-    fill: #fff;    
+    fill: #fff;
   }
 
   & .tweet__body {
     padding-top: 9em;
     text-shadow: 0 0 6px rgba(0,0,0,0.4);
+  }
+}
+
+.tweet--favorited {
+  & .tweet__fav-button {
+    fill: #ffac33;
   }
 }

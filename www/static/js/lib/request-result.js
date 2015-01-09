@@ -1,7 +1,8 @@
 class Request {
-    constructor(account, cursor) {
+    constructor(account, cursor, data) {
         this.account = account;
         this.cursor = cursor;
+        this.data = data;
     }
 }
 

@@ -27,12 +27,18 @@ class TimelineStore {
     this.tweetChangeListeners.push(listener);
   }
 
-  favoriteTweet(tweet) {
-    return this.tweetStore.put(tweet)
+  favoriteTweet(request) {
+    return this.tweetStore.put(request.data)
       .then(tweet => this.tweetChanged(tweet))
-      .then(tweet => this.upstream.favoriteTweet(tweet))
-      .then(upstreamTweet => this.tweetStore.put(upstreamTweet))
-      .then(upstreamTweet => this.tweetChanged(upstreamTweet));
+      .then(tweet => this.upstream.favoriteTweet(request))
+      .then(requestResult => {
+        return this.tweetStore.put(requestResult.result)
+          .then(_ => requestResult);
+      })
+      .then(requestResult => {
+        this.tweetChanged(requestResult.result)
+        return requestResult;
+      });
   }
 
   fetch(request) {

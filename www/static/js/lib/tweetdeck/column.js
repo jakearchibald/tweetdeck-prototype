@@ -56,7 +56,13 @@ class Column {
       favorite_count: {$apply: (i) => i + diff},
       favorited: {$set: !favorited}
     });
-    return this.timelineStore.favoriteTweet(updatedTweet);
+    return this.timelineStore.favoriteTweet(
+      new Request(
+        this.account,
+        { query: { id: updatedTweet.id_str } },
+        updatedTweet
+      )
+    );
   }
 }
 
