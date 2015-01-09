@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var TweetInterval = require('./tweet-interval');
-var columnUtils = require('./tweetdeck/columnUtils');
+var sortUtils = require('./tweetdeck/column-utils');
 var { Request, RequestResult } = require('./request-result');
 var storeUtils = require('./store-utils')
 
@@ -42,7 +42,7 @@ class MemoryOrderedStore {
           storeUtils.makeOrderedStoreObjectFromTweet
         )
       )
-      .sort(columnUtils.sort.byCreatedAtDesc)
+      .sort(sortUtils.byCreatedAtDesc)
       // Dedupe
       .reduce(
         (memo, tweet) => {

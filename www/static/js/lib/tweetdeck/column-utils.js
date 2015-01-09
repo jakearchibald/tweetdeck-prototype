@@ -17,20 +17,6 @@ module.exports = {
     return columnTitles[feedtype];
   },
 
-  sort: {
-    byDate(a, b) {
-      return b.date - a.date;
-    },
-
-    byCreatedAtAsc(a, b) {
-      return (new Date(a.created_at).getTime()) - (new Date(b.created_at).getTime());
-    },
-
-    byCreatedAtDesc(a, b) {
-      return (new Date(b.created_at).getTime()) - (new Date(a.created_at).getTime());
-    }
-  },
-
   cursor: {
     /**
      * Make a cursor for paging upwards. We use the second tweet's id so that the API returns

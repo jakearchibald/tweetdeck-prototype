@@ -1,3 +1,4 @@
 var makeIntervalConstructor = require('./interval');
-var columnUtils = require('./tweetdeck/columnUtils');
-module.exports = makeIntervalConstructor(columnUtils.sort.byCreatedAtAsc);
+var sortUtils = require('./tweetdeck/sort-utils');
+
+module.exports = makeIntervalConstructor(sortUtils.byCreatedAtAsc);
