@@ -3,9 +3,9 @@
  */
 
 .login-form__field-group input {
-  font-size: 1em;
+  font-size: 1.2em;
   height: 2.4em;
-  margin: 5px 0;
+  margin: 0 0 0.667em;
   box-sizing: border-box;
   width: 100%;
   padding: 0 0.5em;
@@ -17,7 +17,8 @@
 
 .login-form__submit-button {
   float: right;
-  margin: 5px 0;
+  margin: 0 0 0.667em;
+  font-size: 1.2em;
 }
 
 @media (max-width: 500px) {

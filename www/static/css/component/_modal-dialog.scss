@@ -5,15 +5,16 @@
 .modal-dialog {
   box-sizing: border-box;
   overflow: auto;
-  border: 1px solid #cbb7ea;
-  background-color: #f3edfa;
-  padding: 1em 2em;
+  border: 1px solid #aab8c2;
+  background-color: #f5f8fa;
+  padding: 1.5em 2em;
   @include transform(translate3d(0, 51px, 0));
-  @include transition(transform 0.5s);
+  @include transition(opacity 0.5s);
+  opacity: 1;
 }
 
 .modal-dialog.closed {
-  @include transform(translate3d(0, -200px, 0));
+  opacity: 0;
 }
 
 @media (min-width: 500px) {
