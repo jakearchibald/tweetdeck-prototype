@@ -15,10 +15,11 @@ exports.processEntities = function processEntities(text, entitiesMap) {
   });
 
   var pos = 0;
+
   var html = entities.reduce(function(html, entity) {
     // process previous non-entity content
     if (entity.indices[0] != pos) {
-      html += utils.escapeHTML(text.slice(pos, entity.indices[0]));
+      html += text.slice(pos, entity.indices[0]);
     }
     // process entity content
     switch (entity.entity_type) {
