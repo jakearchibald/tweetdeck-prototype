@@ -8,7 +8,7 @@ self.addEventListener('install', function(event) {
       return cache.addAll([
         '/tweetdeck-prototype/',
         '/tweetdeck-prototype/static/build/css/all.css',
-        '/tweetdeck-prototype/static/build/js/all.js'
+        '/tweetdeck-prototype/static/build/js/all.js',
         '/tweetdeck-prototype/static/img/sprite.svg',
         '/tweetdeck-prototype/static/img/spinner-bubbles.svg'
       ]);
