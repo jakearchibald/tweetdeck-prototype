@@ -24,8 +24,9 @@ describe('ColumnItem', function () {
   it('renders', function () {
     var favCb = jest.genMockFn();
     var rtCb = jest.genMockFn();
+    var activateCb = jest.genMockFn();
     var item = TestUtils.renderIntoDocument(
-      <ColumnItem item={itemData} onFavorite={favCb} onRetweet={rtCb} />
+      <ColumnItem item={itemData} onFavorite={favCb} onRetweet={rtCb} onActivateTweet={activateCb} />
     );
     var username = TestUtils.findRenderedDOMComponentWithClass(
       item, 'tweet__username');
@@ -35,8 +36,9 @@ describe('ColumnItem', function () {
   it('calls to favorite callback', function () {
     var favCb = jest.genMockFn();
     var rtCb = jest.genMockFn();
+    var activateCb = jest.genMockFn();
     var item = TestUtils.renderIntoDocument(
-      <ColumnItem item={itemData} onFavorite={favCb} onRetweet={rtCb} />
+      <ColumnItem item={itemData} onFavorite={favCb} onRetweet={rtCb} onActivateTweet={activateCb} />
     );
     var fav = TestUtils.findRenderedDOMComponentWithClass(
       item, 'tweet__fav-button');
@@ -49,8 +51,9 @@ describe('ColumnItem', function () {
   it('calls to retweet callback', function () {
     var favCb = jest.genMockFn();
     var rtCb = jest.genMockFn();
+    var activateCb = jest.genMockFn();
     var item = TestUtils.renderIntoDocument(
-      <ColumnItem item={itemData} onFavorite={favCb} onRetweet={rtCb} />
+      <ColumnItem item={itemData} onFavorite={favCb} onRetweet={rtCb} onActivateTweet={activateCb} />
     );
     var fav = TestUtils.findRenderedDOMComponentWithClass(
       item, 'tweet__rt-button');
