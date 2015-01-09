@@ -19,12 +19,12 @@
   }
 
   & + .tweet {
-    border-top: 1px solid #D1D3D4;
+    border-top: 1px solid #e1e8ed;
   }
 }
 
 .tweet__title {
-  margin: 0 0 0;
+  margin: 0 0 0.2em;
   padding: 0 10px;
   font-weight: normal;
   font-size: inherit;
@@ -60,7 +60,7 @@
 
 .tweet__avatar {
   display: block;
-  margin: 0 auto 0.7em;
+  margin: 0 auto 0.3em;
   width: 50px;
   height: 50px;
   border-radius: 3px;
@@ -85,10 +85,11 @@
   @include min-width-min-content;
   @include flex(1);
   text-align: right;
-  text-transform: uppercase;
   font-weight: normal;
   color: #B8C5CD;
-  margin-left: 6px;
+  margin-left: 0.667em;
+  font-size: 0.667em;
+  padding-top: 0.5em;
 }
 
 .tweet__time--spacer {
@@ -104,8 +105,8 @@
 .tweet__actions {
   text-align: right;
   padding: 30px 10px 0;
-  fill: #CCD6DD;
-  color: #CCD6DD;
+  fill: #ccd6dd;
+  color: #ccd6dd;
 }
 
 %tweet__action-button {
