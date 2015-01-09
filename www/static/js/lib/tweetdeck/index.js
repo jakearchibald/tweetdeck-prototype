@@ -6,6 +6,10 @@ var User = require('./user');
 var makeAccount = require('./account');
 var Column = require('./column');
 
+var proxyLocation = require('./proxy-location');
+
+console.log('proxyLocation', proxyLocation);
+
 /**
  * Private utils
  */
@@ -23,7 +27,7 @@ function sessionHeader(token) {
  */
 function TweetDeck(opts) {
   opts = utils.defaults(opts, {
-    proxy: '//' + window.location.hostname + ':8001'
+    proxy: proxyLocation
   });
 
   this.proxy = opts.proxy;

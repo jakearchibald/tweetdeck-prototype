@@ -2,6 +2,8 @@ var utils = require('./utils');
 var _ = require('lodash');
 var { RequestResult } = require('./request-result');
 
+var proxyLocation = require('./tweetdeck/proxy-location');
+
 function wrapRequestWithResult(request) {
   return (result => new RequestResult(request, result));
 }
@@ -18,17 +20,9 @@ function extendAndClean(o, ...objs) {
     .value();
 }
 
-function getProxyHost() {
-  if (window.location.hostname.indexOf('github.io') > -1) {
-    return 'https://twitter-offline-proxy.herokuapp.com'
-  } else {
-    return '//' + window.location.hostname + ':8001';
-  }
-}
-
 var TWITTER = {
   BASE: 'https://api.twitter.com',
-  PROXY: getProxyHost(),
+  PROXY: proxyLocation,
   ENDPOINTS: {
     home: {
       url: '/1.1/statuses/home_timeline.json',
