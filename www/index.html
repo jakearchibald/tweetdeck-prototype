@@ -26,7 +26,7 @@
     <meta name="theme-color" content="#9266cc">
     <style>{% include "static/build/css/head.css" %}</style>
     <script>
-      navigator.serviceWorker && navigator.serviceWorker.register('service-worker.js').then(function(reg) {
+      navigator.serviceWorker && navigator.serviceWorker.register('static/build/js/sw.js').then(function(reg) {
         console.log('SW registered', reg);
       }, function(err) {
         console.error('SW registration error', err);

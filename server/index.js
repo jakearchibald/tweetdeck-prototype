@@ -31,11 +31,11 @@ module.exports.createApp = function (opts) {
     swPath = '../tweetdeck-prototype/www/static/js/sw/sw-disabled.js';
   }
 
-  app.get('/tweetdeck-prototype/service-worker.js', function(req, res) {
+  app.get('/tweetdeck-prototype/www/static/build/js/sw.js', function(req, res) {
     res.sendFile(path.resolve(swPath));
   });
 
-  app.get('/tweetdeck-prototype/sw.js.map', function(req, res) {
+  app.get('/tweetdeck-prototype/www/static/build/js/sw.js.map', function(req, res) {
     res.sendFile(path.resolve(swPath + '.map'));
   });
 
