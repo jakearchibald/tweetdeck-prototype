@@ -17,6 +17,13 @@ function makeDefaultColumn(account) {
   return new Column('home', account);
 }
 
+window.logout = function () {
+  indexedDB.deleteDatabase('tweetdeck');
+  indexedDB.deleteDatabase('key-value-store');
+  indexedDB.deleteDatabase('ordered-store');
+  window.location.reload();
+}
+
 module.exports = React.createClass({
   displayName: 'RootView',
 
