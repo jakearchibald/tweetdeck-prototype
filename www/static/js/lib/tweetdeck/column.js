@@ -3,6 +3,7 @@ var TimelineStore = require('../timeline-store');
 var TweetColumnItem = require('./tweetcolumnitem');
 var { Request } = require('../request-result');
 var IDBKeyValueStore = require('../idb-key-value-store');
+var IDBOrderedStore = require('../idb-ordered-store');
 var TweetStore = require('../tweet-store');
 
 const update = require('react/addons').addons.update;
@@ -16,6 +17,7 @@ class Column {
     this.tweetChangeListeners = [];
 
     this.timelineStore = new TimelineStore({
+      orderedStore: new IDBOrderedStore(),
       tweetStore: new TweetStore({
         keyValueStore: new IDBKeyValueStore()
       })
