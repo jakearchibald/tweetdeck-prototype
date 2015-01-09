@@ -10,6 +10,10 @@ describe('ColumnItem', function () {
       name: 'Taylor Swift',
       screenName: 'taylorswift13'
     },
+    source: {
+      favorited: false,
+      retweeted: false
+    },
     id: 1337,
     date: new Date(1420565760748),
     getHTML() {
@@ -19,8 +23,9 @@ describe('ColumnItem', function () {
 
   it('renders', function () {
     var favCb = jest.genMockFn();
+    var rtCb = jest.genMockFn();
     var item = TestUtils.renderIntoDocument(
-      <ColumnItem item={itemData} onFavorite={favCb} />
+      <ColumnItem item={itemData} onFavorite={favCb} onRetweet={rtCb} />
     );
     var username = TestUtils.findRenderedDOMComponentWithClass(
       item, 'tweet__username');
@@ -29,8 +34,9 @@ describe('ColumnItem', function () {
 
   it('calls to favorite callback', function () {
     var favCb = jest.genMockFn();
+    var rtCb = jest.genMockFn();
     var item = TestUtils.renderIntoDocument(
-      <ColumnItem item={itemData} onFavorite={favCb} />
+      <ColumnItem item={itemData} onFavorite={favCb} onRetweet={rtCb} />
     );
     var fav = TestUtils.findRenderedDOMComponentWithClass(
       item, 'tweet__fav-button');
@@ -38,5 +44,19 @@ describe('ColumnItem', function () {
     expect(favCb).not.toBeCalled();
     TestUtils.Simulate.click(fav);
     expect(favCb).toBeCalled();
+  });
+
+  it('calls to retweet callback', function () {
+    var favCb = jest.genMockFn();
+    var rtCb = jest.genMockFn();
+    var item = TestUtils.renderIntoDocument(
+      <ColumnItem item={itemData} onFavorite={favCb} onRetweet={rtCb} />
+    );
+    var fav = TestUtils.findRenderedDOMComponentWithClass(
+      item, 'tweet__rt-button');
+
+    expect(rtCb).not.toBeCalled();
+    TestUtils.Simulate.click(fav);
+    expect(rtCb).toBeCalled();
   });
 });
