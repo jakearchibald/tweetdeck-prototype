@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var TweetInterval = require('./tweet-interval');
-var sortUtils = require('./tweetdeck/column-utils');
+var sortUtils = require('./tweetdeck/sort-utils');
 var { Request, RequestResult } = require('./request-result');
 var storeUtils = require('./store-utils')
 
