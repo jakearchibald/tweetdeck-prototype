@@ -7,11 +7,13 @@ const utils = require('../lib/utils');
 module.exports = React.createClass({
   displayName: 'Item',
 
-  onTweetClick({target}) {
+  onTweetClick(event) {
     // ignore taps on interactive elements
-    if (utils.closest(target, 'button, a, input')) {
+    if (utils.closest(event.target, 'button, a, input')) {
       return;
     }
+
+    event.preventDefault();
 
     this.props.onActivateTweet(
       this.getDOMNode(),

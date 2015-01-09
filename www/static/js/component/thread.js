@@ -2,12 +2,31 @@
 
 const React = require('react');
 const ColumnItem = require('./column-item');
+const cx = React.addons.classSet;
 
 module.exports = React.createClass({
   displayName: 'Thread',
 
+  getInitialState() {
+    return {
+      blurBg: false
+    };
+  },
+
+  onScroll(event) {
+    this.setState({
+      blurBg: event.target.scrollTop > 100
+    });
+  },
+
   render() {
-    return <div className={"thread " + (this.props.item.heroImg ? "thread--hero" : "")}>
+    const classes = cx({
+      'thread': true,
+      'thread--hero': this.props.item.heroImg,
+      'blur-bg': this.state.blurBg
+    });
+
+    return <div className={classes} onScroll={this.onScroll}>
       <button className="unbutton thread__close-button" onClick={this.props.onClose}>
         <svg viewBox="0 0 34 34" dangerouslySetInnerHTML={{__html:"<use xlink:href='static/imgs/sprite.svg#x'/>"}}></svg>
       </button>
