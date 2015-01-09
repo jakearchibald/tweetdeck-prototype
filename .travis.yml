@@ -9,7 +9,7 @@ branches:
     - master
 env:
   global:
-    - secure: "fHgfjMpYuliwMr2QLnjYZExIViNrxprf9dhXRBLZ6P9Hz7P6m1BMYrI/xEG8X+fFbCi0+n3AXh8SEMHi9ou/Pty/cx12z4w/z3B2BHMxh4XBwpZHs+AB4IXkLiwwWoP4QFy4vTipgYnMDMq9CRhlRbhZEpenQBmaTEc472By1uM="
+    - secure: "TGnQsTy1YemHD80qE303c1V242uMYdR8GaLajkqSKwacly2eaARQUqwQTZTyWESgUM7KTYkLBw5Tk46HkwpGfpS7vC5a1DHlycwuLcDyHQ9uFlWfwoA8kY6wJw5CPZDV7p4ofn8N3x0EMRhi+4Rx036lA8/M8APtz1oSjr7D6Mo="
     - GH_OWNER: jakearchibald
     - GH_PROJECT_NAME: tweetdeck-prototype
 
