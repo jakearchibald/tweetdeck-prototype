@@ -9,6 +9,8 @@ self.addEventListener('install', function(event) {
         '/tweetdeck-prototype/',
         '/tweetdeck-prototype/static/build/css/all.css',
         '/tweetdeck-prototype/static/build/js/all.js'
+        '/tweetdeck-prototype/static/img/sprite.svg',
+        '/tweetdeck-prototype/static/img/spinner-bubbles.svg'
       ]);
     })
   )
