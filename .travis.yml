@@ -18,7 +18,7 @@ before_script:
   - npm install -g gulp
 
 script:
-  - gulp
+  - gulp build
   - npm test
 
 after_success:
