@@ -24,6 +24,7 @@
     "handlebars": "^2.0.0",
     "lodash": "^2.4.1",
     "mediator-js": "^0.9.7",
+    "qheap": "^1.0.6",
     "react": "^0.12.2",
     "rsvp": "3.0.14",
     "swig": "^1.4.1",
