@@ -122,7 +122,7 @@ module.exports = React.createClass({
     return (
       <div className="column" onScroll={this.onScroll}>
         {header}
-        {this.state.items.map(item => <Item item={item} key={item.id} onFavorite={this.favoriteTweet} onRetweet={this.retweetTweet} />)}
+        {this.state.items.map(item => <Item item={item} key={item.id} onFavorite={this.favoriteTweet} onRetweet={this.retweetTweet} onActivateTweet={this.props.onActivateTweet} />)}
         {this.state.exhausted ? null : <Loader loading={this.state.loadingDown} onLoad={this.loadDown} />}
       </div>
     );

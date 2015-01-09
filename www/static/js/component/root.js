@@ -1,9 +1,11 @@
 'use strict';
 
 const React = require('react');
+const ReactCSSTransitionGroup = require('react/lib/ReactCSSTransitionGroup');
 const LoginView = require('./login');
 const ColumnView = require('./column');
 const Loader = require('./loader');
+const Thread = require('./thread');
 
 const tweetdeck = require('../lib/tweetdeck');
 const tweetdeckDb = require('../lib/tweetdeckdb');
@@ -22,7 +24,8 @@ module.exports = React.createClass({
     return {
       account: null,
       attemptedLogin: false,
-      column: null
+      column: null,
+      activatedItemNode: null
     };
   },
 
@@ -47,6 +50,18 @@ module.exports = React.createClass({
   loginDidSucceed(user) {
     tweetdeckDb.setUser(user)
       .then(this.attemptLogin);
+  },
+
+  activateTweet(node, item) {
+    this.setState({
+      activatedItemNode: {node, item}
+    });
+  },
+
+  deactivateTweet() {
+    this.setState({
+      activatedItemNode: null
+    });
   },
 
   render() {
@@ -74,7 +89,15 @@ module.exports = React.createClass({
     } else {
       return (
         <div className="app">
-          <ColumnView column={this.state.column} key={this.state.column.type} />
+          <ColumnView column={this.state.column} key={this.state.column.type} onActivateTweet={this.activateTweet} />
+          <ReactCSSTransitionGroup transitionName="thread-anim">
+            {this.state.activatedItemNode ?
+              <Thread
+                item={this.state.activatedItemNode.item}
+                refNode={this.state.activatedItemNode.node}
+                onClose={this.deactivateTweet} />
+            :null}
+          </ReactCSSTransitionGroup>
         </div>
       );
     }

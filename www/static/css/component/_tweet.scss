@@ -3,9 +3,9 @@
  */
 
 
-%abstract-tweet {
+.tweet {
   text-align: center;
-  padding: 23px 0 0;
+  padding: 23px 0 20px;
   margin: 0 auto;
   line-height: 1.4;
   font-size: 1.05rem;
@@ -17,10 +17,6 @@
     font-size: 1.3rem;
     width: 400px;
   }
-}
-
-.tweet {
-  @extend %abstract-tweet;
 
   & + .tweet {
     border-top: 1px solid #D1D3D4;
@@ -107,7 +103,7 @@
 
 .tweet__actions {
   text-align: right;
-  padding: 30px 10px 20px;
+  padding: 30px 10px 0;
   fill: #CCD6DD;
   color: #CCD6DD;
 }
@@ -156,9 +152,12 @@
 }
 
 .tweet--hero {
-  @extend %abstract-tweet;
   background: #000;
   color: #fff;
+
+  & + .tweet--hero {
+    border-top: none;
+  }
 
   & .tweet__actions,
   & .tweet__retweet {

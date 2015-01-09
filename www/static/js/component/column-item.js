@@ -9,7 +9,14 @@ module.exports = React.createClass({
 
   onTweetClick({target}) {
     // ignore taps on interactive elements
-    if (utils.closest(target, 'button, a, input')) return;
+    if (utils.closest(target, 'button, a, input')) {
+      return;
+    }
+
+    this.props.onActivateTweet(
+      this.getDOMNode(),
+      this.props.item
+    );
   },
 
   propTypes: {
@@ -37,7 +44,7 @@ module.exports = React.createClass({
   render() {
     const classes = cx({
       'tweet--hero': this.props.item.heroImg,
-      'tweet': !this.props.item.heroImg,
+      'tweet': true,
       'tweet--favorited': this.props.item.source.favorited,
       'tweet--retweeted': this.props.item.source.retweeted
     });

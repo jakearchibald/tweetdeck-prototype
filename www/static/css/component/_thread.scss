@@ -1,0 +1,104 @@
+.thread {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  overflow-x: hidden;
+  overflow-y: auto;
+  @include transform(translateZ(0));
+
+  & .tweet__retweet {
+    opacity: 0;
+  }
+
+  & .root-tweet {
+    border-bottom: 1px solid #D1D3D4;
+  }
+
+  & .tweet__actions {
+    // until we plumb the buttons in
+    display: none;
+  }
+}
+
+.thread-anim-enter {
+  @include transform(scale(0.4) translateZ(0));
+  opacity: 0;
+  @include transition(all 0.2s ease-out);
+}
+
+.thread-anim-enter-active {
+  @include transform(translateZ(0));
+  opacity: 1; 
+}
+
+.thread-anim-leave {
+  @include transform(translateZ(0));
+  opacity: 1;
+  @include transition(all 0.2s linear);
+}
+
+.thread-anim-leave-active {
+  @include transform(scale(0.4) translateZ(0));
+  opacity: 0;
+}
+
+
+.thread__close-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1;
+
+  & svg {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+.thread__replies {
+  position: relative;
+  @include transform(translateZ(0));
+
+  & .tweet {
+    border-top: none;
+  }
+}
+
+.thread--hero {
+  color: #fff;
+
+  & .root-tweet {
+    border-bottom: none;
+  }
+
+  & .root-tweet,
+  & .tweet {
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  & .thread__close-button {
+    fill: #fff;
+  }
+
+  & .tweet__body {
+    padding-top: 0.3em;
+  }
+
+  & .tweet {
+    @include display-flex;
+  }
+
+  & .tweet__content {
+    margin-top: auto;
+  }
+
+  & .tweet__hero-img,
+  & .tweet__hero-overlay {
+    position: fixed;
+    @include transform(translateZ(0));
+  }
+}
