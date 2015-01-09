@@ -44,7 +44,7 @@ exports.processEntities = function processEntities(text, entitiesMap) {
 
   // and the rest
   if (text && pos != text.length) {
-    html += utils.escapeHTML(text.slice(pos));
+    html += text.slice(pos);
   }
 
   return html;
