@@ -4,3 +4,34 @@ node_js:
   - "0.10"
 before_install:
   - "npm config set tmp $HOME/.npmtmp"
+branches:
+  only:
+    - master
+env:
+  global:
+    - secure: "fHgfjMpYuliwMr2QLnjYZExIViNrxprf9dhXRBLZ6P9Hz7P6m1BMYrI/xEG8X+fFbCi0+n3AXh8SEMHi9ou/Pty/cx12z4w/z3B2BHMxh4XBwpZHs+AB4IXkLiwwWoP4QFy4vTipgYnMDMq9CRhlRbhZEpenQBmaTEc472By1uM="
+    - GH_OWNER: jakearchibald
+    - GH_PROJECT_NAME: tweetdeck-prototype
+
+before_script:
+  # install dependencies
+  - npm install -g gulp
+
+script:
+  # We want to gate on passing tests and a successful build
+  - gulp
+
+after_success:
+  # Any command that using GH_OAUTH_TOKEN must pipe the output to /dev/null to not expose your oauth token
+  - git submodule add -b gh-pages https://${GH_OAUTH_TOKEN}@github.com/${GH_OWNER}/${GH_PROJECT_NAME} site > /dev/null 2>&1
+  - cd site
+  - if git checkout gh-pages; then git checkout -b gh-pages; fi
+  - git rm -r .
+  - cp -R ../www/* .
+  - cp ../www/.* .
+  - git add -f .
+  - git config user.email "travis@rdrei.net"
+  - git config user.name "TasteBot"
+  - git commit -am "update the build files for gh-pages [ci skip]"
+  # Any command that using GH_OAUTH_TOKEN must pipe the output to /dev/null to not expose your oauth token
+  - git push https://${GH_OAUTH_TOKEN}@github.com/${GH_OWNER}/${GH_PROJECT_NAME} HEAD:gh-pages > /dev/null 2>&1
