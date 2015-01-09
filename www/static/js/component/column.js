@@ -29,7 +29,8 @@ module.exports = React.createClass({
   componentDidMount() {
     this.props.column.addTweetChangeListener(this.handleTweetChanged);
     document.querySelector('.logo').addEventListener('click', this.handleHeaderClick);
-    this.loadDown();
+    this.loadDown()
+      .then(this.loadUp);
   },
 
   componentWillUnmount: function() {
@@ -76,7 +77,7 @@ module.exports = React.createClass({
       loadingDown: true
     });
     // Load tweets below what we have now
-    this.props.column.load({
+    return this.props.column.load({
       cursor: this.state.cursors.down || {}
     }).then(result => {
       var newCursors = this.state.cursors;
@@ -99,7 +100,7 @@ module.exports = React.createClass({
       loadingUp: true
     });
     // Load tweets above what we have now
-    this.props.column.load({
+    return this.props.column.load({
       cursor: this.state.cursors.up || {}
     }).then(result => {
       var newCursors = this.state.cursors;
