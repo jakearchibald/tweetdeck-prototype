@@ -20,6 +20,8 @@ function streamError(why) {
   this.end();
 }
 
+function id(arg) { return arg; }
+
 function sassTask(dev) {
   return gulp
     .src('www/static/css/**/*.scss')
@@ -58,12 +60,14 @@ gulp.task('browser-sync', function() {
   });
 });
 
-gulp.task('watch', ['sass'], function() {
+function buildTask(watch) {
   // sass
-  gulp.watch('www/static/css/**/*.scss', ['sass']);
+  if (watch) {
+    gulp.watch('www/static/css/**/*.scss', ['sass']);
+  }
 
   var createBundler = function (src) {
-    return watchify(browserify(src, {
+    return (watch ? watchify : id)(browserify(src, {
       cache: {}, packageCache: {}, fullPaths: true, // watchify args
       debug: true
     }));
@@ -101,8 +105,14 @@ gulp.task('watch', ['sass'], function() {
     rebundle(bundlers[key], key);
   });
 
-  // js-head
-  // gulp.watch('www/static/js/head.js', ['js-head']);
+}
+
+gulp.task('watch', ['sass'], function() {
+  buildTask(true);
+});
+
+gulp.task('browserify', ['sass'], function () {
+  buildTask(false);
 });
 
 gulp.task('server', function() {
@@ -115,3 +125,4 @@ gulp.task('server', function() {
 gulp.task('clean', del.bind(null, 'www/static/build'));
 
 gulp.task('default', ['clean', 'copy', 'watch', 'server', 'browser-sync']);
+gulp.task('build', ['clean', 'copy', 'browserify']);
