@@ -42,6 +42,29 @@ TweetdeckDbProto.setUser = function(user) {
   }
 };
 
+TweetdeckDbProto.getAccount = function() {
+  var p;
+
+  if (IndexedDouchebag.supported) {
+    p = this.idb.get('keyval', 'account');
+  }
+  else {
+    p = Promise.resolve(localStorage['tweetdeck:account']);
+  }
+
+  return p;
+};
+
+TweetdeckDbProto.setAccount = function(account) {
+  if (IndexedDouchebag.supported) {
+    return this.idb.put('keyval', 'account', account);
+  }
+  else {
+    localStorage['tweetdeck:account'] = JSON.stringify(account);
+    return Promise.resolve();
+  }
+};
+
 TweetdeckDbProto.deleteUser = function() {
   if (IndexedDouchebag.supported) {
     return this.idb.delete('keyval', 'user');

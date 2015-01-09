@@ -3,7 +3,7 @@
 var utils = require('../utils');
 var Promise = require('../promise');
 var User = require('./user');
-var Account = require('./account');
+var makeAccount = require('./account');
 var Column = require('./column');
 
 /**
@@ -146,7 +146,7 @@ TD.extractAccountForUser = function (user, rawData) {
 
   // Only keep the sign-in account
   var rawAccount = rawData.accounts.find(account => account.uid === user.id);
-  return new Account(rawAccount, this.proxy);
+  return makeAccount(rawAccount);
 };
 
 module.exports = new TweetDeck();

@@ -20,6 +20,7 @@ function extendAndClean(o, ...objs) {
 
 var TWITTER = {
   BASE: 'https://api.twitter.com',
+  PROXY: '//' + window.location.hostname + ':8001',
   ENDPOINTS: {
     home: {
       url: '/1.1/statuses/home_timeline.json',
@@ -52,6 +53,15 @@ var TWITTER = {
 };
 
 module.exports = {
+  proxiedRequest(account, url, opts) {
+    opts = utils.defaults(opts, {
+      headers: {}
+    });
+    opts.headers['x-td-oauth-key'] = account.oauth.token;
+    opts.headers['x-td-oauth-secret'] = account.oauth.secret;
+    return fetch(TWITTER.PROXY + '/oauth/proxy/twitter/' + encodeURIComponent(url), opts);
+  },
+
   makeRequest(endpointKey, request={}) {
     const endpoint = TWITTER.ENDPOINTS[endpointKey];
     if (!endpoint) {
@@ -70,7 +80,7 @@ module.exports = {
     const url = `${TWITTER.BASE}${utils.templateString(endpoint.url, params)}` +
                 `?${utils.objToQueryString(query)}`;
 
-    return request.account.proxiedRequest(url, endpoint.opts || {})
+    return this.proxiedRequest(request.account, url, endpoint.opts || {})
       .then(r => r.json());
   },
 
