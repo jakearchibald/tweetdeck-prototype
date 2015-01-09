@@ -18,9 +18,17 @@ function extendAndClean(o, ...objs) {
     .value();
 }
 
+function getProxyHost() {
+  if (window.location.hostname.indexOf('github.io') > -1) {
+    return 'https://twitter-offline-proxy.herokuapp.com'
+  } else {
+    return '//' + window.location.hostname + ':8001';
+  }
+}
+
 var TWITTER = {
   BASE: 'https://api.twitter.com',
-  PROXY: '//' + window.location.hostname + ':8001',
+  PROXY: getProxyHost(),
   ENDPOINTS: {
     home: {
       url: '/1.1/statuses/home_timeline.json',
