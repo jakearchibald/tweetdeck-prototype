@@ -7,7 +7,7 @@ Climate](https://codeclimate.com/github/jakearchibald/tweetdeck-prototype/badges
 [![devDependency
 Status](https://david-dm.org/jakearchibald/tweetdeck-prototype/dev-status.svg)](https://david-dm.org/jakearchibald/tweetdeck-prototype#info=devDependencies)
 
-We're prototyping a mobile-first & offline-first version of Tweetdeck. The idea is to show/discover how close to native we can get with the web on evergreen browsers.
+We're prototyping a mobile-first & offline-first client for Twitter. The idea is to show/discover how close to native we can get with the web on evergreen browsers.
 
 # Can I help?
 
