@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Tweetdeck Prototype</title>
+    <title>Twitter Offline</title>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0">
 
     <!-- Add to homescreen -->
@@ -10,13 +10,13 @@
 
     <!-- Fallback to homescreen for Chrome <39 on Android -->
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Web Starter Kit">
+    <meta name="application-name" content="Twitter Offline">
     <link rel="icon" sizes="192x192" href="static/imgs/icons/chrome-touch-icon-192x192.png">
 
     <!-- Add to homescreen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Web Starter Kit">
+    <meta name="apple-mobile-web-app-title" content="Twitter Offline">
     <link rel="apple-touch-icon" href="static/imgs/icons/apple-touch-icon.png">
 
     <!-- Tile icon for Win8 (144x144 + tile color) -->
@@ -25,7 +25,9 @@
 
     <meta name="theme-color" content="#55acee">
     <script>
-      navigator.serviceWorker && navigator.serviceWorker.register('static/build/js/sw.js').then(function(reg) {
+      var swURL = new URL('./sw.js', window.location);
+      var swScope = new URL('./', swURL).href;
+      navigator.serviceWorker && navigator.serviceWorker.register(swURL, { scope: swScope }).then(function(reg) {
         console.log('SW registered', reg);
       }, function(err) {
         console.error('SW registration error', err);
