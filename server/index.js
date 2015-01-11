@@ -34,10 +34,23 @@ module.exports.createApp = function (opts) {
   app.get('/tweetdeck-prototype/www/static/build/js/sw.js', function(req, res) {
     res.sendFile(path.resolve(swPath));
   });
+  app.get('/tweetdeck-prototype/www/sw.js', function(req, res) {
+    res.sendFile(path.resolve(swPath));
+  });
 
   app.get('/tweetdeck-prototype/www/static/build/js/sw.js.map', function(req, res) {
     res.sendFile(path.resolve(swPath + '.map'));
   });
+
+  // Aliases to ensure that path-based restrictions don't block install
+  app.get('/tweetdeck-prototype/sw.js', function(req, res) {
+    res.sendFile(path.resolve(swPath));
+  });
+  app.get('/tweetdeck-prototype/sw.js.map', function(req, res) {
+    res.sendFile(path.resolve(swPath + '.map'));
+  });
+
+
 
   return app;
 }
