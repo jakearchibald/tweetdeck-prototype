@@ -78,7 +78,7 @@ const retryQueue = new RetryQueue();
 // General caching
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
-  if (url.pathname.indexOf('/oauth/proxy/twitter/https%3A%2F%2Fapi.twitter.com%2F1.1%2Ffavorites%2Fcreate.json') == 0) {
+  if (url.pathname.indexOf('/oauth/proxy/twitter/https%3A%2F%2Fapi.twitter.com%2F1.1%2Ffavorites%2Fcreate.json') === 0) {
     console.log('sw', 'is fav', event.request.url);
     const request = event.request.clone();
     event.respondWith(
