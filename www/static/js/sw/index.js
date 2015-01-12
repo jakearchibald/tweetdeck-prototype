@@ -2,16 +2,12 @@ const caches = require('../lib/serviceworker-cache-polyfill');
 const Promise = require('../lib/promise');
 const Heap = require('qheap');
 
+const filesToCache = require('./files-to-cache');
+
 self.addEventListener('install', function(event) {
    event.waitUntil(
     caches.open('twoffline-static-v7').then(function(cache) {
-      return cache.addAll([
-        '/tweetdeck-prototype/',
-        '/tweetdeck-prototype/static/build/css/all.css',
-        '/tweetdeck-prototype/static/build/js/all.js',
-        '/tweetdeck-prototype/static/img/sprite.svg',
-        '/tweetdeck-prototype/static/img/spinner-bubbles.svg'
-      ]);
+      return cache.addAll(filesToCache);
     })
   )
 });
