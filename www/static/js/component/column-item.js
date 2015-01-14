@@ -76,9 +76,9 @@ module.exports = React.createClass({
           <div className="tweet__body" dangerouslySetInnerHTML={{__html: this.props.item.getHTML()}} />
           <div className="tweet__actions">
             <span className="tweet__rt-count">{this.props.item.retweetCount || ""}</span>
-            <button onClick={this.onRetweet} className="tweet__rt-button" dangerouslySetInnerHTML={{__html:"<svg viewBox='0 0 42.7 24.9'><use xlink:href='static/imgs/sprite.svg#retweet'/></svg>"}}></button>
+            <button onClick={this.onRetweet} className="tweet__rt-button" dangerouslySetInnerHTML={{__html:"<svg viewBox='0 0 42.7 24.9'><use xlink:href='static/build/imgs/sprite.svg#retweet'/></svg>"}}></button>
             <span className="tweet__fav-count">{this.props.item.favoriteCount || ""}</span>
-            <button onClick={this.onFavorite} className="tweet__fav-button" dangerouslySetInnerHTML={{__html:"<svg viewBox='0 0 29.2 27.5'><use xlink:href='static/imgs/sprite.svg#fave'/></svg>"}}></button>
+            <button onClick={this.onFavorite} className="tweet__fav-button" dangerouslySetInnerHTML={{__html:"<svg viewBox='0 0 29.2 27.5'><use xlink:href='static/build/imgs/sprite.svg#fave'/></svg>"}}></button>
           </div>
         </div>
       </article>

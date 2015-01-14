@@ -22,7 +22,7 @@ module.exports = React.createClass({
     if (this.props.loading) {
       return (
         <div className="column-loader-spinner">
-          <img src="static/imgs/spinner-bubbles.svg" />
+          <img src="static/build/imgs/spinner-bubbles.svg" />
         </div>
       );
     } else {

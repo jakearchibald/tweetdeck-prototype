@@ -191,7 +191,7 @@ module.exports = React.createClass({
 
   getModalComponent() {
     return this.state.inProgress ?
-      <img src="static/imgs/spinner-bubbles.svg" className="loading-spinner" /> :
+      <img src="static/build/imgs/spinner-bubbles.svg" className="loading-spinner" /> :
       this.getContent();
   },
 
