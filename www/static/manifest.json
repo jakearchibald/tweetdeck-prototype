@@ -14,6 +14,6 @@
         "src": "imgs/icons/chrome-touch-icon-192x192.png",
         "sizes": "192x192"
       }],
-  "start_url": "/tweetdeck-prototype",
+  "start_url": "/tweetdeck-prototype/",
   "display": "standalone"
 }
