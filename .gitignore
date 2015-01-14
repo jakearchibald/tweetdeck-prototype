@@ -1,3 +1,4 @@
 node_modules
 .sass-cache
 www/static/build
+dist

@@ -10,6 +10,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var to5ify = require('6to5ify');
 var watchify = require('watchify');
 var buffer = require('vinyl-buffer');
+var merge = require('merge-stream');
 
 var server = require('./server');
 var tweetdeckProxy = require('./server/tweetdeck-proxy');
@@ -50,6 +51,20 @@ gulp.task('copy', ['clean'], function () {
     '!www/static/**/*.js',
     '!www/static/**/*.map'
   ]).pipe(gulp.dest('www/static/build'));
+});
+
+gulp.task('build-copy', ['clean', 'copy', 'browserify'], function () {
+  merge(
+    gulp.src([
+      'www/static/build/**',
+    ]).pipe(gulp.dest('dist/static/build')),
+    gulp.src([
+      'www/index.html'
+    ]).pipe(gulp.dest('dist/')),
+    gulp.src([
+      'www/static/build/js/sw.js*'
+    ]).pipe(gulp.dest('dist/'))
+  );
 });
 
 gulp.task('browser-sync', function() {
@@ -93,7 +108,7 @@ function buildTask(watch) {
       });
   };
 
-  Object.keys(bundlers).forEach(function (key) {
+  return Object.keys(bundlers).map(function (key) {
     var bundler = bundlers[key];
     bundler.exclude('vertx');
     bundler.transform(to5ify.configure({
@@ -102,7 +117,7 @@ function buildTask(watch) {
     bundler.on('update', function () {
       rebundle(bundlers[key], key);
     });
-    rebundle(bundlers[key], key);
+    return rebundle(bundlers[key], key);
   });
 
 }
@@ -112,7 +127,7 @@ gulp.task('watch', ['sass'], function() {
 });
 
 gulp.task('browserify', ['sass'], function () {
-  buildTask(false);
+  return merge(buildTask(false));
 });
 
 gulp.task('server', function() {
@@ -122,7 +137,7 @@ gulp.task('server', function() {
   tweetdeckProxy.listen(8001);
 });
 
-gulp.task('clean', del.bind(null, 'www/static/build'));
+gulp.task('clean', del.bind(null, ['www/static/build', 'dist']));
 
 gulp.task('default', ['clean', 'copy', 'watch', 'server', 'browser-sync']);
-gulp.task('build', ['clean', 'copy', 'browserify']);
+gulp.task('build', ['clean', 'copy', 'browserify', 'build-copy']);

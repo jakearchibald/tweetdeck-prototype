@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "start": "npm install && gulp --disable-sw",
+    "build": "npm install && gulp build",
     "test": "jest"
   },
   "author": "",
@@ -31,7 +32,8 @@
     "vinyl": "^0.4.6",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.0.0",
-    "watchify": "^2.2.1"
+    "watchify": "^2.2.1",
+    "merge-stream": "^0.1.7"
   },
   "devDependencies": {
     "browser-sync": "^1.8.3",

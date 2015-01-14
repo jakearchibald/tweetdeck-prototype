@@ -4,34 +4,17 @@ node_js:
   - "0.10"
 before_install:
   - "npm config set tmp $HOME/.npmtmp"
-branches:
-  only:
-    - master
+
 env:
   global:
     - secure: "TGnQsTy1YemHD80qE303c1V242uMYdR8GaLajkqSKwacly2eaARQUqwQTZTyWESgUM7KTYkLBw5Tk46HkwpGfpS7vC5a1DHlycwuLcDyHQ9uFlWfwoA8kY6wJw5CPZDV7p4ofn8N3x0EMRhi+4Rx036lA8/M8APtz1oSjr7D6Mo="
     - GH_OWNER: jakearchibald
     - GH_PROJECT_NAME: tweetdeck-prototype
 
-before_script:
-  # install dependencies
-  - npm install -g gulp
-
-script:
-  - gulp build
-  - npm test
-
 after_success:
-  # Any command that using GH_OAUTH_TOKEN must pipe the output to /dev/null to not expose your oauth token
-  - git submodule add -b gh-pages https://${GH_OAUTH_TOKEN}@github.com/${GH_OWNER}/${GH_PROJECT_NAME} site > /dev/null 2>&1
-  - cd site
-  - if git checkout gh-pages; then git checkout -b gh-pages; fi
-  - git rm -r .
-  - cp -R ../www/* .
-  - cp ../www/.* .
-  - git add -f .
-  - git config user.email "travis@rdrei.net"
-  - git config user.name "TasteBot"
-  - git commit -am "update the build files for gh-pages [ci skip]"
-  # Any command that using GH_OAUTH_TOKEN must pipe the output to /dev/null to not expose your oauth token
-  - git push https://${GH_OAUTH_TOKEN}@github.com/${GH_OWNER}/${GH_PROJECT_NAME} HEAD:gh-pages > /dev/null 2>&1
+   - curl -sSL "https://raw.githubusercontent.com/h5bp-bot/scripts/0.6.0/update_site_branch.sh" |
+         bash -s -- --commands "npm run build"
+                    --commit-message "Hey GitHub, this content is for you! [skip ci]"
+                    --directory "build"
+                    --distribution-branch "gh-pages"
+                    --source-branch "master"
