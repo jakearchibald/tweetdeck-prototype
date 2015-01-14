@@ -2,14 +2,10 @@ language: node_js
 sudo: false
 node_js:
   - "0.10"
-before_install:
-  - "npm config set tmp $HOME/.npmtmp"
 
 env:
   global:
-    - secure: "TGnQsTy1YemHD80qE303c1V242uMYdR8GaLajkqSKwacly2eaARQUqwQTZTyWESgUM7KTYkLBw5Tk46HkwpGfpS7vC5a1DHlycwuLcDyHQ9uFlWfwoA8kY6wJw5CPZDV7p4ofn8N3x0EMRhi+4Rx036lA8/M8APtz1oSjr7D6Mo="
-    - GH_OWNER: jakearchibald
-    - GH_PROJECT_NAME: tweetdeck-prototype
+    - secure: "YjP6TfnXIkIJHkTcU8ICPmAavN36BbJmozG+aqGVQFqBqj4G9mfAMtCz0Of7Bf01+PQ1Ag1yh3N0qI6XwPNQL6BcXvf8L5qIEwq9rdKB20TRdmue6DHBJD3sKEc563aDbcDe5QWaQo6GbP6TrdiSV64wG8VRew1RPP6v7kImsvU="
 
 after_success:
    - curl -sSL "https://raw.githubusercontent.com/h5bp-bot/scripts/0.6.0/update_site_branch.sh" |
