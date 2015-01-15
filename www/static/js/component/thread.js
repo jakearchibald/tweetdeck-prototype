@@ -3,6 +3,7 @@
 const React = require('react');
 const ColumnItem = require('./column-item');
 const cx = React.addons.classSet;
+const noop = require('lodash').noop;
 
 module.exports = React.createClass({
   displayName: 'Thread',
@@ -34,9 +35,9 @@ module.exports = React.createClass({
         <ColumnItem
           item={this.props.item}
           key={this.props.item.id}
-          onFavorite={function(){}}
-          onActivateTweet={function(){}}
-          onRetweet={function(){}} />
+          onFavorite={noop}
+          onActivateTweet={noop}
+          onRetweet={noop} />
       </div>
       <div className="thread__replies">
         <article className="tweet">
