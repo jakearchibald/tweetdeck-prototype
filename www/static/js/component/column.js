@@ -33,7 +33,7 @@ module.exports = React.createClass({
       .then(this.loadUp);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     document.querySelector('.logo').removeEventListener('click', this.handleHeaderClick);
   },
 
