@@ -1,5 +1,5 @@
 'use strict';
-var DOM = require('react').DOM;
+const DOM = require('react').DOM;
 
 module.exports = function domToReact(el) {
   if (el.nodeType === 3) {
@@ -13,7 +13,7 @@ module.exports = function domToReact(el) {
   const funcName = el.nodeName.toLowerCase();
   const props = {};
 
-  Array.prototype.forEach.call(el.attributes, function(attribute) {
+  Array.prototype.forEach.call(el.attributes, attribute => {
     const name = (attribute.nodeName === 'class' ? 'className' : attribute.nodeName);
     props[name] = attribute.value;
   });
